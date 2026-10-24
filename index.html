@@ -139,33 +139,42 @@
 
         <div class="max-w-5xl mx-auto px-2.5 sm:px-5 pt-2 pb-2">
             <!-- 第一层：企业品牌与主标题（手机向下滑动时自动折叠收起，释放阅读空间） -->
-            <div id="brand-banner" class="flex items-center justify-between gap-2 border-b border-slate-800 pb-2 mb-2">
-                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
-                    <!-- 容实重装 RunShark LOGO -->
-                    <div class="bg-white rounded-lg sm:rounded-xl p-1 shadow flex items-center justify-center shrink-0 h-9 sm:h-12 px-1.5 sm:px-2.5">
-                        <img src="容实LOGO.png" alt="河南容实重型装备有限公司 LOGO" class="h-full w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
-                        <svg viewBox="0 0 220 140" class="hidden h-full w-auto">
-                            <rect x="35" y="10" width="150" height="82" fill="none" stroke="#000000" stroke-width="11"/>
-                            <path d="M 96 34 A 24 24 0 1 0 96 72 C 110 72 122 32 142 32 A 20 20 0 0 1 162 52 C 162 62 152 67 142 67 L 154 80 L 166 80" fill="none" stroke="#000000" stroke-width="11" stroke-linecap="square" stroke-linejoin="miter"/>
-                            <path d="M 134 45 L 118 80" fill="none" stroke="#000000" stroke-width="11" stroke-linecap="square"/>
-                            <text x="110" y="128" text-anchor="middle" fill="#000000" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="31" letter-spacing="0.5">RunShark</text>
-                        </svg>
+            <div id="brand-banner" class="flex items-center justify-between gap-2 border-b border-slate-800 pb-2.5 mb-2">
+                <!-- 左侧：LOGO高度与右侧（公司名称+主标题）高度之和严格保持一致 -->
+                <div class="flex items-stretch gap-2.5 sm:gap-3.5 min-w-0 flex-1">
+                    <!-- 容实重装 RunShark LOGO（自动拉伸匹配右侧两行总高度） -->
+                    <div class="relative self-stretch w-14 sm:w-20 md:w-24 bg-white rounded-lg sm:rounded-xl shadow-md shrink-0 overflow-hidden border border-slate-200">
+                        <div class="absolute inset-0 p-1 sm:p-1.5 flex items-center justify-center">
+                            <img src="容实LOGO.png" alt="河南容实重型装备有限公司 LOGO" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                            <svg viewBox="0 0 220 140" class="hidden w-full h-full">
+                                <rect x="35" y="10" width="150" height="82" fill="none" stroke="#000000" stroke-width="11"/>
+                                <path d="M 96 34 A 24 24 0 1 0 96 72 C 110 72 122 32 142 32 A 20 20 0 0 1 162 52 C 162 62 152 67 142 67 L 154 80 L 166 80" fill="none" stroke="#000000" stroke-width="11" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M 134 45 L 118 80" fill="none" stroke="#000000" stroke-width="11" stroke-linecap="square"/>
+                                <text x="110" y="128" text-anchor="middle" fill="#000000" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="31" letter-spacing="0.5">RunShark</text>
+                            </svg>
+                        </div>
                     </div>
-                    <div class="min-w-0">
-                        <div class="flex items-center gap-1.5">
-                            <span class="bg-amber-500 text-slate-950 font-black px-1.5 py-0.5 rounded text-[10px] sm:text-xs tracking-wide truncate">
+
+                    <!-- 右侧：第一行（公司名称 + 拨打电话按钮） + 第二行（主标题） -->
+                    <div class="flex flex-col justify-between min-w-0 flex-1 py-0.5">
+                        <div class="flex flex-wrap items-center gap-1 sm:gap-1.5">
+                            <span class="bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded text-[11px] sm:text-xs md:text-sm tracking-wide leading-tight">
                                 河南容实重型装备有限公司
                             </span>
+                            <button type="button" onclick="openCallModal('18937161255')" class="ind-btn bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-black px-2 py-0.5 rounded text-[11px] sm:text-xs md:text-sm flex items-center gap-1 leading-tight cursor-pointer" title="点击弹窗拨打电话">
+                                <i class="fa-solid fa-phone-volume text-[10px] sm:text-xs animate-pulse"></i>
+                                <span>（拨打电话：18937161255）</span>
+                            </button>
                         </div>
-                        <h1 class="text-base sm:text-xl md:text-2xl font-black text-white tracking-tight truncate mt-0.5">
+                        <h1 class="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-none truncate mt-1 sm:mt-1.5">
                             自动化汽车卸车机操作流程
                         </h1>
                     </div>
                 </div>
 
-                <!-- 右侧：一键听口诀按钮 -->
-                <button onclick="speakRhyme()" class="ind-btn bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 shrink-0">
-                    <i class="fa-solid fa-volume-high text-sm sm:text-base"></i>
+                <!-- 右侧：一键听口诀按钮（桌面端与平板显示，手机端在下方口诀卡可直接点击） -->
+                <button onclick="speakRhyme()" class="hidden md:flex ind-btn bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-3.5 py-2.5 rounded-xl text-sm items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-volume-high text-base"></i>
                     <span>听口诀</span>
                 </button>
             </div>
@@ -426,6 +435,31 @@
                 <i class="fa-solid fa-volume-high"></i>
                 <span>听看图要点</span>
             </button>
+        </div>
+    </div>
+</div>
+
+<!-- 手机拨打电话弹窗窗口 (Call Modal) -->
+<div id="call-modal" class="fixed inset-0 z-50 hidden bg-slate-950/90 backdrop-blur-md flex items-center justify-center p-4" onclick="closeCallModal()">
+    <div class="max-w-sm w-full bg-slate-900 border-2 border-emerald-500 rounded-3xl overflow-hidden shadow-2xl p-5 text-center space-y-4" onclick="event.stopPropagation()">
+        <div class="w-16 h-16 rounded-full bg-emerald-500/20 border-2 border-emerald-400 text-emerald-400 flex items-center justify-center mx-auto shadow-lg">
+            <i class="fa-solid fa-phone-volume text-3xl animate-bounce"></i>
+        </div>
+        <div class="space-y-1">
+            <div class="text-xs font-bold text-amber-400 tracking-wider">河南容实重型装备有限公司</div>
+            <h3 class="text-lg font-black text-white">是否立即拨打服务电话？</h3>
+            <div id="call-modal-number" class="text-2xl sm:text-3xl font-black text-emerald-400 tracking-wider pt-1">
+                18937161255
+            </div>
+        </div>
+        <div class="grid grid-cols-2 gap-3 pt-2">
+            <button type="button" onclick="closeCallModal()" class="ind-btn py-3 px-4 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 font-black text-sm sm:text-base border border-slate-700">
+                取消
+            </button>
+            <a id="call-modal-link" href="tel:18937161255" onclick="closeCallModal()" class="ind-btn py-3 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-phone"></i>
+                <span>立即拨打</span>
+            </a>
         </div>
     </div>
 </div>
@@ -1082,6 +1116,30 @@
 
     function closePhotoLightbox() {
         document.getElementById("photo-lightbox").classList.add("hidden");
+    }
+
+    // 打开拨打电话弹窗并唤起手机拨号界面
+    function openCallModal(phoneNumber) {
+        const num = phoneNumber || "18937161255";
+        const modal = document.getElementById("call-modal");
+        const numEl = document.getElementById("call-modal-number");
+        const linkEl = document.getElementById("call-modal-link");
+        if (numEl) numEl.textContent = num;
+        if (linkEl) linkEl.href = "tel:" + num;
+        if (modal) {
+            modal.classList.remove("hidden");
+        }
+        // 在手机端同时触发系统拨号弹窗
+        if (/Android|iPhone|iPad|iPod|Mobile/i.test(navigator.userAgent)) {
+            window.location.href = "tel:" + num;
+        }
+    }
+
+    function closeCallModal() {
+        const modal = document.getElementById("call-modal");
+        if (modal) {
+            modal.classList.add("hidden");
+        }
     }
 
     // ==================== 3. 七步核心流程数据 ====================
@@ -1766,6 +1824,8 @@
         const clone = document.documentElement.cloneNode(true);
         const lightbox = clone.querySelector("#photo-lightbox");
         if (lightbox) lightbox.classList.add("hidden");
+        const callModal = clone.querySelector("#call-modal");
+        if (callModal) callModal.classList.add("hidden");
         const toast1 = clone.querySelector("#voice-toast");
         if (toast1) toast1.classList.add("hidden");
         const toast2 = clone.querySelector("#action-toast");
