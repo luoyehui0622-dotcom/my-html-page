@@ -256,7 +256,7 @@
                         </div>
                         <div onclick="quickJumpStep(6)" class="cursor-pointer bg-slate-950/90 px-3 py-2 rounded-xl border border-slate-800 flex items-center gap-2 sm:col-span-2 active:bg-slate-800">
                             <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">7</span>
-                            <span>往前慢开看左屏，<strong class="text-emerald-400">后挡趴平</strong>安全走！</span>
+                            <span>往前慢开看左屏，<strong class="text-emerald-400">后挡落下</strong>安全走！</span>
                         </div>
                     </div>
                 </section>
@@ -296,32 +296,55 @@
                         </div>
 
                         <div class="lg:col-span-5 flex flex-col justify-between space-y-3">
-                            <div class="bg-amber-500/15 border-2 border-amber-500/40 rounded-2xl p-3">
-                                <div class="text-[11px] font-bold text-amber-400 uppercase tracking-wider mb-0.5">核心口诀</div>
-                                <div id="sim-slogan" class="text-lg sm:text-2xl font-black text-amber-300 leading-snug"></div>
+                            <div class="bg-amber-500/15 border-l-4 border-amber-400 p-3 rounded-r-xl">
+                                <div class="text-xs font-bold text-amber-400 mb-0.5">💡 一句话要领：</div>
+                                <p id="sim-slogan" class="text-base sm:text-lg font-black text-white leading-snug"></p>
                             </div>
 
-                            <div class="space-y-2" id="sim-action-list"></div>
+                            <div id="sim-action-list" class="space-y-2"></div>
 
                             <div id="sim-photo-box" class="hidden"></div>
 
-                            <div id="sim-warning-box" class="bg-rose-950/80 border-2 border-rose-500 rounded-2xl p-3 flex items-start gap-2.5">
-                                <i class="fa-solid fa-triangle-exclamation text-rose-400 text-lg sm:text-xl shrink-0 mt-0.5"></i>
-                                <div id="sim-warning-text" class="text-sm sm:text-base font-bold text-rose-200 leading-snug"></div>
+                            <div class="bg-rose-950/90 border-2 border-rose-500 p-3 rounded-xl flex items-start gap-2.5 shadow-lg">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-400 text-lg shrink-0 mt-0.5 animate-bounce"></i>
+                                <div>
+                                    <div class="text-rose-400 font-black text-xs">安全红线（严禁违反）：</div>
+                                    <p id="sim-warning-text" class="text-rose-100 font-bold text-xs sm:text-sm mt-0.5 leading-snug"></p>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
 
-            <footer class="mt-6 bg-slate-900 border-2 border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-5 text-center space-y-3 shadow-lg">
-                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
-                    <div class="bg-white rounded-lg p-1 h-7 px-2 flex items-center justify-center">
-                        <img src="容实LOGO.png" alt="RunShark LOGO" class="h-full w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
-                        <span class="hidden text-slate-950 font-black text-xs tracking-tighter">RunShark</span>
+            <footer class="mt-6 bg-slate-900 border-2 border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-5 space-y-3.5 shadow-lg">
+                <!-- 与顶部第一条完全一致的品牌抬头展示（LOGO + 公司名称 + 拨打电话弹窗按钮 + 主标题） -->
+                <div class="flex items-stretch gap-2.5 sm:gap-3.5 min-w-0 max-w-2xl mx-auto text-left pb-3 border-b border-slate-800">
+                    <div class="relative self-stretch w-14 sm:w-20 md:w-24 bg-white rounded-lg sm:rounded-xl shadow-md shrink-0 overflow-hidden border border-slate-200">
+                        <div class="absolute inset-0 p-1 sm:p-1.5 flex items-center justify-center">
+                            <img src="容实LOGO.png" alt="河南容实重型装备有限公司 LOGO" class="w-full h-full object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                            <svg viewBox="0 0 220 140" class="hidden w-full h-full">
+                                <rect x="35" y="10" width="150" height="82" fill="none" stroke="#000000" stroke-width="11"/>
+                                <path d="M 96 34 A 24 24 0 1 0 96 72 C 110 72 122 32 142 32 A 20 20 0 0 1 162 52 C 162 62 152 67 142 67 L 154 80 L 166 80" fill="none" stroke="#000000" stroke-width="11" stroke-linecap="square" stroke-linejoin="miter"/>
+                                <path d="M 134 45 L 118 80" fill="none" stroke="#000000" stroke-width="11" stroke-linecap="square"/>
+                                <text x="110" y="128" text-anchor="middle" fill="#000000" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="31" letter-spacing="0.5">RunShark</text>
+                            </svg>
+                        </div>
                     </div>
-                    <div class="text-amber-400 font-black text-sm sm:text-lg">
-                        河南容实重型装备有限公司 · 自动化汽车卸车机操作流程
+
+                    <div class="flex flex-col justify-between min-w-0 flex-1 py-0.5">
+                        <div class="flex flex-wrap items-center gap-1 sm:gap-1.5">
+                            <span class="bg-amber-500 text-slate-950 font-black px-2 py-0.5 rounded text-[11px] sm:text-xs md:text-sm tracking-wide leading-tight">
+                                河南容实重型装备有限公司
+                            </span>
+                            <button type="button" onclick="openCallModal('18937161255')" class="ind-btn bg-emerald-500 hover:bg-emerald-400 active:scale-95 text-slate-950 font-black px-2 py-0.5 rounded text-[11px] sm:text-xs md:text-sm flex items-center gap-1 leading-tight cursor-pointer" title="点击弹窗拨打电话">
+                                <i class="fa-solid fa-phone-volume text-[10px] sm:text-xs animate-pulse"></i>
+                                <span>（拨打电话：18937161255）</span>
+                            </button>
+                        </div>
+                        <div class="text-lg sm:text-2xl md:text-3xl font-black text-white tracking-tight leading-none truncate mt-1 sm:mt-1.5">
+                            自动化汽车卸车机操作流程
+                        </div>
                     </div>
                 </div>
                 <div class="flex flex-col md:flex-row items-center justify-center gap-2.5 pt-1">
@@ -710,109 +733,153 @@
         if (photoKey === "rearStop") {
             ctx.fillStyle = "#475569";
             ctx.fillRect(0, 0, 640, 420);
+            // 平台地面 (y=305) 与后挡地坑槽
             ctx.fillStyle = "#64748b";
-            ctx.fillRect(0, 270, 640, 150);
-            ctx.fillStyle = "#1e293b";
-            ctx.beginPath();
-            ctx.moveTo(390, 420);
-            ctx.quadraticCurveTo(480, 220, 640, 250);
-            ctx.lineTo(640, 420);
-            ctx.fill();
+            ctx.fillRect(0, 305, 640, 115);
+            ctx.fillStyle = "#0f172a";
+            ctx.fillRect(249, 305, 64, 115);
+
+            // 车厢底部结构
             ctx.fillStyle = "#991b1b";
-            ctx.fillRect(0, 0, 560, 85);
+            ctx.fillRect(0, 0, 560, 78);
+
+            // 后轮：圆心 cx=140, cy=190, 外径 R=115 -> 最右边缘 x = 140 + 115 = 255，底部 y = 190 + 115 = 305 (贴紧平台)
             ctx.fillStyle = "#1e293b";
             ctx.beginPath();
-            ctx.arc(140, 195, 115, 0, Math.PI * 2);
+            ctx.arc(140, 190, 115, 0, Math.PI * 2);
             ctx.fill();
+            ctx.strokeStyle = "#94a3b8";
+            ctx.lineWidth = 4;
+            ctx.stroke();
+
             ctx.fillStyle = "#cbd5e1";
             ctx.beginPath();
-            ctx.arc(140, 195, 60, 0, Math.PI * 2);
+            ctx.arc(140, 190, 56, 0, Math.PI * 2);
             ctx.fill();
+
+            // 竖条形后挡：左边缘 x = 255（与后轮右边缘 x=255 精准相切！），宽 52，升起高度至后轮 4/5 处 (y=121..320)
             ctx.fillStyle = "#334155";
             ctx.strokeStyle = "#facc15";
             ctx.lineWidth = 4;
-            ctx.fillRect(235, 170, 75, 155);
-            ctx.strokeRect(235, 170, 75, 155);
+            ctx.fillRect(255, 121, 52, 199);
+            ctx.strokeRect(255, 121, 52, 199);
+
+            // 竖条形后挡侧面黄色警示条
             ctx.fillStyle = "#eab308";
-            ctx.fillRect(245, 185, 22, 120);
+            ctx.fillRect(265, 135, 16, 158);
+
+            // 相切点高亮指示 (x=255, y=190)
+            ctx.fillStyle = "#fde047";
+            ctx.beginPath();
+            ctx.arc(255, 190, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            // 车尾后方配件（移至后挡右侧 x=325，完全不遮挡后轮与后挡的相切面）
             ctx.fillStyle = "#dc2626";
-            ctx.fillRect(240, 40, 82, 100);
+            ctx.fillRect(325, 45, 76, 82);
             ctx.fillStyle = "#f8fafc";
-            ctx.fillRect(245, 130, 75, 48);
+            ctx.fillRect(325, 127, 76, 40);
             ctx.fillStyle = "#dc2626";
-            ctx.font = "bold 17px sans-serif";
-            ctx.fillText("一路平安", 248, 160);
+            ctx.font = "bold 16px sans-serif";
+            ctx.fillText("一路平安", 331, 153);
+
             ctx.fillStyle = "rgba(15,23,42,0.92)";
             ctx.fillRect(16, 335, 608, 70);
             ctx.strokeStyle = "#10b981";
             ctx.strokeRect(16, 335, 608, 70);
             ctx.fillStyle = "#34d399";
             ctx.font = "bold 21px sans-serif";
-            ctx.fillText("实景图三：后轮挡板完全提升到位（轮胎紧靠后挡）", 32, 366);
+            ctx.fillText("实景图三：竖条形后挡升至后轮4/5（与后轮精准相切）", 32, 366);
             ctx.fillStyle = "#fde047";
             ctx.font = "bold 16px sans-serif";
-            ctx.fillText("确认后挡完全垂直升起并靠稳后 ➔ 停车、放气、下车", 32, 392);
+            ctx.fillText("确认竖条形后挡完全升起并与后轮相切贴紧后 ➔ 停车、放气、下车", 32, 392);
         } else if (photoKey === "frontWide") {
             ctx.fillStyle = "#334155";
             ctx.fillRect(0, 0, 640, 420);
             ctx.fillStyle = "#b91c1c";
             ctx.fillRect(0, 0, 640, 68);
+
+            // 严格对称的两个前轮（画布中心 x=320）：左前轮 cx=155 (右缘263)，右前轮 cx=485 (左缘377)，两轮中间空隙 263..377 (正中心 x=320)
             ctx.fillStyle = "#1e293b";
             ctx.strokeStyle = "#64748b";
             ctx.lineWidth = 8;
             ctx.beginPath();
-            ctx.arc(175, 200, 108, 0, Math.PI * 2);
+            ctx.arc(155, 195, 108, 0, Math.PI * 2);
             ctx.fill();
             ctx.stroke();
+            ctx.fillStyle = "#0f172a";
             ctx.beginPath();
-            ctx.arc(485, 200, 108, 0, Math.PI * 2);
+            ctx.arc(155, 195, 48, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = "#1e293b";
+            ctx.beginPath();
+            ctx.arc(485, 195, 108, 0, Math.PI * 2);
             ctx.fill();
             ctx.stroke();
+            ctx.fillStyle = "#0f172a";
+            ctx.beginPath();
+            ctx.arc(485, 195, 48, 0, Math.PI * 2);
+            ctx.fill();
+
             ctx.fillStyle = "#ca8a04";
             ctx.fillRect(0, 300, 640, 120);
+
+            // 黄色前挡挡舌：宽 48，x = 320 - 24 = 296..344（严格居中于左右两前轮正中间！）
             ctx.fillStyle = "#facc15";
             ctx.strokeStyle = "#ffffff";
             ctx.lineWidth = 3;
-            ctx.fillRect(298, 110, 50, 190);
-            ctx.strokeRect(298, 110, 50, 190);
+            ctx.fillRect(296, 108, 48, 192);
+            ctx.strokeRect(296, 108, 48, 192);
+
+            // 两侧对称液压油缸：左缸 x=254..282 (距挡舌14px)，右缸 x=358..386 (距挡舌14px)
             ctx.fillStyle = "#0f172a";
-            ctx.fillRect(245, 210, 32, 88);
-            ctx.fillRect(368, 210, 32, 88);
+            ctx.fillRect(254, 210, 28, 90);
+            ctx.fillRect(358, 210, 28, 90);
+
             ctx.fillStyle = "rgba(15,23,42,0.92)";
             ctx.fillRect(16, 335, 608, 70);
             ctx.strokeStyle = "#facc15";
             ctx.strokeRect(16, 335, 608, 70);
             ctx.fillStyle = "#fde047";
             ctx.font = "bold 21px sans-serif";
-            ctx.fillText("实景图一：左右前轮的前挡（黄色挡舌在两轮中间）", 32, 366);
+            ctx.fillText("实景图一：左右前轮的前挡（黄色挡舌严格在两轮正中间）", 32, 366);
             ctx.fillStyle = "#cbd5e1";
             ctx.font = "bold 16px sans-serif";
-            ctx.fillText("下车绕看左右前轮，确认黄色前挡挡舌停留在两轮正中间", 32, 392);
+            ctx.fillText("下车绕看左右前轮，确认黄色前挡挡舌停留在两轮正中间空隙", 32, 392);
         } else {
             ctx.fillStyle = "#334155";
             ctx.fillRect(0, 0, 640, 420);
+            // 严格对称的近景左右前轮：左轮右缘 60+185=245，右轮左缘 580-185=395，两轮空隙中心 x=320
             ctx.fillStyle = "#475569";
+            ctx.strokeStyle = "#64748b";
+            ctx.lineWidth = 6;
             ctx.beginPath();
             ctx.arc(60, 165, 185, -Math.PI * 0.4, Math.PI * 0.55);
             ctx.fill();
+            ctx.stroke();
             ctx.beginPath();
             ctx.arc(580, 165, 185, Math.PI * 0.45, Math.PI * 1.4);
             ctx.fill();
+            ctx.stroke();
+
+            // 黄色前挡挡舌特写：宽 88，x = 320 - 44 = 276..364（严格处于两轮正中央！）
             ctx.fillStyle = "#eab308";
             ctx.strokeStyle = "#fef08a";
             ctx.lineWidth = 4;
-            ctx.fillRect(268, 15, 96, 315);
-            ctx.strokeRect(268, 15, 96, 315);
+            ctx.fillRect(276, 15, 88, 315);
+            ctx.strokeRect(276, 15, 88, 315);
+
             ctx.fillStyle = "rgba(15,23,42,0.92)";
             ctx.fillRect(16, 335, 608, 70);
             ctx.strokeStyle = "#10b981";
             ctx.strokeRect(16, 335, 608, 70);
             ctx.fillStyle = "#34d399";
             ctx.font = "bold 21px sans-serif";
-            ctx.fillText("实景图二：左右前轮的前挡特写（挡舌居中）", 32, 366);
+            ctx.fillText("实景图二：左右前轮的前挡特写（挡舌居中于两轮空隙）", 32, 366);
             ctx.fillStyle = "#fde047";
             ctx.font = "bold 16px sans-serif";
-            ctx.fillText("确认前挡挡舌停留在两轮中间后，立即前往车尾打开后车门", 32, 392);
+            ctx.fillText("确认前挡挡舌停留在两轮正中间后，立即前往车尾打开后车门", 32, 392);
         }
         return canvas.toDataURL("image/png");
     }
@@ -1147,18 +1214,18 @@
         {
             id: 7,
             shortTitle: "看屏慢走 · 挡落驶离",
-            slogan: "上车慢往前开，盯紧左屏：直到后挡完全落下后，方可驶离！",
-            voiceText: "第七步：看左屏幕，等后挡落平再开走。关好车后门回到驾驶室，挂前进挡慢慢往前开，同时眼睛盯着左边的电视监控。一直看到后轮挡板完全落平趴下了，就可以安心驶离卸车室了。祝您一路平安！",
+            slogan: "上车慢往前开，盯紧左屏：直到后挡完全落下沉入平台后，方可驶离！",
+            voiceText: "第七步：看左屏幕，等后挡落下再开走。关好车后门回到驾驶室，挂前进挡慢慢往前开，同时眼睛盯着左边的电视监控。一直看到竖条形后轮挡板完全下沉落回平台底下后，就可以安心驶离卸车室了。祝您一路平安！",
             actions: [
                 { icon: "fa-truck", color: "text-sky-400", text: "回到驾驶室，车辆【往前缓慢行驶】" },
-                { icon: "fa-tv", color: "text-amber-400", text: "密切观察【左侧监视器】中的后轮挡板" },
-                { icon: "fa-road", color: "text-emerald-400", text: "直到【后挡完全落下后】，方可安全驶离！" }
+                { icon: "fa-tv", color: "text-amber-400", text: "密切观察【左侧监视器】中的竖条形后轮挡板" },
+                { icon: "fa-road", color: "text-emerald-400", text: "直到【后挡完全下沉落回平台底下】，方可安全驶离！" }
             ],
-            warning: "后轮挡板完全落下前切勿加速硬冲，确认落平后再驶离！",
+            warning: "后轮挡板完全下沉落平前切勿加速硬冲，确认落下后再驶离！",
             defaultSubState: "flat",
             subStates: [
-                { key: "dropping", label: "⏳ 后挡未落平：慢行观察左屏", btnClass: "bg-amber-400 text-slate-950" },
-                { key: "flat", label: "✅ 后挡完全落下：安全驶离！", btnClass: "bg-emerald-500 text-slate-950" }
+                { key: "dropping", label: "⏳ 后挡下沉中：慢行观察左屏", btnClass: "bg-amber-400 text-slate-950" },
+                { key: "flat", label: "✅ 后挡已沉入平台底：安全驶离！", btnClass: "bg-emerald-500 text-slate-950" }
             ]
         }
     ];
@@ -1172,49 +1239,127 @@
     let currentSimIndex = 0;
     let currentSubState = stepsData[0].defaultSubState;
 
+    // 统一高精细度标准重卡模型：后轮2个轮子 + 前轮2个轮子（每组两轮间留有清晰空隙），车厢整体位于车轮正上方，带立体肋板、轮毂细节与流线型驾驶室
+    function renderStandardTruck({
+        bedText = "",
+        bedColor = "#1d4ed8",
+        cabColor = "#f59e0b",
+        textColor = "#ffffff",
+        fontSize = 12.5,
+        mudguard = "none", // 'none' | 'yes' | 'no'
+    } = {}) {
+        // 统一几何尺寸标准（局部坐标系）：
+        // 地面线 y = 76
+        // 车轮外胎半径 R = 13 (cx = 20, 56 及 108, 144)，轮心 cy = 63 -> 底部 63+13 = 76 贴紧平台地面，顶部 63-13 = 50
+        // 第一个后轮最左外缘：x = 20 - 13 = 7（用于与竖条形后挡精准相切！）
+        // 后两轮空隙：33..43 (10px 清晰空隙)；前两轮空隙：121..131 (10px 清晰空隙，正中心 x = 126)
+        // 车厢位于所有车轮正上方：x = 4, y = 4, width = 152, height = 36 (底部 y=40)
+        const renderWheel = (cx, cy) => `
+            <circle cx="${cx}" cy="${cy}" r="13" fill="#0f172a" stroke="#334155" stroke-width="1.5"/>
+            <circle cx="${cx}" cy="${cy}" r="10.5" fill="none" stroke="#475569" stroke-width="1.2" stroke-dasharray="3 2"/>
+            <circle cx="${cx}" cy="${cy}" r="7.5" fill="#cbd5e1" stroke="#64748b" stroke-width="1.2"/>
+            <circle cx="${cx}" cy="${cy}" r="4.8" fill="none" stroke="#334155" stroke-width="1.2" stroke-dasharray="1.8 2"/>
+            <circle cx="${cx}" cy="${cy}" r="2.5" fill="#1e293b"/>
+        `;
+
+        let mudguardExtras = "";
+        if (mudguard === "yes") {
+            // 前轮2个轮胎上方装有红色挡泥板，黄色前挡悬停在上方不能放下（严格居中于 x=126）
+            mudguardExtras = `
+                <rect x="92" y="43" width="68" height="5" rx="2" fill="#ef4444" stroke="#ffffff" stroke-width="1.2"/>
+                <rect x="121" y="18" width="10" height="19" rx="2" fill="#facc15" stroke="#ffffff" stroke-width="1.2"/>
+            `;
+        } else if (mudguard === "no") {
+            // 前轮2个轮胎上方无挡泥板，前挡正常放下至前两轮空隙正中间 (x=121..131, 中心 x=126)
+            mudguardExtras = `
+                <rect x="92" y="43" width="68" height="4" rx="1.5" fill="none" stroke="#94a3b8" stroke-width="1" stroke-dasharray="3 2"/>
+                <rect x="121" y="44" width="10" height="30" rx="2" fill="#10b981" stroke="#ffffff" stroke-width="1.2"/>
+            `;
+        }
+
+        return `
+            <!-- 重型底盘大梁与副车架（连接前后轮） -->
+            <rect x="8" y="40" width="178" height="5" rx="1.5" fill="#334155" stroke="#64748b" stroke-width="0.8"/>
+            <rect x="74" y="43" width="20" height="7" rx="1.5" fill="#475569" stroke="#94a3b8" stroke-width="0.6"/>
+            <!-- 车厢主体（整体位于前2轮、后2轮的正上方，带顶部冠梁、底边梁与立体竖向加强筋） -->
+            <rect x="4" y="4" width="152" height="36" rx="3.5" fill="${bedColor}" stroke="#93c5fd" stroke-width="1.3"/>
+            <rect x="5" y="4.5" width="150" height="3.5" rx="1" fill="#60a5fa" opacity="0.4"/>
+            <rect x="5" y="36.5" width="150" height="3" fill="#0f172a" opacity="0.35"/>
+            <g stroke="#93c5fd" stroke-width="1.2" opacity="0.22">
+                <line x1="26" y1="8" x2="26" y2="36"/>
+                <line x1="48" y1="8" x2="48" y2="36"/>
+                <line x1="70" y1="8" x2="70" y2="36"/>
+                <line x1="92" y1="8" x2="92" y2="36"/>
+                <line x1="114" y1="8" x2="114" y2="36"/>
+                <line x1="136" y1="8" x2="136" y2="36"/>
+            </g>
+            <!-- 流线型重卡驾驶室车头（含导流罩、前挡风窗、后视镜、把手与前大灯） -->
+            <path d="M156 11 L164 6 L164 11 Z" fill="#d97706"/>
+            <path d="M158 11 L179 11 Q184 11 187 16 L193 27 Q194 29 194 32 L194 45 L158 45 Z" fill="${cabColor}" stroke="#fde047" stroke-width="1"/>
+            <path d="M162 15 L178 15 Q181 15 183 18 L188 26 L162 26 Z" fill="#0f172a" stroke="#475569" stroke-width="0.8"/>
+            <polygon points="164,16 173,16 168,25 164,25" fill="#38bdf8" opacity="0.28"/>
+            <rect x="184" y="17" width="2.5" height="7" rx="1" fill="#1e293b" stroke="#94a3b8" stroke-width="0.6"/>
+            <rect x="163" y="30" width="6" height="2" rx="1" fill="#451a03"/>
+            <rect x="190" y="34" width="4" height="5" rx="1" fill="#fef08a" stroke="#f59e0b" stroke-width="0.6"/>
+            <rect x="189" y="40.5" width="6" height="4.5" rx="1.5" fill="#475569"/>
+            <!-- 后轮 2 个轮子（cx=20, 56，中间留有 10px 清晰空隙） -->
+            ${renderWheel(20, 63)}
+            ${renderWheel(56, 63)}
+            <!-- 前轮 2 个轮子（cx=108, 144，中间留有 10px 清晰空隙，正中心 x=126） -->
+            ${renderWheel(108, 63)}
+            ${renderWheel(144, 63)}
+            ${mudguardExtras}
+            ${bedText ? `
+                <rect x="10" y="11" width="140" height="22" rx="4" fill="#0f172a" opacity="0.52"/>
+                <text x="80" y="26.5" text-anchor="middle" fill="${textColor}" font-size="${fontSize}" font-weight="900">${bedText}</text>
+            ` : ""}
+        `;
+    }
+
     function getStepSVG(stepId, subState) {
         switch (stepId) {
             case 1: {
                 const isOk = subState !== "no";
                 return `
                 <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
-                    <rect x="10" y="168" width="500" height="10" rx="4" fill="#334155"/>
-                    <rect x="210" y="20" width="270" height="148" rx="8" fill="#1e293b" stroke="${isOk ? '#10b981' : '#f43f5e'}" stroke-width="4" stroke-dasharray="10 6"/>
-                    <text x="345" y="48" text-anchor="middle" fill="#94a3b8" font-size="15" font-weight="bold">卸车室内部</text>
+                    <!-- 地面线 y=172 -->
+                    <rect x="8" y="172" width="504" height="8" rx="4" fill="#334155"/>
+                    <!-- 卸车室内部区域 -->
+                    <rect x="228" y="16" width="246" height="156" rx="8" fill="#1e293b" stroke="${isOk ? '#10b981' : '#f43f5e'}" stroke-width="3.5" stroke-dasharray="10 6"/>
+                    <text x="351" y="42" text-anchor="middle" fill="#94a3b8" font-size="14" font-weight="bold">卸车室内部</text>
                     ${isOk ? `
-                        <circle cx="345" cy="100" r="26" fill="#065f46" stroke="#10b981" stroke-width="3"/>
-                        <text x="345" y="106" text-anchor="middle" fill="#34d399" font-size="17" font-weight="900">室内无车</text>
+                        <circle cx="351" cy="102" r="28" fill="#065f46" stroke="#10b981" stroke-width="3"/>
+                        <text x="351" y="107" text-anchor="middle" fill="#34d399" font-size="16" font-weight="900">室内无车</text>
                     ` : `
-                        <rect x="280" y="95" width="130" height="46" rx="6" fill="#be123c"/>
-                        <circle cx="305" cy="152" r="11" fill="#0f172a" stroke="#cbd5e1" stroke-width="4"/>
-                        <circle cx="385" cy="152" r="11" fill="#0f172a" stroke="#cbd5e1" stroke-width="4"/>
-                        <text x="345" y="123" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">里面还有车！</text>
+                        <g transform="translate(268, 108) scale(0.84)">
+                            ${renderStandardTruck({ bedText: "里面还有车！", bedColor: "#be123c", fontSize: 14 })}
+                        </g>
                     `}
-                    <rect x="200" y="105" width="12" height="63" fill="#f59e0b"/>
+                    <!-- 入口道闸 -->
+                    <rect x="218" y="108" width="10" height="64" fill="#f59e0b"/>
                     ${isOk ? `
-                        <rect x="145" y="110" width="65" height="9" rx="4" fill="#ef4444" stroke="#fff" stroke-width="2"/>
-                        <text x="175" y="98" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">入口杆关闭</text>
+                        <rect x="174" y="114" width="52" height="8" rx="4" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>
+                        <text x="196" y="102" text-anchor="middle" fill="#34d399" font-size="12" font-weight="bold">入口杆落下</text>
                     ` : `
-                        <rect x="202" y="55" width="9" height="60" rx="4" fill="#ef4444"/>
-                        <text x="175" y="98" text-anchor="middle" fill="#fb7185" font-size="13" font-weight="bold">杆未落好</text>
+                        <rect x="219" y="58" width="8" height="55" rx="4" fill="#ef4444"/>
+                        <text x="192" y="102" text-anchor="middle" fill="#fb7185" font-size="12" font-weight="bold">杆未落好</text>
                     `}
-                    <rect x="476" y="105" width="12" height="63" fill="#f59e0b"/>
-                    <rect x="440" y="110" width="46" height="9" rx="4" fill="#ef4444" stroke="#fff" stroke-width="2"/>
-                    <text x="465" y="98" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">出口杆关闭</text>
-                    <g transform="translate(18, 90)">
-                        <rect x="0" y="10" width="75" height="45" rx="4" fill="#3b82f6"/>
-                        <path d="M77 20 L105 20 L115 38 L115 55 L77 55 Z" fill="#f59e0b"/>
-                        <circle cx="22" cy="62" r="12" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                        <circle cx="58" cy="62" r="12" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                        <circle cx="96" cy="62" r="12" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                        <text x="37" y="38" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">等待区</text>
+                    <!-- 出口道闸 -->
+                    <rect x="474" y="108" width="10" height="64" fill="#f59e0b"/>
+                    <rect x="444" y="114" width="38" height="8" rx="4" fill="#ef4444" stroke="#fff" stroke-width="1.5"/>
+                    <text x="475" y="102" text-anchor="middle" fill="#34d399" font-size="12" font-weight="bold">出口杆落下</text>
+
+                    <!-- 等待区标准车辆（前2轮+后2轮，两轮中间有空隙，车厢在车轮上方） -->
+                    <g transform="translate(10, 108) scale(0.84)">
+                        ${renderStandardTruck({ bedText: "等待区", fontSize: 16 })}
                     </g>
+
                     ${isOk ? `
-                        <path d="M145 145 L195 145" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>
-                        <polygon points="195,137 210,145 195,153" fill="#10b981"/>
-                        <text x="175" y="163" text-anchor="middle" fill="#34d399" font-size="13" font-weight="900">缓慢驶入</text>
+                        <path d="M176 142 L208 142" stroke="#10b981" stroke-width="5" stroke-linecap="round"/>
+                        <polygon points="206,135 218,142 206,149" fill="#10b981"/>
+                        <text x="196" y="162" text-anchor="middle" fill="#34d399" font-size="12" font-weight="900">缓慢驶入</text>
                     ` : `
-                        <text x="165" y="150" text-anchor="middle" fill="#f43f5e" font-size="19" font-weight="900">🚫 等待</text>
+                        <text x="196" y="148" text-anchor="middle" fill="#f43f5e" font-size="14" font-weight="900">🚫 严禁驶入</text>
                     `}
                 </svg>`;
             }
@@ -1222,48 +1367,61 @@
                 const isGreen = subState === "green";
                 return `
                 <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
-                    <rect x="15" y="172" width="490" height="10" rx="4" fill="#334155"/>
-                    <rect x="435" y="25" width="58" height="110" rx="12" fill="#0f172a" stroke="#64748b" stroke-width="4"/>
-                    <rect x="459" y="135" width="10" height="37" fill="#64748b"/>
-                    <text x="464" y="16" text-anchor="middle" fill="#f8fafc" font-size="13" font-weight="900">右前方信号灯</text>
-                    <circle cx="464" cy="56" r="18" fill="${isGreen ? '#10b981' : '#1e293b'}" class="${isGreen ? 'glow-anim' : ''}" stroke="#334155" stroke-width="2"/>
-                    <text x="464" y="61" text-anchor="middle" fill="${isGreen ? '#022c22' : '#475569'}" font-size="13" font-weight="900">绿</text>
-                    <circle cx="464" cy="102" r="18" fill="${!isGreen ? '#facc15' : '#1e293b'}" class="${!isGreen ? 'glow-anim' : ''}" stroke="#334155" stroke-width="2"/>
-                    <text x="464" y="107" text-anchor="middle" fill="${!isGreen ? '#422006' : '#475569'}" font-size="13" font-weight="900">黄</text>
+                    <!-- 地面平台线 y=172：左侧平台 (x=10..34) + 料斗盖板与平台同水平用虚线表示 (x=34..122) + 中间距离平台 (x=122..154) + 后挡地坑槽 (x=154..174) + 右侧平台 -->
+                    <rect x="10" y="172" width="24" height="8" rx="2" fill="#334155"/>
+                    <!-- 料斗与虚线料斗盖板（与平台地面 y=172 同一水平，离竖条后挡 x=158 有 36px 距离） -->
+                    <rect x="34" y="180" width="88" height="22" rx="2" fill="#090d16" stroke="#475569" stroke-width="1.5" stroke-dasharray="4 3"/>
+                    <rect x="34" y="172" width="88" height="8" rx="2" fill="#1e293b" stroke="#38bdf8" stroke-width="2" stroke-dasharray="6 4"/>
+                    <text x="78" y="165" text-anchor="middle" fill="#38bdf8" font-size="10.5" font-weight="900">料斗盖板(与平台同水平)</text>
+                    <text x="78" y="195" text-anchor="middle" fill="#64748b" font-size="10" font-weight="bold">料斗</text>
 
-                    <g transform="translate(${isGreen ? '180' : '132'}, 72)">
-                        <rect x="0" y="0" width="176" height="56" rx="6" fill="#2563eb"/>
-                        <path d="M179 12 L218 12 L230 36 L230 56 L179 56 Z" fill="#f59e0b"/>
-                        <circle cx="46" cy="82" r="18" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
-                        <circle cx="46" cy="82" r="4" fill="#94a3b8"/>
-                        <circle cx="116" cy="82" r="18" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
-                        <circle cx="116" cy="82" r="4" fill="#94a3b8"/>
-                        <circle cx="152" cy="82" r="18" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
-                        <circle cx="152" cy="82" r="4" fill="#94a3b8"/>
-                        <text x="88" y="34" text-anchor="middle" fill="#fff" font-size="16" font-weight="900">
-                            ${isGreen ? '绿灯：慢往前开 ➔' : '⬅ 黄灯：缓慢倒车'}
-                        </text>
+                    <!-- 料斗盖板与后挡之间的平台段 (x=122..154，体现一定距离) -->
+                    <rect x="122" y="172" width="32" height="8" fill="#334155"/>
+                    <!-- 竖条形后挡升降地坑槽 (x=154..174) -->
+                    <rect x="154" y="172" width="20" height="24" rx="2" fill="#090d16" stroke="#475569" stroke-width="1.5"/>
+                    <rect x="174" y="172" width="334" height="8" rx="3" fill="#334155"/>
+
+                    <!-- 右前方信号灯 -->
+                    <rect x="442" y="28" width="54" height="106" rx="12" fill="#0f172a" stroke="#64748b" stroke-width="3.5"/>
+                    <rect x="464" y="134" width="10" height="38" fill="#64748b"/>
+                    <text x="469" y="19" text-anchor="middle" fill="#f8fafc" font-size="13" font-weight="900">右前方信号灯</text>
+                    <circle cx="469" cy="58" r="17" fill="${isGreen ? '#10b981' : '#1e293b'}" class="${isGreen ? 'glow-anim' : ''}" stroke="#334155" stroke-width="2"/>
+                    <text x="469" y="63" text-anchor="middle" fill="${isGreen ? '#022c22' : '#475569'}" font-size="13" font-weight="900">绿</text>
+                    <circle cx="469" cy="102" r="17" fill="${!isGreen ? '#facc15' : '#1e293b'}" class="${!isGreen ? 'glow-anim' : ''}" stroke="#334155" stroke-width="2"/>
+                    <text x="469" y="107" text-anchor="middle" fill="${!isGreen ? '#422006' : '#475569'}" font-size="13" font-weight="900">黄</text>
+
+                    <!-- 统一标准4轮卡车：y=96 + 76 = 172 贴紧平台 -->
+                    <g transform="translate(${isGreen ? '210' : '188'}, 96)">
+                        ${renderStandardTruck({
+                            bedText: isGreen ? '绿灯：慢往前开 ➔' : '⬅ 黄灯：缓慢倒车',
+                            fontSize: 12.5
+                        })}
                     </g>
 
                     ${isGreen ? `
-                        <rect x="133" y="166" width="24" height="6" rx="2" fill="#64748b"/>
-                        <text x="68" y="156" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="bold">后挡平放(车厢下方)</text>
-                        <line x1="122" y1="154" x2="136" y2="166" stroke="#64748b" stroke-width="1.5"/>
+                        <!-- 绿灯时：竖条形后挡完全下沉在平台地面底下 (y=172..192) -->
+                        <rect x="158" y="172" width="12" height="20" rx="1.5" fill="#64748b" stroke="#cbd5e1" stroke-width="1"/>
+                        <text x="164" y="142" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">后挡沉在平台底</text>
+                        <line x1="164" y1="146" x2="164" y2="170" stroke="#64748b" stroke-width="1.5" stroke-dasharray="2 2"/>
                     ` : `
-                        <polygon points="112,172 132,172 132,156" fill="#f59e0b" stroke="#ffffff" stroke-width="2"/>
-                        <line x1="132" y1="156" x2="152" y2="162" stroke="#fde047" stroke-width="1.5" stroke-dasharray="3 2"/>
-                        <rect x="6" y="125" width="138" height="38" rx="6" fill="#422006" stroke="#facc15" stroke-width="2"/>
-                        <text x="75" y="142" text-anchor="middle" fill="#fde047" font-size="11" font-weight="900">自动升至后轮1/3</text>
-                        <text x="75" y="156" text-anchor="middle" fill="#fed7aa" font-size="10" font-weight="bold">(车厢下方距后轮)</text>
-                        <line x1="102" y1="152" x2="116" y2="163" stroke="#facc15" stroke-width="2"/>
+                        <!-- 黄灯倒车时：竖条形后挡从平台下升至后轮 1/3 高度 (y=163..190) -->
+                        <rect x="158" y="163" width="12" height="26" rx="1.5" fill="#f59e0b" stroke="#ffffff" stroke-width="1.8"/>
+                        <!-- 1/3 轮高水平虚线对照 -->
+                        <line x1="170" y1="163" x2="208" y2="163" stroke="#fde047" stroke-width="1.5" stroke-dasharray="3 2"/>
+                        <!-- 左上方独立标注框（与料斗盖板文字、后挡及车轮完全无重叠） -->
+                        <rect x="12" y="68" width="156" height="44" rx="7" fill="#422006" stroke="#facc15" stroke-width="2"/>
+                        <text x="90" y="87" text-anchor="middle" fill="#fde047" font-size="12" font-weight="900">自动升至后轮 1/3 位置</text>
+                        <text x="90" y="104" text-anchor="middle" fill="#fed7aa" font-size="11" font-weight="bold">（竖条形后挡距后轮一点距离）</text>
+                        <polyline points="135,112 148,142 158,165" fill="none" stroke="#facc15" stroke-width="2"/>
+                        <circle cx="158" cy="165" r="2.5" fill="#facc15"/>
                     `}
 
                     ${isGreen ? `
-                        <path d="M230 42 L340 42" stroke="#10b981" stroke-width="8" stroke-linecap="round"/>
-                        <polygon points="340,31 362,42 340,53" fill="#10b981"/>
+                        <path d="M245 52 L345 52" stroke="#10b981" stroke-width="7" stroke-linecap="round"/>
+                        <polygon points="345,42 365,52 345,62" fill="#10b981"/>
                     ` : `
-                        <path d="M290 42 L170 42" stroke="#facc15" stroke-width="8" stroke-linecap="round"/>
-                        <polygon points="170,31 148,42 170,53" fill="#facc15"/>
+                        <path d="M315 52 L215 52" stroke="#facc15" stroke-width="7" stroke-linecap="round"/>
+                        <polygon points="215,42 195,52 215,62" fill="#facc15"/>
                     `}
                 </svg>`;
             }
@@ -1271,30 +1429,52 @@
                 const isFull = subState !== "half";
                 return `
                 <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
-                    <rect x="16" y="12" width="275" height="185" rx="12" fill="#090d16" stroke="#38bdf8" stroke-width="3"/>
-                    <rect x="16" y="12" width="275" height="28" rx="9" fill="#0284c7"/>
-                    <text x="153" y="31" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">📺 左侧视频监控画面</text>
-                    <rect x="26" y="168" width="254" height="8" fill="#475569"/>
+                    <!-- 左侧视频监控画面外框 -->
+                    <rect x="14" y="10" width="280" height="190" rx="12" fill="#090d16" stroke="#38bdf8" stroke-width="3"/>
+                    <rect x="14" y="10" width="280" height="27" rx="9" fill="#0284c7"/>
+                    <text x="154" y="28" text-anchor="middle" fill="#fff" font-size="13.5" font-weight="900">📺 左侧视频监控（后挡与后轮相切）</text>
 
-                    ${isFull ? `
-                        <rect x="78" y="68" width="194" height="36" rx="4" fill="#2563eb"/>
-                        <text x="175" y="91" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">后轮贴近后挡 ➔ 升至 4/5</text>
-                        <circle cx="168" cy="138" r="30" fill="#1e293b" stroke="#f8fafc" stroke-width="6"/>
-                        <circle cx="168" cy="138" r="7" fill="#94a3b8"/>
-                        <circle cx="238" cy="138" r="30" fill="#1e293b" stroke="#94a3b8" stroke-width="5"/>
-                        <polygon points="88,168 142,168 142,120" fill="#10b981" stroke="#fff" stroke-width="2.5"/>
-                        <line x1="142" y1="120" x2="205" y2="120" stroke="#34d399" stroke-width="1.5" stroke-dasharray="3 2"/>
-                        <text x="153" y="57" text-anchor="middle" fill="#34d399" font-size="13" font-weight="900">✅ 贴近后挡：提升至后轮 4/5 位置</text>
-                    ` : `
-                        <rect x="86" y="68" width="188" height="36" rx="4" fill="#2563eb"/>
-                        <text x="180" y="91" text-anchor="middle" fill="#fde047" font-size="12" font-weight="900">往前开一点 ➔ 升满再倒</text>
-                        <circle cx="178" cy="138" r="30" fill="#1e293b" stroke="#f8fafc" stroke-width="6"/>
-                        <circle cx="178" cy="138" r="7" fill="#94a3b8"/>
-                        <circle cx="246" cy="138" r="30" fill="#1e293b" stroke="#94a3b8" stroke-width="5"/>
-                        <polygon points="90,168 136,168 136,148" fill="#f59e0b" stroke="#ef4444" stroke-width="2.5"/>
-                        <line x1="136" y1="148" x2="188" y2="148" stroke="#fde047" stroke-width="1.5" stroke-dasharray="3 2"/>
-                        <text x="153" y="57" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="900">⚠️ 未升至4/5：前移一点待升满再倒</text>
-                    `}
+                    <!-- 监控画面裁剪区（内部同样统一使用 renderStandardTruck 模型放大 1.35 倍展示后轮特写） -->
+                    <defs>
+                        <clipPath id="step3-monitor-clip">
+                            <rect x="17" y="38" width="274" height="158" rx="8"/>
+                        </clipPath>
+                    </defs>
+
+                    <g clip-path="url(#step3-monitor-clip)">
+                        <!-- 监控内地面平台线 y=170：左侧虚线料斗盖板与平台同水平 (x=22..78) + 间隔平台段 (x=78..106) + 后挡地坑槽 (x=106..130) + 右侧平台 -->
+                        <rect x="22" y="178" width="56" height="18" rx="2" fill="#020617" stroke="#475569" stroke-width="1.2" stroke-dasharray="3 2"/>
+                        <rect x="22" y="170" width="56" height="8" rx="1.5" fill="#1e293b" stroke="#38bdf8" stroke-width="1.8" stroke-dasharray="5 3"/>
+                        <text x="50" y="164" text-anchor="middle" fill="#38bdf8" font-size="9.5" font-weight="900">虚线料斗盖板</text>
+
+                        <rect x="78" y="170" width="28" height="8" fill="#475569"/>
+                        <rect x="106" y="170" width="24" height="25" rx="2" fill="#020617" stroke="#475569" stroke-width="1.5"/>
+                        <rect x="128" y="170" width="162" height="8" rx="2" fill="#475569"/>
+
+                        ${isFull ? `
+                            <!-- 统一标准车辆模型放大 1.35 倍：车轮底部 y = 67.4 + 76*1.35 = 170 贴紧平台；第一个后轮左外缘 x = 118.55 + 7*1.35 = 128 -->
+                            <g transform="translate(118.55, 67.4) scale(1.35)">
+                                ${renderStandardTruck({ bedText: "后轮相切靠稳", fontSize: 11.5 })}
+                            </g>
+                            <!-- 竖条形后挡：右立面 x=128 与后轮左外缘 (x=128) 精准相切！高度升至后轮 4/5 处 (y=142) -->
+                            <rect x="112" y="142" width="16" height="48" rx="2" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
+                            <line x1="128" y1="142" x2="185" y2="142" stroke="#34d399" stroke-width="1.5" stroke-dasharray="4 2"/>
+                            <circle cx="128" cy="152.5" r="3.5" fill="#fde047"/>
+                            <text x="72" y="136" text-anchor="middle" fill="#34d399" font-size="10.5" font-weight="900">后挡升至4/5(相切)</text>
+                            <text x="154" y="55" text-anchor="middle" fill="#34d399" font-size="12.5" font-weight="900">✅ 贴近后挡：竖条升至后轮 4/5 高度</text>
+                        ` : `
+                            <!-- 未升满状态：车辆往前开一点点 (translate x=138)，待竖条形后挡完全升起后再倒 -->
+                            <g transform="translate(138, 67.4) scale(1.35)">
+                                ${renderStandardTruck({ bedText: "前移一点待升满", fontSize: 11 })}
+                            </g>
+                            <!-- 竖条形后挡未完全升起 -->
+                            <rect x="112" y="155" width="16" height="35" rx="2" fill="#f59e0b" stroke="#ef4444" stroke-width="2"/>
+                            <line x1="128" y1="155" x2="185" y2="155" stroke="#fde047" stroke-width="1.5" stroke-dasharray="4 2"/>
+                            <text x="154" y="55" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="900">⚠️ 未升至4/5：前移一点待升满再倒</text>
+                        `}
+                    </g>
+
+                    <!-- 右侧三步动作卡 -->
                     <g transform="translate(308, 16)">
                         <rect x="0" y="0" width="194" height="50" rx="10" fill="#1e293b" stroke="#475569" stroke-width="2"/>
                         <circle cx="28" cy="25" r="15" fill="#ef4444"/>
@@ -1318,59 +1498,72 @@
                 return `
                 <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
                     <rect x="15" y="12" width="245" height="186" rx="12" fill="#1e293b" stroke="${isCenter ? '#10b981' : '#f43f5e'}" stroke-width="3"/>
-                    <text x="137" y="36" text-anchor="middle" fill="#f8fafc" font-size="15" font-weight="900">① 绕看左右前轮中间</text>
-                    <rect x="30" y="156" width="215" height="9" rx="3" fill="#475569"/>
-                    <circle cx="75" cy="128" r="26" fill="#0f172a" stroke="#cbd5e1" stroke-width="6"/>
-                    <circle cx="198" cy="128" r="26" fill="#0f172a" stroke="#cbd5e1" stroke-width="6"/>
-                    ${isCenter ? `
-                        <rect x="123" y="118" width="28" height="38" rx="5" fill="#10b981" stroke="#fff" stroke-width="3" class="glow-anim"/>
-                        <text x="137" y="102" text-anchor="middle" fill="#34d399" font-size="13" font-weight="900">✅ 挡舌正居中</text>
-                    ` : `
-                        <rect x="96" y="118" width="28" height="38" rx="5" fill="#f43f5e" stroke="#fff" stroke-width="3"/>
-                        <text x="137" y="102" text-anchor="middle" fill="#fb7185" font-size="13" font-weight="900">❌ 未在两轮中间</text>
-                    `}
-                    <text x="137" y="184" text-anchor="middle" fill="${isCenter ? '#34d399' : '#fb7185'}" font-size="12" font-weight="bold">
-                        ${isCenter ? '停留在两轮正中间' : '回前端系绳,操作室选有挡泥板'}
+                    <text x="137" y="32" text-anchor="middle" fill="#f8fafc" font-size="14" font-weight="900">① 绕看左右前轮（2个前轮）</text>
+
+                    <!-- 裁剪区：同样统一使用 renderStandardTruck 模型放大 1.45 倍展示前轮特写 -->
+                    <defs>
+                        <clipPath id="step4-front-clip">
+                            <rect x="22" y="38" width="231" height="126" rx="6"/>
+                        </clipPath>
+                    </defs>
+                    <g clip-path="url(#step4-front-clip)">
+                        <rect x="25" y="156" width="225" height="8" rx="3" fill="#475569"/>
+                        <!-- 统一车模型放大 1.45 倍：前两轮中心 x=137，两轮空隙 130..144 -->
+                        <g transform="translate(-45.7, 45.8) scale(1.45)">
+                            ${renderStandardTruck({ bedText: "" })}
+                        </g>
+                        ${isCenter ? `
+                            <!-- 黄色前挡挡舌严格居中于前两轮空隙正中间 (x=130..144) -->
+                            <rect x="130" y="114" width="14" height="42" rx="3" fill="#eab308" stroke="#fff" stroke-width="2" class="glow-anim"/>
+                            <rect x="78" y="45" width="118" height="22" rx="5" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+                            <text x="137" y="60" text-anchor="middle" fill="#34d399" font-size="12" font-weight="900">✅ 黄舌居中于两前轮间</text>
+                        ` : `
+                            <rect x="114" y="114" width="14" height="42" rx="3" fill="#f43f5e" stroke="#fff" stroke-width="2"/>
+                            <rect x="78" y="45" width="118" height="22" rx="5" fill="#881337" stroke="#f43f5e" stroke-width="1.5"/>
+                            <text x="137" y="60" text-anchor="middle" fill="#fda4af" font-size="12" font-weight="900">❌ 未在两轮中间</text>
+                        `}
+                    </g>
+                    <text x="137" y="182" text-anchor="middle" fill="${isCenter ? '#34d399' : '#fb7185'}" font-size="12" font-weight="bold">
+                        ${isCenter ? '挡舌停留在前两轮正中间' : '回前端系绳，操作室选有挡泥板'}
                     </text>
 
                     <rect x="275" y="12" width="230" height="186" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
-                    <text x="390" y="36" text-anchor="middle" fill="#f8fafc" font-size="15" font-weight="900">② 去车尾打开后车门</text>
-                    <rect x="330" y="60" width="110" height="82" rx="6" fill="#2563eb" stroke="#93c5fd" stroke-width="3"/>
+                    <text x="390" y="34" text-anchor="middle" fill="#f8fafc" font-size="14.5" font-weight="900">② 去车尾打开后车门</text>
+                    <rect x="330" y="60" width="110" height="82" rx="6" fill="#1d4ed8" stroke="#93c5fd" stroke-width="3"/>
                     <path d="M330 65 L296 82 L296 150 L330 138 Z" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
                     <path d="M440 65 L474 82 L474 150 L440 138 Z" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
                     <text x="385" y="108" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">打开后车门</text>
-                    <text x="390" y="184" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="900">确认居中后立即去开门</text>
+                    <text x="390" y="182" text-anchor="middle" fill="#fbbf24" font-size="12.5" font-weight="900">确认居中后立即去开门</text>
                 </svg>`;
             }
             case 5: {
                 const hasMudguard = panelState.mudguard === 'yes';
                 return `
                 <div class="w-full flex flex-col gap-2.5">
-                    <svg viewBox="0 0 520 155" class="w-full max-w-[460px] h-auto mx-auto">
-                        <rect x="12" y="10" width="150" height="132" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="3"/>
-                        <text x="87" y="34" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="900">🏠 操作室（安全屋）</text>
-                        <circle cx="87" cy="68" r="15" fill="#fde047"/>
-                        <path d="M62 110 C62 88 112 88 112 110 Z" fill="#34d399"/>
-                        <text x="87" y="130" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">🚫 卸车时人留在屋内</text>
+                    <svg viewBox="0 0 520 175" class="w-full max-w-[460px] h-auto mx-auto">
+                        <!-- 左侧操作室安全屋 -->
+                        <rect x="12" y="14" width="146" height="146" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="3"/>
+                        <text x="85" y="38" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="900">🏠 操作室（安全屋）</text>
+                        <circle cx="85" cy="76" r="16" fill="#fde047"/>
+                        <path d="M58 122 C58 96 112 96 112 122 Z" fill="#34d399"/>
+                        <text x="85" y="144" text-anchor="middle" fill="#fff" font-size="11.5" font-weight="900">🚫 卸车时人留在屋内</text>
 
-                        <rect x="175" y="132" width="335" height="8" rx="3" fill="#475569"/>
-                        <g class="${panelState.vibrating ? 'vibrating' : ''}" transform="${panelState.started ? 'translate(190, 32) rotate(-14 40 90)' : 'translate(190, 56)'}">
-                            <rect x="0" y="0" width="165" height="48" rx="5" fill="#2563eb"/>
-                            <path d="M168 10 L238 10 L250 32 L250 48 L168 48 Z" fill="#f59e0b"/>
-                            <circle cx="34" cy="58" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <circle cx="116" cy="58" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <circle cx="152" cy="58" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            ${hasMudguard ? `
-                                <rect x="164" y="39" width="76" height="6" rx="2" fill="#ef4444" stroke="#ffffff" stroke-width="1.5"/>
-                                <rect x="136" y="15" width="12" height="18" rx="2" fill="#facc15" stroke="#fff" stroke-width="1"/>
-                                <text x="142" y="-6" text-anchor="middle" fill="#fda4af" font-size="11" font-weight="900">前轮上方有挡泥板:前挡不放下</text>
-                            ` : `
-                                <rect x="136" y="42" width="12" height="30" rx="2" fill="#10b981" stroke="#fff" stroke-width="1.5"/>
-                                <text x="142" y="-6" text-anchor="middle" fill="#6ee7b7" font-size="11" font-weight="900">前轮上方无挡泥板:前挡已放下</text>
-                            `}
-                            <text x="82" y="29" text-anchor="middle" fill="#fff" font-size="12" font-weight="900">
-                                ${panelState.started ? (panelState.vibrating ? '⚡ 震动器振动中!' : '🔼 正在举升卸车...') : '等待点击【卸车启动】'}
-                            </text>
+                        <!-- 右侧上方独立状态说明条（固定在顶部，不随车体旋转，绝不重叠或裁切） -->
+                        <rect x="174" y="10" width="332" height="26" rx="6" fill="#1e293b" stroke="${hasMudguard ? '#f43f5e' : '#10b981'}" stroke-width="1.5"/>
+                        <text x="340" y="28" text-anchor="middle" fill="${hasMudguard ? '#fda4af' : '#6ee7b7'}" font-size="12" font-weight="900">
+                            ${hasMudguard ? '⚠️ 前轮2个轮胎上方【有挡泥板】➔ 前挡不能放下' : '✅ 前轮2个轮胎上方【无挡泥板】➔ 前挡已放下居中'}
+                        </text>
+
+                        <!-- 卸车平台地面线 y=152 -->
+                        <rect x="172" y="152" width="336" height="8" rx="3" fill="#475569"/>
+
+                        <!-- 标准4轮卡车（含前轮2个轮胎上方挡泥板/前挡示意） -->
+                        <g class="${panelState.vibrating ? 'vibrating' : ''}" transform="${panelState.started ? 'translate(222, 68) rotate(-10 22 76)' : 'translate(222, 76)'}">
+                            ${renderStandardTruck({
+                                bedText: panelState.started ? (panelState.vibrating ? '⚡ 震动器振动中!' : '🔼 正在举升卸车...') : '等待点击【卸车启动】',
+                                fontSize: 12.5,
+                                mudguard: hasMudguard ? 'yes' : 'no'
+                            })}
                         </g>
                     </svg>
 
@@ -1399,36 +1592,54 @@
                 const isClosed = subState !== "closing";
                 return `
                 <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
-                    <rect x="15" y="155" width="160" height="12" fill="#334155"/>
-                    <rect x="175" y="155" width="145" height="45" fill="#090d16" stroke="#ef4444" stroke-width="3"/>
-                    <text x="247" y="184" text-anchor="middle" fill="#f87171" font-size="13" font-weight="900">料仓深坑</text>
-                    <rect x="320" y="155" width="185" height="12" fill="#334155"/>
+                    <!-- 地面平台线 y=156：左侧平台 (x=12..162) + 料斗深坑与虚线料斗盖板 (x=162..262) + 间隔平台段 (x=262..294，体现一定距离) + 后挡地坑槽 (x=294..314) + 右侧平台 (x=312..508) -->
+                    <rect x="12" y="156" width="150" height="10" rx="2" fill="#334155"/>
+                    <rect x="162" y="166" width="100" height="36" fill="#090d16" stroke="#ef4444" stroke-width="2.5"/>
+                    <text x="212" y="189" text-anchor="middle" fill="#f87171" font-size="12.5" font-weight="900">料仓深坑</text>
 
+                    <!-- 料斗盖板与后挡之间的平台段 (x=262..294，离后挡有一点距离) -->
+                    <rect x="262" y="156" width="32" height="10" fill="#334155"/>
+                    <!-- 竖条形后挡升降地坑槽 (x=294..314) -->
+                    <rect x="294" y="156" width="20" height="24" rx="2" fill="#090d16" stroke="#475569" stroke-width="1.5"/>
+                    <rect x="312" y="156" width="196" height="10" rx="2" fill="#334155"/>
+
+                    <!-- 料斗盖板（用虚线表示，且与平台 y=156 处于同一水平！） -->
                     ${isClosed ? `
-                        <rect x="172" y="146" width="152" height="11" rx="4" fill="#10b981" stroke="#fff" stroke-width="2"/>
-                        <text x="247" y="132" text-anchor="middle" fill="#34d399" font-size="15" font-weight="900">✅ 料仓盖板已完全关闭！</text>
+                        <rect x="162" y="156" width="100" height="10" rx="2" fill="#064e3b" stroke="#10b981" stroke-width="2.5" stroke-dasharray="6 4"/>
+                        <rect x="140" y="34" width="144" height="28" rx="6" fill="#064e3b" stroke="#10b981" stroke-width="1.5"/>
+                        <text x="212" y="53" text-anchor="middle" fill="#34d399" font-size="12" font-weight="900">✅ 虚线料斗盖板已关严</text>
+                        <text x="212" y="148" text-anchor="middle" fill="#34d399" font-size="10.5" font-weight="bold">（与平台同一水平）</text>
+                        <line x1="212" y1="62" x2="212" y2="136" stroke="#10b981" stroke-width="1.5" stroke-dasharray="3 3"/>
                     ` : `
-                        <rect x="175" y="92" width="11" height="65" rx="4" transform="rotate(38 175 155)" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
-                        <text x="245" y="105" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="900">⏳ 盖板关闭中(未关严)</text>
+                        <rect x="162" y="156" width="100" height="10" rx="2" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 4"/>
+                        <rect x="162" y="96" width="10" height="60" rx="3" transform="rotate(36 162 156)" fill="#f59e0b" stroke="#fff" stroke-width="2" stroke-dasharray="6 3"/>
+                        <rect x="140" y="34" width="144" height="28" rx="6" fill="#422006" stroke="#f59e0b" stroke-width="1.5"/>
+                        <text x="212" y="53" text-anchor="middle" fill="#fbbf24" font-size="12" font-weight="900">⏳ 料斗盖板关闭中</text>
                     `}
 
-                    <g transform="translate(310, 76)">
-                        <rect x="0" y="0" width="122" height="52" rx="5" fill="#2563eb"/>
-                        <path d="M125 14 L162 14 L172 36 L172 52 L125 52 Z" fill="#f59e0b"/>
-                        <circle cx="30" cy="64" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                        <circle cx="116" cy="64" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                        <circle cx="152" cy="64" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                        <text x="61" y="31" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">
-                            ${isClosed ? '整备并关后门' : '举升下降中'}
-                        </text>
+                    <!-- 右侧统一标准4轮卡车：translate(301, 80) -> 第一个后轮左外缘 x = 301 + 7 = 308，底部 y = 80 + 76 = 156 贴紧平台 -->
+                    <g transform="translate(301, 80)">
+                        ${renderStandardTruck({
+                            bedText: isClosed ? '整备并关后门' : '举升下降中',
+                            fontSize: 13
+                        })}
                     </g>
 
-                    <g transform="translate(22, 32)">
-                        <rect x="0" y="0" width="152" height="74" rx="10" fill="#1e293b" stroke="${isClosed ? '#10b981' : '#f43f5e'}" stroke-width="3"/>
-                        <text x="76" y="28" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">
+                    <!-- 竖条形后挡：右立面 x=308（与卡车第一个后轮左外缘 x=308 精准相切！），升起至后轮五分之四（4/5）高度 y=135 -->
+                    <rect x="296" y="135" width="12" height="41" rx="1.5" fill="#10b981" stroke="#ffffff" stroke-width="1.8"/>
+                    <circle cx="308" cy="143" r="3" fill="#fde047"/>
+                    <line x1="286" y1="135" x2="322" y2="135" stroke="#fde047" stroke-width="1.2" stroke-dasharray="3 2"/>
+                    <rect x="292" y="34" width="144" height="28" rx="6" fill="#1e293b" stroke="#fde047" stroke-width="1.5"/>
+                    <text x="364" y="53" text-anchor="middle" fill="#fde047" font-size="11.5" font-weight="900">后挡升至4/5(与后轮相切)</text>
+                    <polyline points="325,62 302,115 302,135" fill="none" stroke="#fde047" stroke-width="1.5" stroke-dasharray="3 2"/>
+
+                    <!-- 左侧安全提示牌 -->
+                    <g transform="translate(12, 34)">
+                        <rect x="0" y="0" width="122" height="72" rx="10" fill="#1e293b" stroke="${isClosed ? '#10b981' : '#f43f5e'}" stroke-width="2.5"/>
+                        <text x="61" y="29" text-anchor="middle" fill="#fff" font-size="12.5" font-weight="900">
                             ${isClosed ? '✅ 可上前关车门' : '✋ 等待盖板关严'}
                         </text>
-                        <text x="76" y="54" text-anchor="middle" fill="${isClosed ? '#34d399' : '#fda4af'}" font-size="12" font-weight="bold">
+                        <text x="61" y="53" text-anchor="middle" fill="${isClosed ? '#34d399' : '#fda4af'}" font-size="11" font-weight="bold">
                             ${isClosed ? '盖板完全关闭后整备' : '未关严前勿靠近车尾'}
                         </text>
                     </g>
@@ -1438,32 +1649,52 @@
                 const isFlat = subState !== "dropping";
                 return `
                 <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
-                    <rect x="16" y="14" width="245" height="180" rx="12" fill="#090d16" stroke="#38bdf8" stroke-width="3"/>
-                    <rect x="16" y="14" width="245" height="28" rx="9" fill="#0284c7"/>
-                    <text x="138" y="33" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">📺 观察左侧监视器</text>
-                    <rect x="30" y="156" width="215" height="9" fill="#475569"/>
+                    <!-- 左侧监视器画面 -->
+                    <rect x="14" y="14" width="238" height="180" rx="12" fill="#090d16" stroke="#38bdf8" stroke-width="3"/>
+                    <rect x="14" y="14" width="238" height="28" rx="9" fill="#0284c7"/>
+                    <text x="133" y="33" text-anchor="middle" fill="#fff" font-size="13.5" font-weight="900">📺 观察左侧监视器</text>
+
+                    <!-- 平台地面线 y=140 与平台下方的竖条后挡下沉地坑槽 (x=119..147, y=140..186) -->
+                    <rect x="26" y="140" width="95" height="8" rx="2" fill="#475569"/>
+                    <rect x="119" y="140" width="28" height="46" rx="3" fill="#020617" stroke="#475569" stroke-width="2"/>
+                    <rect x="145" y="140" width="95" height="8" rx="2" fill="#475569"/>
+                    <text x="68" y="164" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">卸车平台地面</text>
+                    <text x="194" y="164" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">平台底下</text>
+
                     ${isFlat ? `
-                        <rect x="85" y="148" width="65" height="9" rx="3" fill="#10b981" stroke="#fff" stroke-width="2"/>
-                        <text x="138" y="122" text-anchor="middle" fill="#34d399" font-size="15" font-weight="900">✅ 后挡已完全落下</text>
+                        <!-- 竖条形后挡完全下沉到平台底下（地坑槽内 y=142..182，顶部与平台齐平） -->
+                        <rect x="124" y="142" width="18" height="40" rx="2" fill="#10b981" stroke="#ffffff" stroke-width="2"/>
+                        <!-- 向下沉入指示小箭头 -->
+                        <path d="M133 112 L133 132" stroke="#34d399" stroke-width="3" stroke-linecap="round"/>
+                        <polygon points="127,130 133,138 139,130" fill="#34d399"/>
+                        <text x="133" y="76" text-anchor="middle" fill="#34d399" font-size="14" font-weight="900">✅ 竖条后挡已完全落下</text>
+                        <text x="133" y="96" text-anchor="middle" fill="#6ee7b7" font-size="12" font-weight="bold">（垂直下沉到平台底下）</text>
                     ` : `
-                        <polygon points="85,156 135,156 135,120" fill="#f59e0b" stroke="#ef4444" stroke-width="2"/>
-                        <text x="138" y="105" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="900">⏳ 后挡还未完全落下</text>
+                        <!-- 竖条形后挡正在往平台底下下沉中（上半截仍高出平台 y=108..162） -->
+                        <rect x="124" y="108" width="18" height="54" rx="2" fill="#f59e0b" stroke="#ef4444" stroke-width="2"/>
+                        <path d="M156 112 L156 134" stroke="#fbbf24" stroke-width="2.5" stroke-linecap="round"/>
+                        <polygon points="151,132 156,139 161,132" fill="#fbbf24"/>
+                        <text x="133" y="76" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="900">⏳ 竖条后挡正在下沉中</text>
+                        <text x="133" y="96" text-anchor="middle" fill="#fde047" font-size="11.5" font-weight="bold">（尚未完全沉入平台底下）</text>
                     `}
 
-                    <rect x="275" y="158" width="230" height="10" rx="3" fill="#334155"/>
-                    <g transform="translate(285, 80)">
-                        <rect x="0" y="0" width="122" height="52" rx="5" fill="#2563eb"/>
-                        <path d="M125 14 L162 14 L172 36 L172 52 L125 52 Z" fill="#f59e0b"/>
-                        <circle cx="30" cy="64" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                        <circle cx="116" cy="64" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                        <circle cx="152" cy="64" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                        <text x="61" y="31" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">往前缓慢行驶 ➔</text>
+                    <!-- 右侧驶离地面线 y=164 -->
+                    <rect x="266" y="164" width="242" height="8" rx="3" fill="#334155"/>
+
+                    <!-- 右侧标准4轮卡车：x=284, y=88..164 -->
+                    <g transform="translate(284, 88)">
+                        ${renderStandardTruck({
+                            bedText: '往前缓慢行驶 ➔',
+                            fontSize: 13.5
+                        })}
                     </g>
-                    <path d="M310 46 L445 46" stroke="${isFlat ? '#10b981' : '#f59e0b'}" stroke-width="7" stroke-linecap="round"/>
-                    <polygon points="445,36 466,46 445,56" fill="${isFlat ? '#10b981' : '#f59e0b'}"/>
-                    <text x="390" y="30" text-anchor="middle" fill="${isFlat ? '#34d399' : '#fde047'}" font-size="14" font-weight="900">
-                        ${isFlat ? '🎉 后挡完全落下，方可驶离' : '缓慢前行观察左屏'}
+
+                    <!-- 上方前行指示箭头与文字（留足顶部安全边距 y=32，绝不裁切或重叠） -->
+                    <text x="386" y="32" text-anchor="middle" fill="${isFlat ? '#34d399' : '#fde047'}" font-size="14" font-weight="900">
+                        ${isFlat ? '🎉 后挡完全沉入平台底，方可驶离' : '缓慢前行观察左屏'}
                     </text>
+                    <path d="M305 54 L445 54" stroke="${isFlat ? '#10b981' : '#f59e0b'}" stroke-width="7" stroke-linecap="round"/>
+                    <polygon points="445,44 466,54 445,64" fill="${isFlat ? '#10b981' : '#f59e0b'}"/>
                 </svg>`;
             }
         }
