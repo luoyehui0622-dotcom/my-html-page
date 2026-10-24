@@ -593,8 +593,17 @@
             title: "后挡完全提升到位实景",
             src: "78e14a6005423bf7d94fefa9c80486f4.jpg",
             shortTip: "后轮靠近挡板、两块后挡板完全垂直升起，即可停车下车",
-            desc: "【实景图三：后挡提升到位的照片】倒车观察左侧监控：图中车轮后方两块厚钢板即为“后轮挡板”，当后挡完全垂直提升到位且后轮靠稳后，即可执行停车、放气（断气刹）、下车。（注：车轮上方红白“一路平安”皮帘即为挡泥板）",
+            desc: "【实景图三：后挡提升到位的照片】倒车观察左侧监控：图中车轮后方两块厚钢板即为“后轮挡板”，当后挡完全垂直提升到位且后轮靠稳后，即可执行停车、放气（断气刹）、下车。",
             tags: ["① 后挡提升到位", "② 停稳放气下车"]
+        },
+        mudguardSchema: {
+            key: "mudguardSchema",
+            stepBadge: "示意图 · 第5步",
+            title: "前轮2个轮胎上方：有无挡泥板判断示意图",
+            src: "",
+            shortTip: "看前轮2个轮胎上方：有挡泥板则前挡不能放下去",
+            desc: "【有无挡泥板判断标准（看前轮2个轮胎上方，非后轮！）】1. 有挡泥板：前轮2个轮胎上方装有挡泥板遮挡，此时前挡不能放下去，必须在操作室选择【有挡泥板】；2. 无挡泥板：前轮2个轮胎上方敞开无挡泥板，前挡可正常放下去，选择【无挡泥板】。",
+            tags: ["① 看前轮2个轮胎上方", "② 有挡泥板前挡不能放下"]
         }
     };
 
@@ -604,6 +613,125 @@
         canvas.width = 640;
         canvas.height = 420;
         const ctx = canvas.getContext("2d");
+
+        if (photoKey === "mudguardSchema") {
+            // 绘制前轮2个轮胎上方：有无挡泥板对比示意图
+            ctx.fillStyle = "#0f172a";
+            ctx.fillRect(0, 0, 640, 420);
+
+            // 顶部标题
+            ctx.fillStyle = "#1e293b";
+            ctx.fillRect(0, 0, 640, 52);
+            ctx.fillStyle = "#fde047";
+            ctx.font = "bold 20px sans-serif";
+            ctx.fillText("💡 前轮2个轮胎上方【有无挡泥板】判断示意图（非后轮）", 28, 33);
+
+            // 左侧框：有挡泥板（前挡不能放下去）
+            ctx.fillStyle = "#1e293b";
+            ctx.strokeStyle = "#f43f5e";
+            ctx.lineWidth = 3;
+            ctx.fillRect(16, 66, 296, 336);
+            ctx.strokeRect(16, 66, 296, 336);
+
+            ctx.fillStyle = "#f43f5e";
+            ctx.font = "bold 19px sans-serif";
+            ctx.fillText("情况A：【有挡泥板】", 72, 98);
+            ctx.fillStyle = "#fda4af";
+            ctx.font = "bold 14px sans-serif";
+            ctx.fillText("前轮2个轮胎上方有挡泥板 ➔ 前挡不能放下", 28, 122);
+
+            // 左图地面与两个前轮
+            ctx.fillStyle = "#475569";
+            ctx.fillRect(28, 310, 272, 8);
+            ctx.fillStyle = "#090d16";
+            ctx.strokeStyle = "#94a3b8";
+            ctx.lineWidth = 5;
+            ctx.beginPath(); ctx.arc(105, 262, 44, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.arc(225, 262, 44, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = "#cbd5e1";
+            ctx.font = "bold 13px sans-serif";
+            ctx.fillText("前轮1", 88, 267);
+            ctx.fillText("前轮2", 208, 267);
+
+            // 前轮2个轮胎上方的挡泥板（红色高亮）
+            ctx.fillStyle = "#ef4444";
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.fillRect(48, 192, 234, 16);
+            ctx.strokeRect(48, 192, 234, 16);
+            ctx.fillStyle = "#ffffff";
+            ctx.font = "bold 12px sans-serif";
+            ctx.fillText("▲ 前轮2个轮胎上方的挡泥板 ▲", 82, 204);
+
+            // 前挡被阻挡不能放下
+            ctx.fillStyle = "#facc15";
+            ctx.fillRect(150, 134, 30, 42);
+            ctx.fillStyle = "#fde047";
+            ctx.font = "bold 13px sans-serif";
+            ctx.fillText("前挡无法放下(悬停)", 106, 186);
+
+            ctx.fillStyle = "rgba(15,23,42,0.9)";
+            ctx.fillRect(28, 330, 272, 58);
+            ctx.fillStyle = "#fb7185";
+            ctx.font = "bold 15px sans-serif";
+            ctx.fillText("⚠️ 有挡泥板阻挡，前挡不能放下去", 40, 354);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("👉 操作室必须选：【有挡泥板】", 48, 378);
+
+            // 右侧框：无挡泥板（前挡正常放下）
+            ctx.fillStyle = "#1e293b";
+            ctx.strokeStyle = "#10b981";
+            ctx.lineWidth = 3;
+            ctx.fillRect(328, 66, 296, 336);
+            ctx.strokeRect(328, 66, 296, 336);
+
+            ctx.fillStyle = "#34d399";
+            ctx.font = "bold 19px sans-serif";
+            ctx.fillText("情况B：【无挡泥板】", 384, 98);
+            ctx.fillStyle = "#6ee7b7";
+            ctx.font = "bold 14px sans-serif";
+            ctx.fillText("前轮2个轮胎上方无遮挡 ➔ 前挡正常放下", 344, 122);
+
+            // 右图地面与两个前轮
+            ctx.fillStyle = "#475569";
+            ctx.fillRect(340, 310, 272, 8);
+            ctx.fillStyle = "#090d16";
+            ctx.strokeStyle = "#94a3b8";
+            ctx.lineWidth = 5;
+            ctx.beginPath(); ctx.arc(415, 262, 44, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.beginPath(); ctx.arc(535, 262, 44, 0, Math.PI * 2); ctx.fill(); ctx.stroke();
+            ctx.fillStyle = "#cbd5e1";
+            ctx.font = "bold 13px sans-serif";
+            ctx.fillText("前轮1", 398, 267);
+            ctx.fillText("前轮2", 518, 267);
+
+            // 虚线框示意上方无挡泥板
+            ctx.strokeStyle = "#64748b";
+            ctx.lineWidth = 2;
+            ctx.setLineDash([5, 5]);
+            ctx.strokeRect(360, 192, 230, 16);
+            ctx.setLineDash([]);
+            ctx.fillStyle = "#94a3b8";
+            ctx.font = "bold 12px sans-serif";
+            ctx.fillText("（上方敞开无挡泥板）", 418, 184);
+
+            // 前挡正常放下到两轮中间
+            ctx.fillStyle = "#facc15";
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 2;
+            ctx.fillRect(460, 200, 30, 106);
+            ctx.strokeRect(460, 200, 30, 106);
+
+            ctx.fillStyle = "rgba(15,23,42,0.9)";
+            ctx.fillRect(340, 330, 272, 58);
+            ctx.fillStyle = "#34d399";
+            ctx.font = "bold 15px sans-serif";
+            ctx.fillText("✅ 上方无挡泥板，前挡正常放下去", 352, 354);
+            ctx.fillStyle = "#ffffff";
+            ctx.fillText("👉 操作室必须选：【无挡泥板】", 360, 378);
+
+            return canvas.toDataURL("image/png");
+        }
 
         if (photoKey === "rearStop") {
             ctx.fillStyle = "#475569";
@@ -792,7 +920,8 @@
     function renderTopPhotoGallery() {
         const container = document.getElementById("top-photo-gallery");
         if (!container) return;
-        container.innerHTML = Object.values(realPhotos).map(p => `
+        const galleryKeys = ["frontWide", "frontClose", "rearStop"];
+        container.innerHTML = galleryKeys.map(k => realPhotos[k]).map(p => `
             <div onclick="openPhotoLightbox('${p.key}')" class="group cursor-pointer bg-slate-950 border border-slate-800 hover:border-amber-400 rounded-xl sm:rounded-2xl overflow-hidden transition-all shadow flex sm:flex-col items-center sm:items-stretch">
                 <div class="relative w-32 sm:w-full h-24 sm:h-36 bg-black overflow-hidden shrink-0 flex items-center justify-center">
                     <img src="${p.src}" data-photo-key="${p.key}" ${p.key === 'frontClose' ? 'onload="removeRedDotsFromPhoto2(this)"' : ''} onerror="handleImgError(this, '${p.key}')" alt="${p.title}" class="w-full h-full object-cover">
@@ -866,13 +995,58 @@
             </div>`;
         }
         if (stepId === 5) {
-            const p = realPhotos.rearStop;
             return `
-            <div onclick="openPhotoLightbox('rearStop')" class="cursor-pointer mt-2.5 bg-slate-900/95 border border-sky-500/50 rounded-xl p-2.5 flex items-center gap-2.5">
-                <img src="${p.src}" data-photo-key="rearStop" onerror="handleImgError(this, 'rearStop')" class="w-16 h-12 object-cover rounded-lg border border-slate-700 shrink-0">
-                <div class="text-left min-w-0">
-                    <div class="text-xs font-black text-sky-300">💡 怎么选【有/无挡泥板】？</div>
-                    <div class="text-[11px] text-slate-300 font-bold leading-tight mt-0.5">后轮上方有红白“一路平安”皮帘即为【有挡泥板】（点图放大）</div>
+            <div onclick="openPhotoLightbox('mudguardSchema')" class="cursor-pointer mt-2.5 bg-slate-900/95 border-2 border-amber-500/60 hover:border-amber-400 rounded-xl p-2.5 transition-all">
+                <div class="flex items-center justify-between gap-2 mb-2">
+                    <div class="text-xs sm:text-sm font-black text-amber-300 flex items-center gap-1.5">
+                        <i class="fa-solid fa-lightbulb text-amber-400"></i>
+                        <span>怎么选【有挡泥板 / 无挡泥板】？（看前轮2个轮胎上方！）</span>
+                    </div>
+                    <span class="text-[10px] sm:text-xs bg-amber-500/20 text-amber-300 px-2 py-0.5 rounded font-bold shrink-0">
+                        <i class="fa-solid fa-expand mr-0.5"></i>放大示意图
+                    </span>
+                </div>
+                <!-- 前轮2个轮胎上方：有无挡泥板与前挡状态对比示意图 -->
+                <svg viewBox="0 0 500 165" class="w-full h-auto bg-slate-950 rounded-lg border border-slate-800 p-1">
+                    <!-- 左侧：有挡泥板（前挡不能放下去） -->
+                    <rect x="6" y="6" width="238" height="153" rx="8" fill="#1e293b" stroke="#f43f5e" stroke-width="2"/>
+                    <text x="125" y="25" text-anchor="middle" fill="#fda4af" font-size="13" font-weight="900">① 前轮2个轮胎上方【有挡泥板】</text>
+                    <rect x="20" y="118" width="210" height="5" fill="#475569"/>
+                    <!-- 两个前轮 -->
+                    <circle cx="78" cy="95" r="23" fill="#090d16" stroke="#94a3b8" stroke-width="4"/>
+                    <text x="78" y="99" text-anchor="middle" fill="#cbd5e1" font-size="10" font-weight="bold">前轮1</text>
+                    <circle cx="172" cy="95" r="23" fill="#090d16" stroke="#94a3b8" stroke-width="4"/>
+                    <text x="172" y="99" text-anchor="middle" fill="#cbd5e1" font-size="10" font-weight="bold">前轮2</text>
+                    <!-- 前轮上方的挡泥板 -->
+                    <rect x="38" y="60" width="174" height="10" rx="3" fill="#ef4444" stroke="#ffffff" stroke-width="1.5"/>
+                    <text x="125" y="55" text-anchor="middle" fill="#fde047" font-size="11" font-weight="900">▼ 前轮上方装有挡泥板 ▼</text>
+                    <!-- 前挡不能放下去 -->
+                    <rect x="114" y="30" width="22" height="16" rx="2" fill="#facc15" stroke="#fff" stroke-width="1"/>
+                    <text x="125" y="83" text-anchor="middle" fill="#fb7185" font-size="11" font-weight="900">🚫 前挡不能放下去</text>
+                    <rect x="20" y="128" width="210" height="24" rx="5" fill="#881337"/>
+                    <text x="125" y="144" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="900">👉 必须选【有挡泥板】（前挡不放下）</text>
+
+                    <!-- 右侧：无挡泥板（前挡正常放下） -->
+                    <rect x="256" y="6" width="238" height="153" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                    <text x="375" y="25" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="900">② 前轮2个轮胎上方【无挡泥板】</text>
+                    <rect x="270" y="118" width="210" height="5" fill="#475569"/>
+                    <!-- 两个前轮 -->
+                    <circle cx="328" cy="95" r="23" fill="#090d16" stroke="#94a3b8" stroke-width="4"/>
+                    <text x="328" y="99" text-anchor="middle" fill="#cbd5e1" font-size="10" font-weight="bold">前轮1</text>
+                    <circle cx="422" cy="95" r="23" fill="#090d16" stroke="#94a3b8" stroke-width="4"/>
+                    <text x="422" y="99" text-anchor="middle" fill="#cbd5e1" font-size="10" font-weight="bold">前轮2</text>
+                    <!-- 上方敞开无挡泥板，前挡正常放下去 -->
+                    <rect x="295" y="60" width="160" height="8" rx="2" fill="none" stroke="#64748b" stroke-width="1.5" stroke-dasharray="4 3"/>
+                    <text x="375" y="53" text-anchor="middle" fill="#94a3b8" font-size="11" font-weight="bold">（前轮上方无挡泥板遮挡）</text>
+                    <rect x="364" y="62" width="22" height="55" rx="3" fill="#facc15" stroke="#ffffff" stroke-width="1.5"/>
+                    <text x="375" y="144" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="900">
+                        <tspan x="375" dy="0">👉 必须选【无挡泥板】（前挡正常放下）</tspan>
+                    </text>
+                    <rect x="270" y="128" width="210" height="24" rx="5" fill="#065f46"/>
+                    <text x="375" y="144" text-anchor="middle" fill="#ffffff" font-size="12" font-weight="900">👉 必须选【无挡泥板】（前挡正常放下）</text>
+                </svg>
+                <div class="text-[11px] sm:text-xs text-slate-200 font-bold mt-1.5 leading-snug">
+                    ⚠️ 注意：是在<strong class="text-amber-300">前轮2个轮胎的上方</strong>判断（不是后轮）！<strong class="text-rose-400">如果有挡泥板，前挡不能放下去</strong>，请务必如实选择。
                 </div>
             </div>`;
         }
@@ -891,7 +1065,10 @@
         delete imgEl.dataset.redDotsRemoved;
         delete imgEl.dataset.fallbackApplied;
 
-        if (photoKey === "frontClose" && cleanedFrontCloseDataUrl) {
+        if (photoKey === "mudguardSchema") {
+            imgEl.onload = null;
+            imgEl.src = generateRealisticFallbackCanvas("mudguardSchema");
+        } else if (photoKey === "frontClose" && cleanedFrontCloseDataUrl) {
             imgEl.dataset.redDotsRemoved = "true";
             imgEl.src = cleanedFrontCloseDataUrl;
         } else {
@@ -980,14 +1157,14 @@
         {
             id: 5,
             shortTitle: "进屋按键 · 卸车别走",
-            slogan: "回操作室：先选【有无挡泥板】，再按【卸车启动】，人别出屋！",
-            voiceText: "第五步：进操作室按键卸车。打开车后门后回到操作室，先按你车的实际情况选择有挡泥板或者无挡泥板，选好后按下卸车启动按钮。卸车的时候震动器会自动震动，如果看车斗里还有剩料，可以自己再按一下震动器。记住：卸车全过程，人必须待在操作室里，千万不能出去！",
+            slogan: "看前轮上方选【有无挡泥板】，再按【卸车启动】，人别出屋！",
+            voiceText: "第五步：进操作室按键卸车。打开车后门后回到操作室，先看前轮两个轮胎的上方有没有挡泥板，注意是看前轮不是看后轮！如果前轮上方有挡泥板，前挡是不能放下去的，必须选择有挡泥板；如果前轮上方没有挡泥板，就选择无挡泥板。选好后按下卸车启动按钮。卸车过程中震动器会自动振动，也可以根据情况再次开启震动器。记住：卸车全过程，司机必须待在操作室里，严禁外出！",
             actions: [
-                { icon: "fa-sliders", color: "text-sky-400", text: "回到操作室，按实际选择【有挡泥板】或【无挡泥板】" },
+                { icon: "fa-sliders", color: "text-sky-400", text: "观察【前轮2个轮胎上方】选择【有挡泥板】或【无挡泥板】（若有挡泥板，前挡不能放下去）" },
                 { icon: "fa-power-off", color: "text-emerald-400", text: "点击【卸车启动】开始卸车（司机必须留在操作室内）" },
                 { icon: "fa-bell", color: "text-amber-400", text: "震动器自动振动；可根据卸车情况决定【是否再次开启震动器】" }
             ],
-            warning: "保命铁律：卸车过程中，司机必须全程停留在操作室内，严禁外出！",
+            warning: "前轮2个轮胎上方若有挡泥板，前挡不能放下去！卸车时司机必须全程留在操作室内！",
             defaultSubState: "panel",
             subStates: [
                 { key: "panel", label: "🎛️ 点击上方模拟按钮体验操作", btnClass: "bg-sky-500 text-slate-950" }
@@ -1192,22 +1369,37 @@
                 </svg>`;
             }
             case 5: {
+                const hasMudguard = panelState.mudguard === 'yes';
                 return `
                 <div class="w-full flex flex-col gap-2.5">
-                    <svg viewBox="0 0 520 145" class="w-full max-w-[460px] h-auto mx-auto">
-                        <rect x="15" y="10" width="165" height="122" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="3"/>
-                        <text x="97" y="34" text-anchor="middle" fill="#6ee7b7" font-size="14" font-weight="900">🏠 操作室（安全屋）</text>
-                        <circle cx="97" cy="68" r="15" fill="#fde047"/>
-                        <path d="M72 110 C72 88 122 88 122 110 Z" fill="#34d399"/>
-                        <text x="97" y="125" text-anchor="middle" fill="#fff" font-size="12" font-weight="900">🚫 卸车时人留在屋内</text>
+                    <svg viewBox="0 0 520 155" class="w-full max-w-[460px] h-auto mx-auto">
+                        <rect x="12" y="10" width="150" height="132" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="3"/>
+                        <text x="87" y="34" text-anchor="middle" fill="#6ee7b7" font-size="13" font-weight="900">🏠 操作室（安全屋）</text>
+                        <circle cx="87" cy="68" r="15" fill="#fde047"/>
+                        <path d="M62 110 C62 88 112 88 112 110 Z" fill="#34d399"/>
+                        <text x="87" y="130" text-anchor="middle" fill="#fff" font-size="11" font-weight="900">🚫 卸车时人留在屋内</text>
 
-                        <rect x="210" y="122" width="290" height="9" rx="3" fill="#475569"/>
-                        <g class="${panelState.vibrating ? 'vibrating' : ''}" transform="${panelState.started ? 'translate(230, 30) rotate(-18 60 90)' : 'translate(230, 52)'}">
-                            <rect x="0" y="0" width="138" height="48" rx="5" fill="#2563eb"/>
-                            <path d="M141 12 L172 12 L182 32 L182 48 L141 48 Z" fill="#f59e0b"/>
-                            <circle cx="30" cy="56" r="11" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <circle cx="152" cy="56" r="11" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <text x="69" y="29" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">
+                        <rect x="175" y="132" width="335" height="8" rx="3" fill="#475569"/>
+                        <g class="${panelState.vibrating ? 'vibrating' : ''}" transform="${panelState.started ? 'translate(190, 32) rotate(-14 40 90)' : 'translate(190, 56)'}">
+                            <!-- 车厢与车头 -->
+                            <rect x="0" y="0" width="165" height="48" rx="5" fill="#2563eb"/>
+                            <path d="M168 10 L238 10 L250 32 L250 48 L168 48 Z" fill="#f59e0b"/>
+                            <!-- 后轮 -->
+                            <circle cx="34" cy="58" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                            <!-- 前轮2个轮胎 -->
+                            <circle cx="182" cy="58" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                            <circle cx="222" cy="58" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                            ${hasMudguard ? `
+                                <!-- 前轮2个轮胎上方有挡泥板：前挡不能放下去 -->
+                                <rect x="164" y="39" width="76" height="6" rx="2" fill="#ef4444" stroke="#ffffff" stroke-width="1.5"/>
+                                <rect x="196" y="15" width="12" height="18" rx="2" fill="#facc15" stroke="#fff" stroke-width="1"/>
+                                <text x="202" y="-6" text-anchor="middle" fill="#fda4af" font-size="11" font-weight="900">前轮上方有挡泥板:前挡不放下</text>
+                            ` : `
+                                <!-- 前轮2个轮胎上方无挡泥板：前挡正常放下去 -->
+                                <rect x="196" y="42" width="12" height="30" rx="2" fill="#10b981" stroke="#fff" stroke-width="1.5"/>
+                                <text x="202" y="-6" text-anchor="middle" fill="#6ee7b7" font-size="11" font-weight="900">前轮上方无挡泥板:前挡已放下</text>
+                            `}
+                            <text x="82" y="29" text-anchor="middle" fill="#fff" font-size="12" font-weight="900">
                                 ${panelState.started ? (panelState.vibrating ? '⚡ 震动器振动中!' : '🔼 正在举升卸车...') : '等待点击【卸车启动】'}
                             </text>
                         </g>
@@ -1215,7 +1407,7 @@
 
                     <div class="bg-slate-800 border border-slate-600 rounded-xl p-2.5 max-w-[460px] w-full mx-auto">
                         <div class="text-[11px] font-bold text-slate-300 mb-1.5">
-                            👇 点击按钮模拟操作（1选挡泥板 ➔ 2卸车启动 ➔ 3再次开震动）：
+                            👇 点击按钮模拟操作（1看前轮上方选挡泥板 ➔ 2卸车启动 ➔ 3再次开震动）：
                         </div>
                         <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
                             <button onclick="toggleMudguard('yes')" class="ind-btn py-2 px-2 rounded-lg font-black text-xs border ${panelState.mudguard === 'yes' ? 'bg-amber-400 text-slate-950 border-white' : 'bg-slate-700 text-slate-300 border-slate-600'}">
@@ -1356,10 +1548,6 @@
                         <div class="w-full">
                             ${getStepPhotosHTML(step.id)}
                         </div>
-                        <button onclick="jumpToSimStep(${index})" class="mt-2.5 text-xs text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1 py-1">
-                            <i class="fa-solid fa-hand-pointer"></i>
-                            <span>进入第 ${step.id} 步互动模拟演练 ➔</span>
-                        </button>
                     </div>
 
                 </div>
@@ -1371,16 +1559,7 @@
                         <i class="fa-solid fa-arrow-down text-sm"></i>
                     </div>
                 </div>
-            ` : `
-                <div class="bg-emerald-950/80 border-2 border-emerald-500 rounded-2xl sm:rounded-3xl p-4 text-center mt-3">
-                    <div class="text-base sm:text-2xl font-black text-emerald-300 mb-1">
-                        🎉 卸车全部完成，河南容实重型装备祝您一路顺风！
-                    </div>
-                    <p class="text-emerald-200/90 font-bold text-xs sm:text-sm">
-                        🚨 突发情况请立即拍<strong class="text-rose-400 mx-1">【急停按钮】</strong>；设备疑问请联系<strong class="text-amber-300 mx-1">当班工作人员</strong>或用<strong class="text-sky-300 mx-1">【语音话筒】</strong>与中控室对话
-                    </p>
-                </div>
-            `}
+            ` : ``}
         `).join('');
     }
 
@@ -1500,7 +1679,7 @@
 
     function toggleMudguard(val) {
         panelState.mudguard = val;
-        speakText(val === 'yes' ? "已选择：有挡泥板" : "已选择：无挡泥板");
+        speakText(val === 'yes' ? "已选择：前轮上方有挡泥板，前挡不放下" : "已选择：前轮上方无挡泥板，前挡正常放下");
         if (!document.getElementById("view-sim").classList.contains("hidden")) {
             renderSimCurrentStep();
         } else {
