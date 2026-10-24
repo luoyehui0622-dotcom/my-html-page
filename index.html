@@ -1,614 +1,12 @@
 <!DOCTYPE html>
-<html lang="zh-CN"><head><script data-bard-client-injected="true">(function(firebaseConfig, initialAuthToken, appId) {
-        window.__firebase_config = firebaseConfig;
-        window.__initial_auth_token = initialAuthToken;
-        window.__app_id = appId;
-            })("\n{\n  \"apiKey\": \"AIzaSyCqyCcs2R2e7AegGjvFAwG98wlamtbHvZY\",\n  \"authDomain\": \"bard-frontend.firebaseapp.com\",\n  \"projectId\": \"bard-frontend\",\n  \"storageBucket\": \"bard-frontend.firebasestorage.app\",\n  \"messagingSenderId\": \"175205271074\",\n  \"appId\": \"1:175205271074:web:2b7bd4d34d33bf38e6ec7b\"\n}\n","eyJhbGciOiJSUzI1NiIsImtpZCI6IjExNjRiNzdiNDMzZDdhMDAyMWI4NjE4YjhjYTU3ZTMyZGI5MWUxMTMiLCJ0eXAiOiJKV1QifQ.eyJzdWIiOiJmaXJlYmFzZS1hZG1pbnNkay1mYnN2Y0BiYXJkLWZyb250ZW5kLmlhbS5nc2VydmljZWFjY291bnQuY29tIiwiYXVkIjoiaHR0cHM6Ly9pZGVudGl0eXRvb2xraXQuZ29vZ2xlYXBpcy5jb20vZ29vZ2xlLmlkZW50aXR5LmlkZW50aXR5dG9vbGtpdC52MS5JZGVudGl0eVRvb2xraXQiLCJ1aWQiOiIwMjYwMTMzODUxNjYwODc1NDU0NSIsImlzcyI6ImZpcmViYXNlLWFkbWluc2RrLWZic3ZjQGJhcmQtZnJvbnRlbmQuaWFtLmdzZXJ2aWNlYWNjb3VudC5jb20iLCJjbGFpbXMiOnsiYXBwSWQiOiJjX2Q4OWI0YmI1YmJhOTg3ODZfZHJpdmVyX3Zpc3VhbF9ndWlkZS5odG1sLTI5MCJ9LCJleHAiOjE3OTI3NTU0NTEsImlhdCI6MTc5Mjc1MTg1MSwiYWxnIjoiUlMyNTYifQ.WhjZhbeeGlNz_ZDwpitDhSiiG_2G5wYWCqPURZJd9GDgSoUSwGDIjbPfNJFqL9vJpXvsT7d7uc-wh3oHnjMAd9-S8MPtos9J-Ho9ahoGwozODLJ5pNWx78KNIj1CnKFtNoav2XSFCgv_nTdbOWttNwNFCFAocjfTx5gJx15VX837z9lSCZzeSdwmL2K_6QG6kILMmFRvT2yMs3Mdcr5LoXXL-6Nz3FEXDszAiK6MlT5kxaeRBIAeiFplFciTjiPYVUbKD00Q4tcawWnClqrgREcFli3MwS7G-6ieCdQlNtadl0_W3srzGlZIS-z5IK0buBpIXkCh4uNX_Qe-UyBWkA","c_d89b4bb5bba98786_driver_visual_guide.html-290")</script><script data-bard-client-injected="true">
-  document.addEventListener('input', (event) => {
-    if (event.target && (event.target.isContentEditable || event.target.hasAttribute('contenteditable'))) {
-      const clonedDoc = document.cloneNode(true);
-      const injectedScripts = clonedDoc.querySelectorAll('[data-bard-client-injected="true"]');
-      injectedScripts.forEach(el => el.remove());
-      window.parent.postMessage({
-        type: 'inlineEdit',
-        html: '<!DOCTYPE html>\n' + clonedDoc.documentElement.outerHTML
-      }, '*');
-    }
-  });
-</script><script data-bard-client-injected="true">(function(){'use strict';window.addEventListener("message",a=>{a.data&&a.data.type==="SUPPLEMENTAL_DATA_UPDATE"&&window.dispatchEvent(new CustomEvent("supplementaldataupdate",{detail:a.data.data}))});}).call(this);
-</script><script data-bard-client-injected="true">(function() {
-  const SCROLL_KEYS = new Set([
-    'ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight',
-    ' ', 'Spacebar', 'PageUp', 'PageDown', 'Home', 'End',
-  ]);
-  const HORIZONTAL_KEYS = new Set(['ArrowLeft', 'ArrowRight']);
-
-  function isTextEntryTarget(target) {
-    if (!target) return false;
-    const tagName = target.tagName;
-    return tagName === 'INPUT' || tagName === 'TEXTAREA' ||
-        tagName === 'SELECT' || target.isContentEditable === true;
-  }
-
-  // An element absorbs the key only if it both overflows on the axis being
-  // scrolled and is configured to scroll on that axis. The cheap dimension
-  // test runs first because getComputedStyle forces a style recalc, and this
-  // runs on every keypress. Each axis is read from its own longhand: the
-  // 'overflow' shorthand serializes as two values when the axes differ, which
-  // is the common 'overflow-x: hidden; overflow-y: auto' pane.
-  function canScroll(node, horizontal) {
-    const overflows = horizontal ? node.scrollWidth > node.clientWidth
-                                 : node.scrollHeight > node.clientHeight;
-    if (!overflows) return false;
-    const style = window.getComputedStyle(node);
-    const overflow = horizontal ? style.overflowX : style.overflowY;
-    return overflow === 'auto' || overflow === 'scroll';
-  }
-
-  // Walks up from the event target so nested scrollers keep their behavior.
-  // <body> is included because pages that pin the root height make it the
-  // scroll container.
-  function hasScrollableAncestor(target, horizontal) {
-    let node = target;
-    while (node && node !== document.documentElement) {
-      if (canScroll(node, horizontal)) return true;
-      node = node.parentElement;
-    }
-    return false;
-  }
-
-  function rootCanScroll(horizontal) {
-    const scroller = document.scrollingElement || document.documentElement;
-    if (!scroller) return false;
-    // Tolerate a pixel of rounding so subpixel layouts do not look scrollable.
-    return horizontal ? scroller.scrollWidth > window.innerWidth + 1
-                      : scroller.scrollHeight > window.innerHeight + 1;
-  }
-
-  window.addEventListener('keydown', function(event) {
-    if (!SCROLL_KEYS.has(event.key)) return;
-    if (event.defaultPrevented) return;
-    // Alt and Meta turn arrows into browser history navigation, and Ctrl is
-    // reserved for shortcuts, so none of them are scroll intent.
-    if (event.altKey || event.metaKey || event.ctrlKey) return;
-
-    const target = event.target;
-    if (isTextEntryTarget(target)) return;
-
-    // Anything that can still absorb the scroll gets to keep it.
-    const horizontal = HORIZONTAL_KEYS.has(event.key);
-    if (rootCanScroll(horizontal)) return;
-    if (hasScrollableAncestor(target, horizontal)) return;
-
-    event.preventDefault();
-  }, {capture: true, passive: false});
-})();</script><script data-bard-client-injected="true">(function() {
-  // Ensure this script is executed only once
-  if (window.firebaseAuthBridgeScriptLoaded) {
-    return;
-  }
-  window.firebaseAuthBridgeScriptLoaded = true;
-
-  let nextTokenPromiseId = 0;
-
-  // Stores { resolve, reject } for ongoing token requests
-  const pendingTokenPromises = {};
-
-  // Listen for messages from the Host Application
-  window.addEventListener('message', function(event) {
-
-    const messageData = event.data;
-
-  if (messageData && messageData.type === 'RESOLVE_NEW_FIREBASE_TOKEN') {
-      const { success, token, error, promiseId } = messageData ?? {};
-      if (pendingTokenPromises[promiseId]) {
-        if (success) {
-          pendingTokenPromises[promiseId].resolve(token);
-        } else {
-          pendingTokenPromises[promiseId].reject(new Error(error || 'Token refresh failed from host.'));
-        }
-        delete pendingTokenPromises[promiseId];
-      }
-    }
-  });
-
-  // Expose a function for the Generated App to request a new Firebase token
-  window.requestNewFirebaseToken = function() {
-    const currentPromiseId = nextTokenPromiseId++;
-    const promise = new Promise((resolve, reject) => {
-      pendingTokenPromises[currentPromiseId] = { resolve, reject };
-    });
-    if (window.parent && window.parent !== window) {
-      window.parent.postMessage({
-        type: 'REQUEST_NEW_FIREBASE_TOKEN',
-        promiseId: currentPromiseId
-      }, '*');
-    } else {
-      pendingTokenPromises[currentPromiseId].reject(new Error('No parent window to request token from.'));
-      delete pendingTokenPromises[currentPromiseId];
-    }
-    return promise;
-  };
-})();</script><script data-bard-client-injected="true">
-let realOriginalGetUserMedia = null;
-if (navigator.mediaDevices && navigator.mediaDevices.getUserMedia) {
-  realOriginalGetUserMedia = navigator.mediaDevices.getUserMedia.bind(navigator.mediaDevices);
-}
-
-(function() {
-  if (navigator.mediaDevices && navigator.mediaDevices.__proto__) {
-    try {
-      Object.defineProperty(navigator.mediaDevices.__proto__, 'getUserMedia', {
-        get: function() {
-          return undefined; // Or throw an error
-        },
-        configurable: false
-      });
-    } catch (error) {
-      console.error("Error defining prototype getter:", error);
-    }
-  }
-})();
-
-(function() {
-  const pendingMediaResolvers = {};
-  let nextMediaPromiseId = 0;
-
-  function requestMediaPermissions(constraints) {
-    const mediaPromiseId = nextMediaPromiseId++;
-    const promise = new Promise((resolve, reject) => {
-      pendingMediaResolvers[mediaPromiseId] = (granted) => {
-        delete pendingMediaResolvers[mediaPromiseId];
-        resolve(granted);
-      };
-    });
-
-    window.parent.postMessage({
-      type: 'requestMediaPermission',
-      constraints: constraints,
-      promiseId: mediaPromiseId,
-    }, '*');
-
-    return promise;
-  }
-
-  let originalGetUserMedia = realOriginalGetUserMedia;
-
-  function interceptGetUserMedia() {
-    if (navigator.mediaDevices) {
-      Object.defineProperty(navigator.mediaDevices, 'getUserMedia', {
-        value: function(constraints) {
-          return requestMediaPermissions(constraints).then((granted) => {
-            if (granted) {
-              if (originalGetUserMedia) {
-                return originalGetUserMedia(constraints);
-              } else {
-                throw new Error("Original getUserMedia not available.");
-              }
-            } else {
-              throw new DOMException('Permission denied', 'NotAllowedError');
-            }
-          });
-        },
-        writable: false,
-        configurable: false
-      });
-    }
-  }
-
-  interceptGetUserMedia();
-
-  const observer = new MutationObserver(function(mutationsList, observer) {
-    for (const mutation of mutationsList) {
-      if (mutation.type === 'reconfigured' && mutation.name === 'getUserMedia' && mutation.object === navigator.mediaDevices) {
-        interceptGetUserMedia();
-      } else if (mutation.type === 'attributes' && mutation.attributeName === 'getUserMedia' && mutation.target === navigator.mediaDevices) {
-        interceptGetUserMedia();
-      } else if (mutation.type === 'childList' && mutation.addedNodes) {
-        mutation.addedNodes.forEach(node => {
-          if (node === navigator.mediaDevices) {
-            interceptGetUserMedia();
-          }
-        });
-      }
-    }
-  });
-
-  function interceptSpeechRecognition() {
-    if (!window.SpeechRecognition && !window.webkitSpeechRecognition) {
-      return;
-    }
-
-    const OriginalSpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-
-    const SpeechRecognitionWrapper = function(...args) {
-      const recognizer = new OriginalSpeechRecognition(...args);
-      const originalStart = recognizer.start.bind(recognizer);
-
-      recognizer.start = function() {
-        requestMediaPermissions({ audio: true }).then(granted => {
-          if (granted) {
-            originalStart();
-          } else {
-            const errorEvent = new SpeechRecognitionErrorEvent('error');
-            errorEvent.error = 'not-allowed'; // This is the standard error for permission denial.
-            recognizer.dispatchEvent(errorEvent);
-          }
-        });
-      };
-
-      return recognizer;
-    };
-
-    SpeechRecognitionWrapper.prototype = OriginalSpeechRecognition.prototype;
-    SpeechRecognitionWrapper.prototype.constructor = SpeechRecognitionWrapper;
-
-    if (window.SpeechRecognition) {
-      window.SpeechRecognition = SpeechRecognitionWrapper;
-    }
-    if (window.webkitSpeechRecognition) {
-      window.webkitSpeechRecognition = SpeechRecognitionWrapper;
-    }
-  }
-
-  interceptSpeechRecognition();
-
-  window.addEventListener('message', function(event) {
-    if (event.data) {
-      if (event.data.type === 'resolveMediaPermission') {
-        const { promiseId, granted } = event.data;
-        if (pendingMediaResolvers[promiseId]) {
-          pendingMediaResolvers[promiseId](granted);
-        }
-      }
-    }
-  });
-
-})();</script><script ws-interception-config="{&quot;parentOrigin&quot;:&quot;https://gemini.google.com&quot;,&quot;proxiedDomains&quot;:[]}" data-bard-client-injected="true">(function(){'use strict';var u=typeof Object.defineProperties=="function"?Object.defineProperty:function(b,d,e){if(b==Array.prototype||b==Object.prototype)return b;b[d]=e.value;return b};function v(b){b=["object"==typeof globalThis&&globalThis,b,"object"==typeof window&&window,"object"==typeof self&&self,"object"==typeof global&&global];for(var d=0;d<b.length;++d){var e=b[d];if(e&&e.Math==Math)return e}throw Error("Cannot find global object");}var w=v(this);
-function y(b,d){if(d)a:{var e=w;b=b.split(".");for(var h=0;h<b.length-1;h++){var k=b[h];if(!(k in e))break a;e=e[k]}b=b[b.length-1];h=e[b];d=d(h);d!=h&&d!=null&&u(e,b,{configurable:!0,writable:!0,value:d})}}function z(b){function d(h){return b.next(h)}function e(h){return b.throw(h)}return new Promise(function(h,k){function m(n){n.done?h(n.value):Promise.resolve(n.value).then(d,e).then(m,k)}m(b.next())})}y("globalThis",function(b){return b||w});/*
-
- Copyright The Closure Library Authors.
- SPDX-License-Identifier: Apache-2.0
-*/
-function A(b,d){function e(){}e.prototype=d.prototype;b.j=d.prototype;b.prototype=new e;b.prototype.constructor=b;b.h=function(h,k,m){for(var n=Array(arguments.length-2),p=2;p<arguments.length;p++)n[p-2]=arguments[p];return d.prototype[k].apply(h,n)}};function B(b,d,e="*"){function h(a){if(typeof a==="string")return F.encode(a).buffer;if(a instanceof ArrayBuffer)return a.slice(0);if(ArrayBuffer.isView(a))return a.buffer.slice(a.byteOffset,a.byteOffset+a.byteLength);throw Error("Invalid data type");}function k(a){a=h(a);var f={type:"send",data:new Uint8Array(a)},g;(g=r)==null||g.postMessage(f,[a])}function m(){if(!r)throw Error("Data port not captured yet.");r.onmessage=a=>{if(a.data.type==="message"){a=new MessageEvent("message",{data:G.decode(a.data.data)});
-let f;(f=c.onmessage)==null||f.call(c,a);c.dispatchEvent(a)}}}function n(){if(!t)throw Error("Control port not captured yet.");t.onmessage=a=>{switch(a.data.type){case "open":l=1;var f=new Event("open"),g;(g=c.onopen)==null||g.call(c,f);c.dispatchEvent(f);q.forEach(H=>{k(H)});q=[];break;case "close":g=a.data;l=3;g=new CloseEvent("close",{code:g.code,reason:g.reason,wasClean:g.wasClean});(f=c.onclose)==null||f.call(c,g);c.dispatchEvent(g);break;case "error":l=3;f=new Event("error");let x;(x=c.onerror)==
-null||x.call(c,f);c.dispatchEvent(f)}}}function p(a){return z(function*(){var f=new MessageChannel;t=f.port1;var g=new MessageChannel;r=g.port1;n();m();window.parent.postMessage({type:"websocket_open",portOrdering:["control","data"],url:b,protocols:a||[],connectionId:I},e,[f.port2,g.port2])}())}var c=Reflect.construct(EventTarget,[],new.target);c.CONNECTING=0;c.OPEN=1;c.CLOSING=2;c.CLOSED=3;c.url=b;c.binaryType="arraybuffer";c.protocol="";c.i="";var l=0,t=null,r=null,q=[],F=new TextEncoder,G=new TextDecoder;
-c.onopen=null;c.onmessage=null;c.onclose=null;c.onerror=null;Object.defineProperty(c,"readyState",{get:()=>l,enumerable:!0,configurable:!0});Object.defineProperty(c,"bufferedAmount",{get:()=>{var a=0;q.forEach(f=>{a+=typeof f==="string"?f.length:f.byteLength});return a},enumerable:!0,configurable:!0});var I=function(){var a;return((a=globalThis.crypto)==null?0:a.randomUUID)?globalThis.crypto.randomUUID():"xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g,f=>{var g=Math.random()*16|0;return(f===
-"x"?g:g&3|8).toString(16)})}();c.send=a=>{if(l===1)a instanceof Blob?a.arrayBuffer().then(f=>{k(f)}):k(a);else if(l===0)if(typeof a==="string")q.push(a);else if(a instanceof ArrayBuffer||ArrayBuffer.isView(a))q.push(h(a));else throw Error("Sending Blob is not supported before the connection is open.");else console.debug("WebSocket send called in CLOSING or CLOSED state; ignored.")};c.close=(a=1E3,f="")=>{if(l!==2&&l!==3){l=2;a={type:"close",code:a,reason:f,wasClean:a===1E3};var g;(g=t)==null||g.postMessage(a)}};
-Promise.resolve().then(()=>p(d));return c}A(B,EventTarget);var C=document.currentScript,D=C==null?void 0:C.getAttribute("ws-interception-config");if(!D)throw Error("WebSocket Interceptor: Missing ws-interception-config attribute in the script tag.");var E=JSON.parse(D);if(!E.parentOrigin||typeof E.parentOrigin!=="string")throw Error("WebSocket Interceptor: Invalid parentOrigin in ws-interception-config");
-(function(b){var d=Object.getOwnPropertyDescriptor(window,"WebSocket");if(!d||d.writable||d.configurable)d=Object.assign(function(e,h){try{let k=(new URL(e)).hostname;if(b.proxiedDomains.some(m=>k===m||k.endsWith(`.${m}`)))return new B(e,h,b.parentOrigin)}catch(k){throw window.parent.postMessage({type:"websocket_blocked",url:e,reason:"blocked_invalid_url"},b.parentOrigin),new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");}window.parent.postMessage({type:"websocket_blocked",
-url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMException(`WebSocket connection to '${e}' is not allowed in Canvas.`,"SecurityError");},{CONNECTING:0,OPEN:1,CLOSING:2,CLOSED:3}),Object.defineProperty(window,"WebSocket",{value:d,writable:!1,configurable:!1})})({proxiedDomains:E.proxiedDomains||[],parentOrigin:E.parentOrigin});}).call(this);
-</script><script data-bard-client-injected="true">((function(modelInformation) {
-  const originalFetch = window.fetch;
-  // TODO: b/421908508 - Move these out of the script and match all generative AI model calls.
-  let googleLlmBaseApiUrls = [
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':streamGenerateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.textModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predict',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageModelName + ':predictLongRunning',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageEditModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.imageTransformModelName + ':generateContent',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predict',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.videoModelName + ':predictLongRunning',
-    'https://generativelanguage.googleapis.com/v1beta/models/' + modelInformation.ttsModelName + ':generateContent',
-  ];
-  modelInformation.deprecatedTextModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-    );
-  });
-  modelInformation.deprecatedImageModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predict',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':predictLongRunning',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-    );
-  });
-  modelInformation.deprecatedGenerateImageModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-    );
-  });
-  modelInformation.deprecatedImageTransformModelNames.forEach((modelName) => {
-    googleLlmBaseApiUrls.push(
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':generateContent',
-      'https://generativelanguage.googleapis.com/v1beta/models/' + modelName + ':streamGenerateContent',
-    );
-  });
-
-  const pendingFetchResolvers = {};
-  let nextPromiseId = 0;
-
-  function handleStringInput(input, optionsArgument) {
-    const actualUrl = input;
-    const fetchCallArgs = [actualUrl, optionsArgument];
-    const effectiveOptions = optionsArgument || {};
-    const bodyForApiKeyCheck = effectiveOptions.body;
-    const bodyForPostMessage = effectiveOptions.body;
-    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
-  }
-
-  function handleRequestInput(input, optionsArgument) {
-    const actualUrl = input.url;
-    const fetchCallArgs = [input, optionsArgument];
-    const effectiveOptions = { method: input.method, headers: new Headers(input.headers) };
-    let bodyForApiKeyCheck;
-    let bodyForPostMessage;
-
-    if (optionsArgument) {
-      if (optionsArgument.method) effectiveOptions.method = optionsArgument.method;
-      if (optionsArgument.headers) effectiveOptions.headers = new Headers(optionsArgument.headers);
-      if ('body' in optionsArgument) {
-        bodyForApiKeyCheck = optionsArgument.body;
-        bodyForPostMessage = optionsArgument.body;
-      } else {
-        bodyForApiKeyCheck = undefined;
-        bodyForPostMessage = input.body;
-      }
-    } else {
-      bodyForApiKeyCheck = undefined;
-      bodyForPostMessage = input.body;
-    }
-    return { actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage };
-  }
-
-  window.fetch = function(input, optionsArgument) {
-    let actualUrl;
-    let fetchCallArgs;
-    let effectiveOptions = {};
-    let bodyForApiKeyCheck;
-    let bodyForPostMessage;
-
-    if (typeof input === 'string') {
-      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleStringInput(input, optionsArgument));
-    } else if (input instanceof Request) {
-      ({actualUrl, fetchCallArgs, effectiveOptions, bodyForApiKeyCheck, bodyForPostMessage} = handleRequestInput(input, optionsArgument));
-    } else {
-      return originalFetch.apply(window, [input, optionsArgument]);
-    }
-
-    effectiveOptions.method = effectiveOptions.method || 'GET';
-    if (!effectiveOptions.headers) {
-      effectiveOptions.headers = new Headers();
-    }
-
-
-    if (typeof actualUrl === 'string' && googleLlmBaseApiUrls.some((url) => actualUrl.startsWith(url))) {
-      let apiKeyIsNull = true;
-
-      const regex = new RegExp("models/([^:]+)");
-      const modelNameMatch = actualUrl.match(regex);
-      const modelName = modelNameMatch ? modelNameMatch[1] : 'unspecified';
-
-
-      try {
-        const urlObject = new URL(actualUrl);  // Use URL object for robust parsing
-        const apiKeyParam = urlObject.searchParams.get('key');
-        if (apiKeyParam) {
-          apiKeyIsNull = false;
-        }
-      } catch (e) {
-        // Continue checks even if URL parsing fails
-      }
-
-      if (apiKeyIsNull && effectiveOptions.headers) {
-        const h = new Headers(effectiveOptions.headers);
-        const apiKeyHeaderValue = h.get('X-API-Key') || h.get('x-api-key');
-        if (apiKeyHeaderValue) {
-          apiKeyIsNull = false;
-          return originalFetch.apply(window, fetchCallArgs);
-        }
-      }
-
-      if (apiKeyIsNull && effectiveOptions.method && ['POST', 'PUT', 'PATCH'].includes(effectiveOptions.method.toUpperCase()) && typeof bodyForApiKeyCheck === 'string') {
-        try {
-          const bodyData = JSON.parse(bodyForApiKeyCheck);
-          if (bodyData && bodyData.apiKey) {
-            apiKeyIsNull = false;
-            return originalFetch.apply(window, fetchCallArgs);
-          }
-        } catch (e) {
-          // Ignore JSON parsing errors
-        }
-      }
-
-      if(apiKeyIsNull) {
-        const promiseId = nextPromiseId++;
-        const promise = new Promise((resolve) => {
-          pendingFetchResolvers[promiseId] = (resolvedResponse) => {
-            delete pendingFetchResolvers[promiseId];
-            resolve(resolvedResponse);
-          };
-        });
-
-        let serializedBodyForPostMessage;
-        if (typeof bodyForPostMessage === 'string' || bodyForPostMessage == null) {
-            serializedBodyForPostMessage = bodyForPostMessage;
-        } else if (bodyForPostMessage instanceof ReadableStream) {
-            serializedBodyForPostMessage = null;
-        } else {
-            try {
-                serializedBodyForPostMessage = JSON.stringify(bodyForPostMessage);
-            } catch (e) {
-                serializedBodyForPostMessage = null;
-            }
-        }
-
-        const messageOptions = {
-            method: effectiveOptions.method,
-            headers: Object.fromEntries(new Headers(effectiveOptions.headers).entries()),
-            body: serializedBodyForPostMessage
-        };
-
-        window.parent.postMessage({
-          type: 'requestFetch',
-          url: actualUrl,
-          modelName: modelName,
-          options: messageOptions,
-          promiseId: promiseId,
-        }, '*');
-
-        return promise;
-      }
-      return originalFetch.apply(window, fetchCallArgs);
-    }
-    return originalFetch.apply(window, fetchCallArgs);
-  };
-
-  window.addEventListener('message', function(event) {
-    if (event.data && event.data.type === 'resolveFetch') {
-      const { promiseId, response } = event.data;
-      if (pendingFetchResolvers[promiseId]) {
-        try {
-          const reconstructedResponse = new Response(response.body, {
-            status: response.status,
-            statusText: response.statusText,
-            headers: new Headers(response.headers),
-          });
-          pendingFetchResolvers[promiseId](reconstructedResponse);
-        } catch (error) {
-          pendingFetchResolvers[promiseId](new Response(null, { status: 500, statusText: "Interceptor Response Reconstruction Error" }));
-        }
-      }
-    }
-  });
-
-}))({"textModelName":"gemini-3-flash-preview","imageModelName":"imagen-4.0-generate-001","imageEditModelName":"gemini-3.1-flash-image","imageTransformModelName":"gemini-3-pro-image","videoModelName":"veo-2.0-generate-001","ttsModelName":"gemini-2.5-flash-preview-tts","deprecatedTextModelNames":["gemini-2.0-flash","gemini-2.5-flash","gemini-2.5-flash-preview-04-17","gemini-2.5-flash-preview-05-20","gemini-2.5-flash-preview-09-2025"],"deprecatedImageModelNames":["imagen-3.0-generate-001","imagen-3.0-generate-002"],"deprecatedGenerateImageModelNames":["gemini-2.5-flash-image-preview","gemini-2.5-flash-image","gemini-3.1-flash-image-preview"],"deprecatedImageTransformModelNames":["gemini-3-pro-image-preview-11-2025"]})</script><script data-bard-client-injected="true">(function(){'use strict';function a(){window.parent.postMessage({type:"interaction"},"*")}window.addEventListener("click",a,{capture:!0,passive:!0});window.addEventListener("touchstart",a,{capture:!0,passive:!0});window.addEventListener("keydown",a,{capture:!0,passive:!0});}).call(this);
-</script><script data-bard-client-injected="true">(function() {
-  const originalConsoleLog = console.log;
-  const originalConsoleError = console.error;
-
-    /**
-   * Normalizes an error event or a promise rejection reason into a structured error object.
-   * @param {*} errorEventOrReason The error object or reason.
-   * @return {object} Structured error data { message, name, stack }.
-   */
-  function getErrorObject(errorEventOrReason) {
-    if (errorEventOrReason instanceof Error) {
-      return {
-        message: errorEventOrReason.message,
-        name: errorEventOrReason.name,
-        stack: errorEventOrReason.stack,
-      };
-    }
-    // Fallback for non-Error objects.
-    try {
-      return {
-        message: JSON.stringify(errorEventOrReason),
-        name: 'UnknownErrorType',
-        stack: null,
-      };
-    } catch (e) {
-      return {
-        message: String(errorEventOrReason),
-        name: 'UnknownErrorTypeNonStringifiable',
-        stack: null,
-      };
-    }
-  }
-
-  /**
-   * Converts an array of arguments (from log/error) into a single string.
-   * Handles Error objects specially to include their message and stack.
-   * @param {Array<*>} args - Arguments passed to console methods.
-   * @return {string} A string representation of the arguments.
-   */
-  function stringifyArgs(args) {
-    return args
-      .map((arg) => {
-        if (arg instanceof Error) {
-          const {message, stack} = arg;
-          return `Error: ${message}${stack ? ('\nStack: ' + stack) : ''}`;
-        }
-        if (typeof arg === 'object' && arg !== null) {
-          try {
-            return JSON.stringify(arg);
-          } catch (error) {
-            return '[Circular Object]';
-          }
-        } else {
-          return String(arg);
-        }
-      })
-      .join(' ');
-  }
-
-  console.log = function(...args) {
-    const logString = stringifyArgs(args);
-    window.parent.postMessage({ type: 'log', message: logString }, '*');
-    originalConsoleLog.apply(console, args);
-  };
-
-  console.error = function(...args) {
-    let errorData;
-    if (args.length > 0 && args[0] instanceof Error) {
-      const err = args[0];
-      // If the first arg is an Error, capture its details.
-      errorData = {
-        type: 'error',
-        source: 'CONSOLE_ERROR',
-        ...getErrorObject(err),
-        rawArgsString: stringifyArgs(args.slice(1)),
-        timestamp: new Date().toISOString(),
-      };
-    } else {
-      // If not an Error object, treat all args as a general error message.
-      errorData = {
-        type: 'error',
-        source: 'CONSOLE_ERROR',
-        message: stringifyArgs(args),
-        name: 'ConsoleLoggedError',
-        stack: null,
-        timestamp: new Date().toISOString(),
-      };
-    }
-    window.parent.postMessage(errorData, '*');
-    originalConsoleError.apply(console, args);
-  };
-
-  // Listen for global unhandled synchronous errors.
-  window.addEventListener('error', function(event) {
-    const errorDetails = event.error ? getErrorObject(event.error) : {
-      message: event.message,
-      name: 'GlobalError',
-      stack: null,
-      filename: event.filename,
-      lineno: event.lineno,
-      colno: event.colno,
-    };
-
-    window.parent.postMessage({
-      type: 'error',
-      source: 'global',
-      ...errorDetails,
-      message: errorDetails.message || event.message,
-      timestamp: new Date().toISOString(),
-    }, '*');
-  });
-
-  // Listen for unhandled promise rejections (asynchronous errors).
-  window.addEventListener('unhandledrejection', function(event) {
-    const errorDetails = getErrorObject(event.reason);
-
-    window.parent.postMessage({
-      type: 'error',
-      source: 'unhandledrejection',
-      ...errorDetails,
-      message: errorDetails.message || 'Unhandled Promise Rejection',
-      timestamp: new Date().toISOString(),
-    }, '*');
-  });
-
-})();</script>
+<html lang="zh-CN">
+<head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>汽车卸车机 - 司机看图操作指南</title>
+    <title>自动化汽车卸车机操作流程 - 河南容实重型装备有限公司</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700;900&display=swap');
         
@@ -670,8 +68,20 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             transform: translateY(4px);
             box-shadow: 0 1px 0 rgba(0,0,0,0.45);
         }
+
+        /* 打印与导出PDF自适应样式 */
+        @media print {
+            body {
+                background-color: #0f172a !important;
+                -webkit-print-color-adjust: exact !important;
+                print-color-adjust: exact !important;
+            }
+            .no-print {
+                display: none !important;
+            }
+        }
     </style>
-<style>*, ::before, ::after{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }::backdrop{--tw-border-spacing-x:0;--tw-border-spacing-y:0;--tw-translate-x:0;--tw-translate-y:0;--tw-rotate:0;--tw-skew-x:0;--tw-skew-y:0;--tw-scale-x:1;--tw-scale-y:1;--tw-pan-x: ;--tw-pan-y: ;--tw-pinch-zoom: ;--tw-scroll-snap-strictness:proximity;--tw-gradient-from-position: ;--tw-gradient-via-position: ;--tw-gradient-to-position: ;--tw-ordinal: ;--tw-slashed-zero: ;--tw-numeric-figure: ;--tw-numeric-spacing: ;--tw-numeric-fraction: ;--tw-ring-inset: ;--tw-ring-offset-width:0px;--tw-ring-offset-color:#fff;--tw-ring-color:rgb(59 130 246 / 0.5);--tw-ring-offset-shadow:0 0 #0000;--tw-ring-shadow:0 0 #0000;--tw-shadow:0 0 #0000;--tw-shadow-colored:0 0 #0000;--tw-blur: ;--tw-brightness: ;--tw-contrast: ;--tw-grayscale: ;--tw-hue-rotate: ;--tw-invert: ;--tw-saturate: ;--tw-sepia: ;--tw-drop-shadow: ;--tw-backdrop-blur: ;--tw-backdrop-brightness: ;--tw-backdrop-contrast: ;--tw-backdrop-grayscale: ;--tw-backdrop-hue-rotate: ;--tw-backdrop-invert: ;--tw-backdrop-opacity: ;--tw-backdrop-saturate: ;--tw-backdrop-sepia: ;--tw-contain-size: ;--tw-contain-layout: ;--tw-contain-paint: ;--tw-contain-style: }/* ! tailwindcss v3.4.17 | MIT License | https://tailwindcss.com */*,::after,::before{box-sizing:border-box;border-width:0;border-style:solid;border-color:#e5e7eb}::after,::before{--tw-content:''}:host,html{line-height:1.5;-webkit-text-size-adjust:100%;-moz-tab-size:4;tab-size:4;font-family:ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";font-feature-settings:normal;font-variation-settings:normal;-webkit-tap-highlight-color:transparent}body{margin:0;line-height:inherit}hr{height:0;color:inherit;border-top-width:1px}abbr:where([title]){-webkit-text-decoration:underline dotted;text-decoration:underline dotted}h1,h2,h3,h4,h5,h6{font-size:inherit;font-weight:inherit}a{color:inherit;text-decoration:inherit}b,strong{font-weight:bolder}code,kbd,pre,samp{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;font-feature-settings:normal;font-variation-settings:normal;font-size:1em}small{font-size:80%}sub,sup{font-size:75%;line-height:0;position:relative;vertical-align:baseline}sub{bottom:-.25em}sup{top:-.5em}table{text-indent:0;border-color:inherit;border-collapse:collapse}button,input,optgroup,select,textarea{font-family:inherit;font-feature-settings:inherit;font-variation-settings:inherit;font-size:100%;font-weight:inherit;line-height:inherit;letter-spacing:inherit;color:inherit;margin:0;padding:0}button,select{text-transform:none}button,input:where([type=button]),input:where([type=reset]),input:where([type=submit]){-webkit-appearance:button;background-color:transparent;background-image:none}:-moz-focusring{outline:auto}:-moz-ui-invalid{box-shadow:none}progress{vertical-align:baseline}::-webkit-inner-spin-button,::-webkit-outer-spin-button{height:auto}[type=search]{-webkit-appearance:textfield;outline-offset:-2px}::-webkit-search-decoration{-webkit-appearance:none}::-webkit-file-upload-button{-webkit-appearance:button;font:inherit}summary{display:list-item}blockquote,dd,dl,figure,h1,h2,h3,h4,h5,h6,hr,p,pre{margin:0}fieldset{margin:0;padding:0}legend{padding:0}menu,ol,ul{list-style:none;margin:0;padding:0}dialog{padding:0}textarea{resize:vertical}input::placeholder,textarea::placeholder{opacity:1;color:#9ca3af}[role=button],button{cursor:pointer}:disabled{cursor:default}audio,canvas,embed,iframe,img,object,svg,video{display:block;vertical-align:middle}img,video{max-width:100%;height:auto}[hidden]:where(:not([hidden=until-found])){display:none}.fixed{position:fixed}.relative{position:relative}.sticky{position:sticky}.inset-0{inset:0px}.bottom-5{bottom:1.25rem}.left-1\/2{left:50%}.right-5{right:1.25rem}.top-0{top:0px}.top-20{top:5rem}.z-40{z-index:40}.z-50{z-index:50}.mx-auto{margin-left:auto;margin-right:auto}.my-auto{margin-top:auto;margin-bottom:auto}.mb-1{margin-bottom:0.25rem}.mb-2{margin-bottom:0.5rem}.mb-3{margin-bottom:0.75rem}.mb-5{margin-bottom:1.25rem}.mb-6{margin-bottom:1.5rem}.ml-2{margin-left:0.5rem}.mt-0\.5{margin-top:0.125rem}.mt-2{margin-top:0.5rem}.mt-3{margin-top:0.75rem}.mt-4{margin-top:1rem}.inline-block{display:inline-block}.flex{display:flex}.grid{display:grid}.hidden{display:none}.h-10{height:2.5rem}.h-3{height:0.75rem}.h-6{height:1.5rem}.h-7{height:1.75rem}.h-\[200px\]{height:200px}.h-full{height:100%}.h-11{height:2.75rem}.h-auto{height:auto}.max-h-\[82vh\]{max-height:82vh}.min-h-\[290px\]{min-height:290px}.min-h-screen{min-height:100vh}.w-10{width:2.5rem}.w-6{width:1.5rem}.w-7{width:1.75rem}.w-\[200px\]{width:200px}.w-full{width:100%}.w-11{width:2.75rem}.max-w-4xl{max-width:56rem}.max-w-5xl{max-width:64rem}.max-w-\[310px\]{max-width:310px}.max-w-\[500px\]{max-width:500px}.flex-1{flex:1 1 0%}.shrink-0{flex-shrink:0}.-translate-x-1\/2{--tw-translate-x:-50%;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}.scale-105{--tw-scale-x:1.05;--tw-scale-y:1.05;transform:translate(var(--tw-translate-x), var(--tw-translate-y)) rotate(var(--tw-rotate)) skewX(var(--tw-skew-x)) skewY(var(--tw-skew-y)) scaleX(var(--tw-scale-x)) scaleY(var(--tw-scale-y))}@keyframes bounce{0%, 100%{transform:translateY(-25%);animation-timing-function:cubic-bezier(0.8,0,1,1)}50%{transform:none;animation-timing-function:cubic-bezier(0,0,0.2,1)}}.animate-bounce{animation:bounce 1s infinite}.grid-cols-1{grid-template-columns:repeat(1, minmax(0, 1fr))}.grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}.items-start{align-items:flex-start}.items-center{align-items:center}.justify-center{justify-content:center}.justify-between{justify-content:space-between}.gap-1{gap:0.25rem}.gap-1\.5{gap:0.375rem}.gap-2{gap:0.5rem}.gap-2\.5{gap:0.625rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}.gap-6{gap:1.5rem}.gap-3\.5{gap:0.875rem}.gap-5{gap:1.25rem}.space-y-1 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.25rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.25rem * var(--tw-space-y-reverse))}.space-y-2 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.5rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.5rem * var(--tw-space-y-reverse))}.space-y-2\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.625rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.625rem * var(--tw-space-y-reverse))}.space-y-3 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.75rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.75rem * var(--tw-space-y-reverse))}.space-y-4 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(1rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(1rem * var(--tw-space-y-reverse))}.space-y-3\.5 > :not([hidden]) ~ :not([hidden]){--tw-space-y-reverse:0;margin-top:calc(0.875rem * calc(1 - var(--tw-space-y-reverse)));margin-bottom:calc(0.875rem * var(--tw-space-y-reverse))}.self-start{align-self:flex-start}.overflow-hidden{overflow:hidden}.overflow-x-auto{overflow-x:auto}.overflow-y-auto{overflow-y:auto}.rounded{border-radius:0.25rem}.rounded-2xl{border-radius:1rem}.rounded-3xl{border-radius:1.5rem}.rounded-full{border-radius:9999px}.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.rounded-r-xl{border-top-right-radius:0.75rem;border-bottom-right-radius:0.75rem}.border{border-width:1px}.border-2{border-width:2px}.border-4{border-width:4px}.border-b{border-bottom-width:1px}.border-t{border-top-width:1px}.border-l-4{border-left-width:4px}.border-amber-500{--tw-border-opacity:1;border-color:rgb(245 158 11 / var(--tw-border-opacity, 1))}.border-amber-500\/40{border-color:rgb(245 158 11 / 0.4)}.border-amber-500\/50{border-color:rgb(245 158 11 / 0.5)}.border-rose-500{--tw-border-opacity:1;border-color:rgb(244 63 94 / var(--tw-border-opacity, 1))}.border-slate-700{--tw-border-opacity:1;border-color:rgb(51 65 85 / var(--tw-border-opacity, 1))}.border-slate-800{--tw-border-opacity:1;border-color:rgb(30 41 59 / var(--tw-border-opacity, 1))}.border-white{--tw-border-opacity:1;border-color:rgb(255 255 255 / var(--tw-border-opacity, 1))}.border-amber-400{--tw-border-opacity:1;border-color:rgb(251 191 36 / var(--tw-border-opacity, 1))}.border-emerald-500{--tw-border-opacity:1;border-color:rgb(16 185 129 / var(--tw-border-opacity, 1))}.border-rose-500\/60{border-color:rgb(244 63 94 / 0.6)}.border-slate-600{--tw-border-opacity:1;border-color:rgb(71 85 105 / var(--tw-border-opacity, 1))}.bg-amber-400{--tw-bg-opacity:1;background-color:rgb(251 191 36 / var(--tw-bg-opacity, 1))}.bg-amber-500{--tw-bg-opacity:1;background-color:rgb(245 158 11 / var(--tw-bg-opacity, 1))}.bg-amber-500\/15{background-color:rgb(245 158 11 / 0.15)}.bg-emerald-500{--tw-bg-opacity:1;background-color:rgb(16 185 129 / var(--tw-bg-opacity, 1))}.bg-rose-950\/80{background-color:rgb(76 5 25 / 0.8)}.bg-sky-400{--tw-bg-opacity:1;background-color:rgb(56 189 248 / var(--tw-bg-opacity, 1))}.bg-slate-700{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.bg-slate-800{--tw-bg-opacity:1;background-color:rgb(30 41 59 / var(--tw-bg-opacity, 1))}.bg-slate-800\/80{background-color:rgb(30 41 59 / 0.8)}.bg-slate-800\/90{background-color:rgb(30 41 59 / 0.9)}.bg-slate-900{--tw-bg-opacity:1;background-color:rgb(15 23 42 / var(--tw-bg-opacity, 1))}.bg-slate-900\/90{background-color:rgb(15 23 42 / 0.9)}.bg-slate-900\/95{background-color:rgb(15 23 42 / 0.95)}.bg-slate-950{--tw-bg-opacity:1;background-color:rgb(2 6 23 / var(--tw-bg-opacity, 1))}.bg-slate-950\/85{background-color:rgb(2 6 23 / 0.85)}.bg-white{--tw-bg-opacity:1;background-color:rgb(255 255 255 / var(--tw-bg-opacity, 1))}.bg-amber-500\/20{background-color:rgb(245 158 11 / 0.2)}.bg-emerald-950\/80{background-color:rgb(2 44 34 / 0.8)}.bg-rose-950\/60{background-color:rgb(76 5 25 / 0.6)}.bg-slate-950\/70{background-color:rgb(2 6 23 / 0.7)}.bg-gradient-to-b{background-image:linear-gradient(to bottom, var(--tw-gradient-stops))}.bg-gradient-to-r{background-image:linear-gradient(to right, var(--tw-gradient-stops))}.from-amber-400{--tw-gradient-from:#fbbf24 var(--tw-gradient-from-position);--tw-gradient-to:rgb(251 191 36 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.from-amber-500\/20{--tw-gradient-from:rgb(245 158 11 / 0.2) var(--tw-gradient-from-position);--tw-gradient-to:rgb(245 158 11 / 0) var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), var(--tw-gradient-to)}.via-amber-500{--tw-gradient-to:rgb(245 158 11 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), #f59e0b var(--tw-gradient-via-position), var(--tw-gradient-to)}.via-amber-500\/10{--tw-gradient-to:rgb(245 158 11 / 0)  var(--tw-gradient-to-position);--tw-gradient-stops:var(--tw-gradient-from), rgb(245 158 11 / 0.1) var(--tw-gradient-via-position), var(--tw-gradient-to)}.to-amber-600{--tw-gradient-to:#d97706 var(--tw-gradient-to-position)}.to-slate-800{--tw-gradient-to:#1e293b var(--tw-gradient-to-position)}.p-1\.5{padding:0.375rem}.p-2\.5{padding:0.625rem}.p-3{padding:0.75rem}.p-4{padding:1rem}.p-5{padding:1.25rem}.p-3\.5{padding:0.875rem}.px-1\.5{padding-left:0.375rem;padding-right:0.375rem}.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}.px-3\.5{padding-left:0.875rem;padding-right:0.875rem}.px-4{padding-left:1rem;padding-right:1rem}.px-5{padding-left:1.25rem;padding-right:1.25rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}.px-8{padding-left:2rem;padding-right:2rem}.py-0\.5{padding-top:0.125rem;padding-bottom:0.125rem}.py-1{padding-top:0.25rem;padding-bottom:0.25rem}.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2{padding-top:0.5rem;padding-bottom:0.5rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}.py-4{padding-top:1rem;padding-bottom:1rem}.px-2{padding-left:0.5rem;padding-right:0.5rem}.pb-1{padding-bottom:0.25rem}.pb-16{padding-bottom:4rem}.pt-3{padding-top:0.75rem}.pt-5{padding-top:1.25rem}.text-left{text-align:left}.text-center{text-align:center}.font-mono{font-family:ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace}.text-2xl{font-size:1.5rem;line-height:2rem}.text-base{font-size:1rem;line-height:1.5rem}.text-lg{font-size:1.125rem;line-height:1.75rem}.text-sm{font-size:0.875rem;line-height:1.25rem}.text-xl{font-size:1.25rem;line-height:1.75rem}.text-xs{font-size:0.75rem;line-height:1rem}.font-black{font-weight:900}.font-bold{font-weight:700}.uppercase{text-transform:uppercase}.leading-relaxed{line-height:1.625}.leading-snug{line-height:1.375}.leading-tight{line-height:1.25}.tracking-tight{letter-spacing:-0.025em}.tracking-wider{letter-spacing:0.05em}.text-amber-300{--tw-text-opacity:1;color:rgb(252 211 77 / var(--tw-text-opacity, 1))}.text-amber-400{--tw-text-opacity:1;color:rgb(251 191 36 / var(--tw-text-opacity, 1))}.text-emerald-400{--tw-text-opacity:1;color:rgb(52 211 153 / var(--tw-text-opacity, 1))}.text-purple-400{--tw-text-opacity:1;color:rgb(192 132 252 / var(--tw-text-opacity, 1))}.text-rose-200{--tw-text-opacity:1;color:rgb(254 205 211 / var(--tw-text-opacity, 1))}.text-rose-400{--tw-text-opacity:1;color:rgb(251 113 133 / var(--tw-text-opacity, 1))}.text-sky-300{--tw-text-opacity:1;color:rgb(125 211 252 / var(--tw-text-opacity, 1))}.text-sky-400{--tw-text-opacity:1;color:rgb(56 189 248 / var(--tw-text-opacity, 1))}.text-slate-200{--tw-text-opacity:1;color:rgb(226 232 240 / var(--tw-text-opacity, 1))}.text-slate-300{--tw-text-opacity:1;color:rgb(203 213 225 / var(--tw-text-opacity, 1))}.text-slate-400{--tw-text-opacity:1;color:rgb(148 163 184 / var(--tw-text-opacity, 1))}.text-slate-900{--tw-text-opacity:1;color:rgb(15 23 42 / var(--tw-text-opacity, 1))}.text-slate-950{--tw-text-opacity:1;color:rgb(2 6 23 / var(--tw-text-opacity, 1))}.text-white{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.text-yellow-400{--tw-text-opacity:1;color:rgb(250 204 21 / var(--tw-text-opacity, 1))}.text-emerald-200\/80{color:rgb(167 243 208 / 0.8)}.text-emerald-300{--tw-text-opacity:1;color:rgb(110 231 183 / var(--tw-text-opacity, 1))}.text-slate-100{--tw-text-opacity:1;color:rgb(241 245 249 / var(--tw-text-opacity, 1))}.shadow-2xl{--tw-shadow:0 25px 50px -12px rgb(0 0 0 / 0.25);--tw-shadow-colored:0 25px 50px -12px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-inner{--tw-shadow:inset 0 2px 4px 0 rgb(0 0 0 / 0.05);--tw-shadow-colored:inset 0 2px 4px 0 var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-lg{--tw-shadow:0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 10px 15px -3px var(--tw-shadow-color), 0 4px 6px -4px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-md{--tw-shadow:0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 4px 6px -1px var(--tw-shadow-color), 0 2px 4px -2px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.shadow-xl{--tw-shadow:0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);--tw-shadow-colored:0 20px 25px -5px var(--tw-shadow-color), 0 8px 10px -6px var(--tw-shadow-color);box-shadow:var(--tw-ring-offset-shadow, 0 0 #0000), var(--tw-ring-shadow, 0 0 #0000), var(--tw-shadow)}.outline-none{outline:2px solid transparent;outline-offset:2px}.ring-4{--tw-ring-offset-shadow:var(--tw-ring-inset) 0 0 0 var(--tw-ring-offset-width) var(--tw-ring-offset-color);--tw-ring-shadow:var(--tw-ring-inset) 0 0 0 calc(4px + var(--tw-ring-offset-width)) var(--tw-ring-color);box-shadow:var(--tw-ring-offset-shadow), var(--tw-ring-shadow), var(--tw-shadow, 0 0 #0000)}.ring-white\/40{--tw-ring-color:rgb(255 255 255 / 0.4)}.backdrop-blur-md{--tw-backdrop-blur:blur(12px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.backdrop-blur-sm{--tw-backdrop-blur:blur(4px);-webkit-backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia);backdrop-filter:var(--tw-backdrop-blur) var(--tw-backdrop-brightness) var(--tw-backdrop-contrast) var(--tw-backdrop-grayscale) var(--tw-backdrop-hue-rotate) var(--tw-backdrop-invert) var(--tw-backdrop-opacity) var(--tw-backdrop-saturate) var(--tw-backdrop-sepia)}.transition-all{transition-property:all;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.transition-colors{transition-property:color, background-color, border-color, fill, stroke, -webkit-text-decoration-color;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke;transition-property:color, background-color, border-color, text-decoration-color, fill, stroke, -webkit-text-decoration-color;transition-timing-function:cubic-bezier(0.4, 0, 0.2, 1);transition-duration:150ms}.hover\:border-amber-500\/70:hover{border-color:rgb(245 158 11 / 0.7)}.hover\:bg-amber-300:hover{--tw-bg-opacity:1;background-color:rgb(252 211 77 / var(--tw-bg-opacity, 1))}.hover\:bg-emerald-400:hover{--tw-bg-opacity:1;background-color:rgb(52 211 153 / var(--tw-bg-opacity, 1))}.hover\:bg-rose-500:hover{--tw-bg-opacity:1;background-color:rgb(244 63 94 / var(--tw-bg-opacity, 1))}.hover\:bg-sky-300:hover{--tw-bg-opacity:1;background-color:rgb(125 211 252 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-600:hover{--tw-bg-opacity:1;background-color:rgb(71 85 105 / var(--tw-bg-opacity, 1))}.hover\:bg-slate-700:hover{--tw-bg-opacity:1;background-color:rgb(51 65 85 / var(--tw-bg-opacity, 1))}.hover\:text-white:hover{--tw-text-opacity:1;color:rgb(255 255 255 / var(--tw-text-opacity, 1))}.hover\:text-sky-300:hover{--tw-text-opacity:1;color:rgb(125 211 252 / var(--tw-text-opacity, 1))}.focus\:border-amber-400:focus{--tw-border-opacity:1;border-color:rgb(251 191 36 / var(--tw-border-opacity, 1))}.disabled\:opacity-40:disabled{opacity:0.4}@media (min-width: 640px){.sm\:col-span-2{grid-column:span 2 / span 2}.sm\:block{display:block}.sm\:min-h-\[340px\]{min-height:340px}.sm\:w-auto{width:auto}.sm\:flex-initial{flex:0 1 auto}.sm\:grid-cols-2{grid-template-columns:repeat(2, minmax(0, 1fr))}.sm\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}.sm\:flex-row{flex-direction:row}.sm\:items-center{align-items:center}.sm\:justify-end{justify-content:flex-end}.sm\:gap-2{gap:0.5rem}.sm\:self-auto{align-self:auto}.sm\:p-5{padding:1.25rem}.sm\:p-6{padding:1.5rem}.sm\:px-6{padding-left:1.5rem;padding-right:1.5rem}.sm\:text-2xl{font-size:1.5rem;line-height:2rem}.sm\:text-3xl{font-size:1.875rem;line-height:2.25rem}.sm\:text-lg{font-size:1.125rem;line-height:1.75rem}.sm\:text-xl{font-size:1.25rem;line-height:1.75rem}.sm\:text-base{font-size:1rem;line-height:1.5rem}.sm\:text-sm{font-size:0.875rem;line-height:1.25rem}}@media (min-width: 1024px){.lg\:col-span-5{grid-column:span 5 / span 5}.lg\:col-span-7{grid-column:span 7 / span 7}.lg\:col-span-6{grid-column:span 6 / span 6}.lg\:grid-cols-12{grid-template-columns:repeat(12, minmax(0, 1fr))}.lg\:grid-cols-4{grid-template-columns:repeat(4, minmax(0, 1fr))}}</style></head>
+</head>
 <body class="min-h-screen pb-16">
 
     <!-- 顶部工业安全警示条 -->
@@ -679,29 +89,46 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
 
     <!-- 顶部标题栏与模式切换 -->
     <header class="bg-slate-900/95 border-b border-slate-700 sticky top-0 z-40 backdrop-blur-md shadow-xl">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col sm:flex-row items-center justify-between gap-3">
-            <!-- 视图切换大按钮与导出/扫码工具 -->
-            <div class="flex flex-wrap items-center justify-center sm:justify-end gap-2 w-full sm:w-auto">
+        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-3">
+            <!-- 第一行：公司LOGO、公司名称、主标题与联系电话 -->
+            <div class="flex flex-col md:flex-row items-center justify-between gap-3 border-b border-slate-800 pb-3">
+                <div class="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
+                    <!-- 容实重装 RunShark LOGO（优先加载 容实LOGO.png，内置1:1矢量高还原兜底） -->
+                    <div class="bg-white rounded-xl p-1.5 shadow-md flex items-center justify-center shrink-0 h-12 sm:h-14 px-2.5">
+                        <img src="容实LOGO.png" alt="河南容实重型装备有限公司 LOGO" class="h-full w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                        <svg viewBox="0 0 220 140" class="hidden h-full w-auto">
+                            <rect x="35" y="10" width="150" height="82" fill="none" stroke="#000000" stroke-width="11"/>
+                            <path d="M 96 34 A 24 24 0 1 0 96 72 C 110 72 122 32 142 32 A 20 20 0 0 1 162 52 C 162 62 152 67 142 67 L 154 80 L 166 80" fill="none" stroke="#000000" stroke-width="11" stroke-linecap="square" stroke-linejoin="miter"/>
+                            <path d="M 134 45 L 118 80" fill="none" stroke="#000000" stroke-width="11" stroke-linecap="square"/>
+                            <text x="110" y="128" text-anchor="middle" fill="#000000" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="31" letter-spacing="0.5">RunShark</text>
+                        </svg>
+                    </div>
+                    <div class="flex flex-col items-center sm:items-start">
+                        <span class="bg-amber-500 text-slate-950 font-black px-2.5 py-0.5 rounded-md text-xs sm:text-sm tracking-wide shadow mb-1">
+                            河南容实重型装备有限公司
+                        </span>
+                        <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight">
+                            自动化汽车卸车机操作流程
+                        </h1>
+                    </div>
+                </div>
+                <a href="tel:18937161255" class="ind-btn bg-slate-800 hover:bg-slate-700 border border-amber-500/60 text-amber-400 px-3.5 py-2 rounded-xl font-black text-sm sm:text-base flex items-center gap-2 shrink-0">
+                    <i class="fa-solid fa-phone-volume animate-pulse text-emerald-400"></i>
+                    <span>服务热线：18937161255</span>
+                    <span class="bg-emerald-500 text-slate-950 text-xs px-1.5 py-0.5 rounded font-black">一键拨打</span>
+                </a>
+            </div>
+
+            <!-- 第二行：视图切换大按钮 -->
+            <div class="flex items-center justify-center sm:justify-start w-full">
                 <div class="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700 w-full sm:w-auto">
-                    <button id="tab-flow" onclick="switchView('flow')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl font-black text-sm flex items-center justify-center gap-1.5 transition-all bg-amber-500 text-slate-950 shadow-md">
+                    <button id="tab-flow" onclick="switchView('flow')" class="flex-1 sm:flex-initial px-5 py-2 rounded-xl font-black text-sm sm:text-base flex items-center justify-center gap-2 transition-all bg-amber-500 text-slate-950 shadow-md">
                         <i class="fa-solid fa-diagram-project"></i>
-                        <span>一张图看懂</span>
+                        <span>一张图看懂（含实景图）</span>
                     </button>
-                    <button id="tab-sim" onclick="switchView('sim')" class="flex-1 sm:flex-initial px-3.5 py-2 rounded-xl font-black text-sm flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:text-white">
+                    <button id="tab-sim" onclick="switchView('sim')" class="flex-1 sm:flex-initial px-5 py-2 rounded-xl font-black text-sm sm:text-base flex items-center justify-center gap-2 transition-all text-slate-300 hover:text-white">
                         <i class="fa-solid fa-hand-pointer"></i>
                         <span>手把手演练</span>
-                    </button>
-                </div>
-
-                <!-- 导出 index.html 与 二维码生成向导按钮 -->
-                <div class="flex items-center gap-2 w-full sm:w-auto">
-                    <button onclick="downloadIndexHtml()" class="ind-btn flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-download"></i>
-                        <span>导出 index.html</span>
-                    </button>
-                    <button onclick="openDeployModal()" class="ind-btn flex-1 sm:flex-initial px-3.5 py-2.5 rounded-xl bg-sky-400 hover:bg-sky-300 text-slate-950 font-black text-sm flex items-center justify-center gap-1.5">
-                        <i class="fa-solid fa-qrcode"></i>
-                        <span>生成微信二维码</span>
                     </button>
                 </div>
             </div>
@@ -754,783 +181,25 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             </div>
         </section>
 
+        <!-- 现场关键部位实景照片速览栏（点图可放大） -->
+        <section class="bg-slate-900 border-2 border-sky-500/50 rounded-3xl p-4 sm:p-5 mb-6 shadow-xl">
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
+                <div class="flex items-center gap-2.5">
+                    <span class="bg-sky-400 text-slate-950 font-black px-3 py-1 rounded-full text-xs sm:text-sm flex items-center gap-1">
+                        <i class="fa-solid fa-camera"></i> 现场实拍对照
+                    </span>
+                    <h2 class="text-base sm:text-xl font-black text-white">左右前轮前挡 & 后轮后挡提升到位实景图（点击图片可放大）</h2>
+                </div>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="top-photo-gallery">
+                <!-- 由 JS 渲染 3 张现场实景对照卡 -->
+            </div>
+        </section>
+
         <!-- ==================== 视图 1：一张图看懂全流程（图文大字流程图） ==================== -->
         <div id="view-flow" class="space-y-2">
             <!-- 动态生成的7步图文流程图容器 -->
-            <div id="flowchart-container" class="space-y-3">
-                <!-- 单步大卡片 -->
-                <div class="bg-slate-900 border-2 border-slate-700 hover:border-amber-500/70 transition-all rounded-3xl p-4 sm:p-6 shadow-xl">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-                        
-                        <!-- 左：步骤序号 + 核心大字 + 动作点 (6列) -->
-                        <div class="lg:col-span-6 space-y-3.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center shadow-md shrink-0">
-                                        1
-                                    </span>
-                                    <h3 class="text-2xl sm:text-3xl font-black text-white">等空房 · 看落杆</h3>
-                                </div>
-                                <button onclick="speakText('第一步：等空房，看落杆。先把车停在等待区。看清楚卸车房里没有别的车，而且进口和出口的两根道闸杆子都落下来关闭了，再慢慢把车开进卸车室。')" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3.5 py-2 rounded-xl text-sm flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-volume-high text-base"></i>
-                                    <span>听语音</span>
-                                </button>
-                            </div>
-
-                            <!-- 口诀高亮条 -->
-                            <div class="bg-slate-800/90 border-l-4 border-amber-400 px-4 py-2.5 rounded-r-xl">
-                                <p class="text-lg sm:text-xl font-black text-amber-300">屋里没车、前后杆都落下，再慢点开进去！</p>
-                            </div>
-
-                            <!-- 动作三要点 -->
-                            <div class="space-y-2">
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-square-parking text-sky-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">先把车停在【等待区】等着</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-eye text-amber-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">看里面【没车】，且进出口【两根杆子都落下关闭】</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-truck-moving text-emerald-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">确认好后，缓慢开进卸车室</span>
-                                    </div>
-                                
-                            </div>
-
-                            <!-- 安全红线警示 -->
-                            <div class="bg-rose-950/60 border border-rose-500/60 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-rose-200 text-sm sm:text-base font-bold">
-                                <i class="fa-solid fa-circle-exclamation text-rose-400 text-lg shrink-0"></i>
-                                <span>只要里面还有车，或者进出杆子没落下，千万别往里闯！</span>
-                            </div>
-                        </div>
-
-                        <!-- 右：直观SVG示意图 (6列) -->
-                        <div class="lg:col-span-6 bg-slate-950 rounded-2xl border border-slate-800 p-3 flex flex-col items-center justify-center">
-                            
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 背景地面 -->
-                        <rect x="10" y="185" width="500" height="12" rx="4" fill="#334155"></rect>
-                        <!-- 卸车室房屋框架 -->
-                        <rect x="210" y="30" width="270" height="155" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="4" stroke-dasharray="10 6"></rect>
-                        <text x="345" y="60" text-anchor="middle" fill="#94a3b8" font-size="16" font-weight="bold">卸车室内部</text>
-
-                        <!-- 室内状态：无车 vs 有车 -->
-                        
-                            <circle cx="345" cy="115" r="28" fill="#065f46" stroke="#10b981" stroke-width="3"></circle>
-                            <text x="345" y="122" text-anchor="middle" fill="#34d399" font-size="18" font-weight="900">空房无车</text>
-                        
-
-                        <!-- 入口道闸杆 -->
-                        <rect x="200" y="120" width="14" height="65" fill="#f59e0b"></rect>
-                        
-                            <!-- 落下状态 -->
-                            <rect x="145" y="125" width="65" height="10" rx="4" fill="#ef4444" stroke="#fff" stroke-width="2"></rect>
-                            <text x="175" y="112" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">入口杆已落</text>
-                        
-
-                        <!-- 出口道闸杆 -->
-                        <rect x="476" y="120" width="14" height="65" fill="#f59e0b"></rect>
-                        <rect x="440" y="125" width="46" height="10" rx="4" fill="#ef4444" stroke="#fff" stroke-width="2"></rect>
-                        <text x="465" y="112" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">出口杆已落</text>
-
-                        <!-- 等待区大货车 -->
-                        <g transform="translate(18, 105)">
-                            <rect x="0" y="10" width="75" height="48" rx="4" fill="#3b82f6"></rect>
-                            <path d="M77 22 L105 22 L115 40 L115 58 L77 58 Z" fill="#f59e0b"></path>
-                            <rect x="92" y="27" width="16" height="14" rx="2" fill="#0f172a"></rect>
-                            <circle cx="22" cy="65" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                            <circle cx="58" cy="65" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                            <circle cx="96" cy="65" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                            <text x="37" y="40" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">等待区</text>
-                        </g>
-
-                        <!-- 行驶指示箭头 -->
-                        
-                            <path d="M145 160 L195 160" stroke="#10b981" stroke-width="6" stroke-linecap="round"></path>
-                            <polygon points="195,152 210,160 195,168" fill="#10b981"></polygon>
-                            <text x="175" y="180" text-anchor="middle" fill="#34d399" font-size="13" font-weight="900">慢速驶入</text>
-                        
-                    </svg>
-                            <button onclick="jumpToSimStep(0)" class="mt-2 text-xs sm:text-sm text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-hand-pointer"></i>
-                                <span>点此进入第 1 步互动模拟演练 ➔</span>
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- 步骤之间的向下大箭头（最后一步不显示） -->
-                
-                    <div class="flex justify-center py-1">
-                        <div class="w-10 h-10 rounded-full bg-amber-500/20 border-2 border-amber-500 text-amber-400 flex items-center justify-center arrow-bounce">
-                            <i class="fa-solid fa-arrow-down text-xl"></i>
-                        </div>
-                    </div>
-                
-            
-                <!-- 单步大卡片 -->
-                <div class="bg-slate-900 border-2 border-slate-700 hover:border-amber-500/70 transition-all rounded-3xl p-4 sm:p-6 shadow-xl">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-                        
-                        <!-- 左：步骤序号 + 核心大字 + 动作点 (6列) -->
-                        <div class="lg:col-span-6 space-y-3.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center shadow-md shrink-0">
-                                        2
-                                    </span>
-                                    <h3 class="text-2xl sm:text-3xl font-black text-white">看右前灯 · 绿进黄倒</h3>
-                                </div>
-                                <button onclick="speakText('第二步：看右前方信号灯。进屋后盯着右前方的红绿灯：亮绿灯的时候，慢慢往前开；一旦变成黄灯，马上停住，挂倒挡慢慢往后倒车！这时候后轮挡板会自动升起一半。')" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3.5 py-2 rounded-xl text-sm flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-volume-high text-base"></i>
-                                    <span>听语音</span>
-                                </button>
-                            </div>
-
-                            <!-- 口诀高亮条 -->
-                            <div class="bg-slate-800/90 border-l-4 border-amber-400 px-4 py-2.5 rounded-r-xl">
-                                <p class="text-lg sm:text-xl font-black text-amber-300">盯着右前方信号灯：绿灯慢往前，黄灯慢倒车！</p>
-                            </div>
-
-                            <!-- 动作三要点 -->
-                            <div class="space-y-2">
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-traffic-light text-emerald-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">右前灯亮【绿灯】👉 慢慢往前开</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-traffic-light text-yellow-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">右前灯亮【黄灯】👉 换倒挡，慢慢倒车</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-angles-up text-sky-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">倒车时，后轮挡板会自动升起一半高度</span>
-                                    </div>
-                                
-                            </div>
-
-                            <!-- 安全红线警示 -->
-                            <div class="bg-rose-950/60 border border-rose-500/60 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-rose-200 text-sm sm:text-base font-bold">
-                                <i class="fa-solid fa-circle-exclamation text-rose-400 text-lg shrink-0"></i>
-                                <span>千万看准右前方信号灯！绿灯前进、黄灯倒车，车速一定要慢！</span>
-                            </div>
-                        </div>
-
-                        <!-- 右：直观SVG示意图 (6列) -->
-                        <div class="lg:col-span-6 bg-slate-950 rounded-2xl border border-slate-800 p-3 flex flex-col items-center justify-center">
-                            
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 地面 -->
-                        <rect x="15" y="190" width="490" height="12" rx="4" fill="#334155"></rect>
-
-                        <!-- 右前方红绿灯立柱 -->
-                        <rect x="435" y="35" width="60" height="115" rx="12" fill="#0f172a" stroke="#64748b" stroke-width="4"></rect>
-                        <rect x="460" y="150" width="10" height="40" fill="#64748b"></rect>
-                        <text x="465" y="25" text-anchor="middle" fill="#f8fafc" font-size="14" font-weight="900">右前方信号灯</text>
-                        <!-- 绿灯 -->
-                        <circle cx="465" cy="68" r="20" fill="#1e293b" class="" stroke="#334155" stroke-width="2"></circle>
-                        <text x="465" y="74" text-anchor="middle" fill="#475569" font-size="14" font-weight="900">绿</text>
-                        <!-- 黄灯 -->
-                        <circle cx="465" cy="116" r="20" fill="#facc15" class="glow-anim" stroke="#334155" stroke-width="2"></circle>
-                        <text x="465" y="122" text-anchor="middle" fill="#422006" font-size="14" font-weight="900">黄</text>
-
-                        <!-- 后轮挡板状态（绿灯平，黄灯升一半） -->
-                        
-                            <polygon points="80,190 112,190 112,162" fill="#f59e0b" stroke="#fff" stroke-width="2"></polygon>
-                            <text x="92" y="150" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="900">后挡升起一半!</text>
-                        
-
-                        <!-- 大货车 -->
-                        <g transform="translate(125, 95)">
-                            <rect x="0" y="0" width="155" height="68" rx="6" fill="#2563eb"></rect>
-                            <path d="M158 18 L200 18 L215 45 L215 68 L158 68 Z" fill="#f59e0b"></path>
-                            <rect x="182" y="24" width="22" height="18" rx="3" fill="#0f172a"></rect>
-                            <circle cx="35" cy="80" r="16" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"></circle>
-                            <circle cx="85" cy="80" r="16" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"></circle>
-                            <circle cx="185" cy="80" r="16" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"></circle>
-                            <text x="77" y="42" text-anchor="middle" fill="#fff" font-size="18" font-weight="900">
-                                ⬅ 黄灯：缓慢倒车
-                            </text>
-                        </g>
-
-                        <!-- 大号方向引导箭头 -->
-                        
-                            <path d="M290 55 L170 55" stroke="#facc15" stroke-width="10" stroke-linecap="round"></path>
-                            <polygon points="170,42 145,55 170,68" fill="#facc15"></polygon>
-                        
-                    </svg>
-                            <button onclick="jumpToSimStep(1)" class="mt-2 text-xs sm:text-sm text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-hand-pointer"></i>
-                                <span>点此进入第 2 步互动模拟演练 ➔</span>
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- 步骤之间的向下大箭头（最后一步不显示） -->
-                
-                    <div class="flex justify-center py-1">
-                        <div class="w-10 h-10 rounded-full bg-amber-500/20 border-2 border-amber-500 text-amber-400 flex items-center justify-center arrow-bounce">
-                            <i class="fa-solid fa-arrow-down text-xl"></i>
-                        </div>
-                    </div>
-                
-            
-                <!-- 单步大卡片 -->
-                <div class="bg-slate-900 border-2 border-slate-700 hover:border-amber-500/70 transition-all rounded-3xl p-4 sm:p-6 shadow-xl">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-                        
-                        <!-- 左：步骤序号 + 核心大字 + 动作点 (6列) -->
-                        <div class="lg:col-span-6 space-y-3.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center shadow-md shrink-0">
-                                        3
-                                    </span>
-                                    <h3 class="text-2xl sm:text-3xl font-black text-white">看左电视 · 挡板升满</h3>
-                                </div>
-                                <button onclick="speakText('第三步：看左边电视监控对准后轮。倒车时看着左边的监控屏幕，后轮靠近挡板时，挡板会完全升起来。如果发现挡板没升到底，就把车往前挪一点点，等它完全升到位了再倒车靠紧！停稳后：拉手刹、断气刹放气、下车。')" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3.5 py-2 rounded-xl text-sm flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-volume-high text-base"></i>
-                                    <span>听语音</span>
-                                </button>
-                            </div>
-
-                            <!-- 口诀高亮条 -->
-                            <div class="bg-slate-800/90 border-l-4 border-amber-400 px-4 py-2.5 rounded-r-xl">
-                                <p class="text-lg sm:text-xl font-black text-amber-300">倒车盯紧左边电视：后挡完全升起靠稳，再拉刹下车！</p>
-                            </div>
-
-                            <!-- 动作三要点 -->
-                            <div class="space-y-2">
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-tv text-sky-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">倒车时眼睛盯着【左侧视频监控】看后轮</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-arrows-Left-Right text-amber-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">若挡板【没升到位】👉 往前开一点，等升满再倒车靠紧</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-hand text-emerald-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">靠稳后三连动作：【停车 ➔ 放气(断气刹) ➔ 下车】</span>
-                                    </div>
-                                
-                            </div>
-
-                            <!-- 安全红线警示 -->
-                            <div class="bg-rose-950/60 border border-rose-500/60 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-rose-200 text-sm sm:text-base font-bold">
-                                <i class="fa-solid fa-circle-exclamation text-rose-400 text-lg shrink-0"></i>
-                                <span>如果后挡板只升了一半没升满，必须往前挪一点等它全升起来再倒靠！下车前必须断气刹放气！</span>
-                            </div>
-                        </div>
-
-                        <!-- 右：直观SVG示意图 (6列) -->
-                        <div class="lg:col-span-6 bg-slate-950 rounded-2xl border border-slate-800 p-3 flex flex-col items-center justify-center">
-                            
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 左侧电视监控大画面框 -->
-                        <rect x="18" y="16" width="275" height="195" rx="14" fill="#090d16" stroke="#38bdf8" stroke-width="4"></rect>
-                        <rect x="18" y="16" width="275" height="32" rx="10" fill="#0284c7"></rect>
-                        <text x="155" y="38" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">📺 左侧视频监控画面（放大）</text>
-
-                        <!-- 监控画面内的地面 -->
-                        <rect x="30" y="172" width="250" height="10" fill="#475569"></rect>
-
-                        
-                            <!-- 后挡完全升起 -->
-                            <polygon points="65,172 110,172 110,115" fill="#10b981" stroke="#fff" stroke-width="3"></polygon>
-                            <text x="78" y="102" text-anchor="middle" fill="#34d399" font-size="15" font-weight="900">✅ 后挡完全升到位</text>
-                            <!-- 后轮紧靠挡板 -->
-                            <circle cx="142" cy="144" r="28" fill="#1e293b" stroke="#f8fafc" stroke-width="7"></circle>
-                            <circle cx="142" cy="144" r="10" fill="#94a3b8"></circle>
-                            <rect x="112" y="75" width="145" height="42" rx="4" fill="#2563eb"></rect>
-                            <text x="185" y="101" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">后轮已靠稳挡板</text>
-                        
-
-                        <!-- 右侧：停稳三步曲图标卡 -->
-                        <g transform="translate(310, 22)">
-                            <rect x="0" y="0" width="192" height="54" rx="10" fill="#1e293b" stroke="#475569" stroke-width="2"></rect>
-                            <circle cx="30" cy="27" r="16" fill="#ef4444"></circle>
-                            <text x="30" y="33" text-anchor="middle" fill="#fff" font-size="16" font-weight="900">停</text>
-                            <text x="115" y="33" text-anchor="middle" fill="#f8fafc" font-size="17" font-weight="900">1. 靠稳停车</text>
-
-                            <rect x="0" y="68" width="192" height="54" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="2"></rect>
-                            <circle cx="30" cy="95" r="16" fill="#f59e0b"></circle>
-                            <text x="30" y="101" text-anchor="middle" fill="#0f172a" font-size="15" font-weight="900">气</text>
-                            <text x="115" y="101" text-anchor="middle" fill="#fbbf24" font-size="17" font-weight="900">2. 断气刹放气</text>
-
-                            <rect x="0" y="136" width="192" height="54" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"></rect>
-                            <circle cx="30" cy="163" r="16" fill="#10b981"></circle>
-                            <text x="30" y="169" text-anchor="middle" fill="#0f172a" font-size="15" font-weight="900">下</text>
-                            <text x="115" y="169" text-anchor="middle" fill="#34d399" font-size="17" font-weight="900">3. 安全下车</text>
-                        </g>
-                    </svg>
-                            <button onclick="jumpToSimStep(2)" class="mt-2 text-xs sm:text-sm text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-hand-pointer"></i>
-                                <span>点此进入第 3 步互动模拟演练 ➔</span>
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- 步骤之间的向下大箭头（最后一步不显示） -->
-                
-                    <div class="flex justify-center py-1">
-                        <div class="w-10 h-10 rounded-full bg-amber-500/20 border-2 border-amber-500 text-amber-400 flex items-center justify-center arrow-bounce">
-                            <i class="fa-solid fa-arrow-down text-xl"></i>
-                        </div>
-                    </div>
-                
-            
-                <!-- 单步大卡片 -->
-                <div class="bg-slate-900 border-2 border-slate-700 hover:border-amber-500/70 transition-all rounded-3xl p-4 sm:p-6 shadow-xl">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-                        
-                        <!-- 左：步骤序号 + 核心大字 + 动作点 (6列) -->
-                        <div class="lg:col-span-6 space-y-3.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center shadow-md shrink-0">
-                                        4
-                                    </span>
-                                    <h3 class="text-2xl sm:text-3xl font-black text-white">绕看前轮 · 开车后门</h3>
-                                </div>
-                                <button onclick="speakText('第四步：绕看前轮，再去开后门。下车以后，先绕着左右两个前轮看一眼，确认地上的前挡挡舌正好停在前后轮的中间位置。确认居中了，马上走到车尾把车厢后门打开。')" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3.5 py-2 rounded-xl text-sm flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-volume-high text-base"></i>
-                                    <span>听语音</span>
-                                </button>
-                            </div>
-
-                            <!-- 口诀高亮条 -->
-                            <div class="bg-slate-800/90 border-l-4 border-amber-400 px-4 py-2.5 rounded-r-xl">
-                                <p class="text-lg sm:text-xl font-black text-amber-300">下车先看左右前轮：铁舌头在两轮正中间，再去开后门！</p>
-                            </div>
-
-                            <!-- 动作三要点 -->
-                            <div class="space-y-2">
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-person-walking text-sky-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">下车绕着【左右前轮】低头看一眼</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-bullseye text-emerald-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">确认【前挡挡舌】正好夹在两轮中间</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-door-open text-amber-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">位置对了，立即去车尾【打开后车门】</span>
-                                    </div>
-                                
-                            </div>
-
-                            <!-- 安全红线警示 -->
-                            <div class="bg-rose-950/60 border border-rose-500/60 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-rose-200 text-sm sm:text-base font-bold">
-                                <i class="fa-solid fa-circle-exclamation text-rose-400 text-lg shrink-0"></i>
-                                <span>如果前轮挡舌不在两轮中间，说明车没停准，必须重新上车调整，绝不能直接卸车！</span>
-                            </div>
-                        </div>
-
-                        <!-- 右：直观SVG示意图 (6列) -->
-                        <div class="lg:col-span-6 bg-slate-950 rounded-2xl border border-slate-800 p-3 flex flex-col items-center justify-center">
-                            
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 左半部分：绕看左右前轮与挡舌位置 -->
-                        <rect x="15" y="18" width="245" height="204" rx="14" fill="#1e293b" stroke="#10b981" stroke-width="3"></rect>
-                        <text x="137" y="45" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="900">① 绕看左右前轮中间</text>
-
-                        <!-- 地面导轨 -->
-                        <rect x="30" y="172" width="215" height="10" rx="3" fill="#475569"></rect>
-                        <!-- 前轮1 -->
-                        <circle cx="75" cy="142" r="28" fill="#0f172a" stroke="#cbd5e1" stroke-width="7"></circle>
-                        <circle cx="75" cy="142" r="9" fill="#64748b"></circle>
-                        <text x="75" y="102" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="bold">前轮</text>
-                        <!-- 前轮2 -->
-                        <circle cx="198" cy="142" r="28" fill="#0f172a" stroke="#cbd5e1" stroke-width="7"></circle>
-                        <circle cx="198" cy="142" r="9" fill="#64748b"></circle>
-                        <text x="198" y="102" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="bold">前轮</text>
-
-                        <!-- 前挡挡舌 -->
-                        
-                            <rect x="122" y="132" width="30" height="40" rx="5" fill="#10b981" stroke="#fff" stroke-width="3" class="glow-anim"></rect>
-                            <text x="137" y="118" text-anchor="middle" fill="#34d399" font-size="14" font-weight="900">✅ 挡舌正居中</text>
-                        
-                        <text x="137" y="205" text-anchor="middle" fill="#34d399" font-size="14" font-weight="bold">
-                            左右前轮都要看一眼！
-                        </text>
-
-                        <!-- 右半部分：去车尾打开后车门 -->
-                        <rect x="275" y="18" width="230" height="204" rx="14" fill="#1e293b" stroke="#f59e0b" stroke-width="3"></rect>
-                        <text x="390" y="45" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="900">② 去车尾打开后车门</text>
-
-                        <!-- 车厢尾部示意图 -->
-                        <rect x="330" y="70" width="110" height="90" rx="6" fill="#2563eb" stroke="#93c5fd" stroke-width="3"></rect>
-                        <!-- 打开的后车门扇 -->
-                        <path d="M330 75 L295 95 L295 170 L330 155 Z" fill="#f59e0b" stroke="#fff" stroke-width="2"></path>
-                        <path d="M440 75 L475 95 L475 170 L440 155 Z" fill="#f59e0b" stroke="#fff" stroke-width="2"></path>
-                        <text x="385" y="122" text-anchor="middle" fill="#fff" font-size="16" font-weight="900">后车门打开</text>
-                        <text x="390" y="205" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="900">确认挡舌居中后立即开门</text>
-                    </svg>
-                            <button onclick="jumpToSimStep(3)" class="mt-2 text-xs sm:text-sm text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-hand-pointer"></i>
-                                <span>点此进入第 4 步互动模拟演练 ➔</span>
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- 步骤之间的向下大箭头（最后一步不显示） -->
-                
-                    <div class="flex justify-center py-1">
-                        <div class="w-10 h-10 rounded-full bg-amber-500/20 border-2 border-amber-500 text-amber-400 flex items-center justify-center arrow-bounce">
-                            <i class="fa-solid fa-arrow-down text-xl"></i>
-                        </div>
-                    </div>
-                
-            
-                <!-- 单步大卡片 -->
-                <div class="bg-slate-900 border-2 border-slate-700 hover:border-amber-500/70 transition-all rounded-3xl p-4 sm:p-6 shadow-xl">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-                        
-                        <!-- 左：步骤序号 + 核心大字 + 动作点 (6列) -->
-                        <div class="lg:col-span-6 space-y-3.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center shadow-md shrink-0">
-                                        5
-                                    </span>
-                                    <h3 class="text-2xl sm:text-3xl font-black text-white">进屋按键 · 卸车别走</h3>
-                                </div>
-                                <button onclick="speakText('第五步：进操作室按键卸车。打开车后门后回到操作室，先按你车的实际情况选择有挡泥板或者无挡泥板，选好后按下卸车启动按钮。卸车的时候震动器会自动震动，如果看车斗里还有剩料，可以自己再按一下震动器。记住：卸车全过程，人必须待在操作室里，千万不能出去！')" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3.5 py-2 rounded-xl text-sm flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-volume-high text-base"></i>
-                                    <span>听语音</span>
-                                </button>
-                            </div>
-
-                            <!-- 口诀高亮条 -->
-                            <div class="bg-slate-800/90 border-l-4 border-amber-400 px-4 py-2.5 rounded-r-xl">
-                                <p class="text-lg sm:text-xl font-black text-amber-300">进操作室：先选【有无挡泥板】，再按【卸车启动】，人千万别出屋！</p>
-                            </div>
-
-                            <!-- 动作三要点 -->
-                            <div class="space-y-2">
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-sliders text-sky-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">第1步：按面板选【有挡泥板】或【无挡泥板】</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-power-off text-emerald-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">第2步：点击绿色【卸车启动】按钮</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-bell text-amber-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">第3步：自动震动清料，卸不净可【手动再开震动器】</span>
-                                    </div>
-                                
-                            </div>
-
-                            <!-- 安全红线警示 -->
-                            <div class="bg-rose-950/60 border border-rose-500/60 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-rose-200 text-sm sm:text-base font-bold">
-                                <i class="fa-solid fa-circle-exclamation text-rose-400 text-lg shrink-0"></i>
-                                <span>保命铁律：大车举升卸料期间，司机必须全程待在操作室屋里，严禁踏出房门半步！</span>
-                            </div>
-                        </div>
-
-                        <!-- 右：直观SVG示意图 (6列) -->
-                        <div class="lg:col-span-6 bg-slate-950 rounded-2xl border border-slate-800 p-3 flex flex-col items-center justify-center">
-                            
-                    <div class="w-full flex flex-col gap-3">
-                        <svg viewBox="0 0 520 155" class="w-full max-w-[500px] h-auto mx-auto">
-                            <!-- 操作室安全屋 -->
-                            <rect x="15" y="15" width="165" height="128" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="3"></rect>
-                            <text x="97" y="40" text-anchor="middle" fill="#6ee7b7" font-size="15" font-weight="900">🏠 操作室（安全屋）</text>
-                            <circle cx="97" cy="75" r="16" fill="#fde047"></circle>
-                            <path d="M72 120 C72 95 122 95 122 120 Z" fill="#34d399"></path>
-                            <text x="97" y="136" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">🚫 卸车时人绝不出屋</text>
-
-                            <!-- 右侧：正在举升卸车的货车 -->
-                            <rect x="210" y="130" width="290" height="10" rx="3" fill="#475569"></rect>
-                            <g class="" transform="translate(230, 58)">
-                                <rect x="0" y="0" width="140" height="52" rx="5" fill="#2563eb"></rect>
-                                <path d="M143 12 L175 12 L185 35 L185 52 L143 52 Z" fill="#f59e0b"></path>
-                                <circle cx="30" cy="60" r="12" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                                <circle cx="155" cy="60" r="12" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                                <text x="70" y="32" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">
-                                    等待点击【卸车启动】
-                                </text>
-                            </g>
-                        </svg>
-
-                        <!-- 拟真操作台按钮面板（让司机直接点按体验） -->
-                        <div class="bg-slate-800 border-2 border-slate-600 rounded-2xl p-3.5 max-w-[500px] w-full mx-auto">
-                            <div class="text-xs font-bold text-slate-300 mb-2 flex items-center justify-between">
-                                <span>👇 点击下方模拟操作台按钮体验（顺序：1选挡泥板 ➔ 2按启动 ➔ 3按震动）：</span>
-                            </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                                <button onclick="toggleMudguard('yes')" class="ind-btn py-2.5 px-2 rounded-xl font-black text-sm border-2 bg-amber-400 text-slate-950 border-white">
-                                    ① 有挡泥板
-                                </button>
-                                <button onclick="toggleMudguard('no')" class="ind-btn py-2.5 px-2 rounded-xl font-black text-sm border-2 bg-slate-700 text-slate-300 border-slate-600">
-                                    ① 无挡泥板
-                                </button>
-                                <button onclick="triggerUnloadStart()" class="ind-btn py-2.5 px-2 rounded-xl font-black text-sm bg-emerald-500 hover:bg-emerald-400 text-slate-950">
-                                    ② 卸车启动
-                                </button>
-                                <button onclick="triggerVibrator()" class="ind-btn py-2.5 px-2 rounded-xl font-black text-sm bg-sky-400 hover:bg-sky-300 text-slate-950">
-                                    ③ 再次开震动
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                            <button onclick="jumpToSimStep(4)" class="mt-2 text-xs sm:text-sm text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-hand-pointer"></i>
-                                <span>点此进入第 5 步互动模拟演练 ➔</span>
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- 步骤之间的向下大箭头（最后一步不显示） -->
-                
-                    <div class="flex justify-center py-1">
-                        <div class="w-10 h-10 rounded-full bg-amber-500/20 border-2 border-amber-500 text-amber-400 flex items-center justify-center arrow-bounce">
-                            <i class="fa-solid fa-arrow-down text-xl"></i>
-                        </div>
-                    </div>
-                
-            
-                <!-- 单步大卡片 -->
-                <div class="bg-slate-900 border-2 border-slate-700 hover:border-amber-500/70 transition-all rounded-3xl p-4 sm:p-6 shadow-xl">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-                        
-                        <!-- 左：步骤序号 + 核心大字 + 动作点 (6列) -->
-                        <div class="lg:col-span-6 space-y-3.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center shadow-md shrink-0">
-                                        6
-                                    </span>
-                                    <h3 class="text-2xl sm:text-3xl font-black text-white">按卸车完 · 盖严关门</h3>
-                                </div>
-                                <button onclick="speakText('第六步：卸完复位，等盖板关严再关车门。看物料卸干净了，按下卸车完成按钮。这时候大车开始降下来，料仓后盖板也开始关闭。你可以走出操作室，但必须在安全区等着，亲眼看到料仓盖板彻底关严实了，才能走过去整理车辆、关上后车门！')" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3.5 py-2 rounded-xl text-sm flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-volume-high text-base"></i>
-                                    <span>听语音</span>
-                                </button>
-                            </div>
-
-                            <!-- 口诀高亮条 -->
-                            <div class="bg-slate-800/90 border-l-4 border-amber-400 px-4 py-2.5 rounded-r-xl">
-                                <p class="text-lg sm:text-xl font-black text-amber-300">卸空按【卸车完成】，等大坑盖板彻底关严实了，再去关车后门！</p>
-                            </div>
-
-                            <!-- 动作三要点 -->
-                            <div class="space-y-2">
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-circle-check text-emerald-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">看料卸净后，按【卸车完成】按钮（大板下降、盖板关闭）</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-hourglass-half text-amber-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">可走出操作室，但必须【等料仓盖板完全关闭到位】</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-lock text-sky-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">盖板彻底关严后，再上前【清理车尾、锁好后车门】</span>
-                                    </div>
-                                
-                            </div>
-
-                            <!-- 安全红线警示 -->
-                            <div class="bg-rose-950/60 border border-rose-500/60 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-rose-200 text-sm sm:text-base font-bold">
-                                <i class="fa-solid fa-circle-exclamation text-rose-400 text-lg shrink-0"></i>
-                                <span>料仓大盖板还没完全合上之前，车尾下方是大坑，严禁靠近车尾关门！</span>
-                            </div>
-                        </div>
-
-                        <!-- 右：直观SVG示意图 (6列) -->
-                        <div class="lg:col-span-6 bg-slate-950 rounded-2xl border border-slate-800 p-3 flex flex-col items-center justify-center">
-                            
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 地面与料仓坑口 -->
-                        <rect x="15" y="175" width="160" height="14" fill="#334155"></rect>
-                        <rect x="175" y="175" width="145" height="55" fill="#090d16" stroke="#ef4444" stroke-width="3"></rect>
-                        <text x="247" y="212" text-anchor="middle" fill="#f87171" font-size="14" font-weight="900">料仓深坑</text>
-                        <rect x="320" y="175" width="185" height="14" fill="#334155"></rect>
-
-                        <!-- 料仓后盖板状态 -->
-                        
-                            <!-- 完全关闭水平盖严 -->
-                            <rect x="172" y="166" width="152" height="12" rx="4" fill="#10b981" stroke="#fff" stroke-width="2"></rect>
-                            <text x="247" y="152" text-anchor="middle" fill="#34d399" font-size="16" font-weight="900">✅ 料仓盖板已完全关严！</text>
-                        
-
-                        <!-- 货车已降平 -->
-                        <g transform="translate(310, 92)">
-                            <rect x="0" y="0" width="125" height="56" rx="5" fill="#2563eb"></rect>
-                            <path d="M128 14 L165 14 L175 38 L175 56 L128 56 Z" fill="#f59e0b"></path>
-                            <circle cx="30" cy="68" r="14" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                            <circle cx="145" cy="68" r="14" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                            <text x="62" y="34" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">
-                                现在去关后车门
-                            </text>
-                        </g>
-
-                        <!-- 司机位置提示 -->
-                        <g transform="translate(25, 45)">
-                            <rect x="0" y="0" width="150" height="82" rx="12" fill="#1e293b" stroke="#10b981" stroke-width="3"></rect>
-                            <text x="75" y="32" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">
-                                ✅ 第2步：去关车门
-                            </text>
-                            <text x="75" y="60" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">
-                                盖板严实了，安全！
-                            </text>
-                        </g>
-                    </svg>
-                            <button onclick="jumpToSimStep(5)" class="mt-2 text-xs sm:text-sm text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-hand-pointer"></i>
-                                <span>点此进入第 6 步互动模拟演练 ➔</span>
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- 步骤之间的向下大箭头（最后一步不显示） -->
-                
-                    <div class="flex justify-center py-1">
-                        <div class="w-10 h-10 rounded-full bg-amber-500/20 border-2 border-amber-500 text-amber-400 flex items-center justify-center arrow-bounce">
-                            <i class="fa-solid fa-arrow-down text-xl"></i>
-                        </div>
-                    </div>
-                
-            
-                <!-- 单步大卡片 -->
-                <div class="bg-slate-900 border-2 border-slate-700 hover:border-amber-500/70 transition-all rounded-3xl p-4 sm:p-6 shadow-xl">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
-                        
-                        <!-- 左：步骤序号 + 核心大字 + 动作点 (6列) -->
-                        <div class="lg:col-span-6 space-y-3.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center shadow-md shrink-0">
-                                        7
-                                    </span>
-                                    <h3 class="text-2xl sm:text-3xl font-black text-white">看屏慢走 · 挡落驶离</h3>
-                                </div>
-                                <button onclick="speakText('第七步：看左屏幕，等后挡落平再开走。关好车后门回到驾驶室，挂前进挡慢慢往前开，同时眼睛盯着左边的电视监控。一直看到后轮挡板完全落平趴下了，就可以安心加速开出卸车室了。祝您一路平安！')" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3.5 py-2 rounded-xl text-sm flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-volume-high text-base"></i>
-                                    <span>听语音</span>
-                                </button>
-                            </div>
-
-                            <!-- 口诀高亮条 -->
-                            <div class="bg-slate-800/90 border-l-4 border-amber-400 px-4 py-2.5 rounded-r-xl">
-                                <p class="text-lg sm:text-xl font-black text-amber-300">上车慢往前开，盯紧左边电视：看到后轮挡板彻底趴平了，再开走！</p>
-                            </div>
-
-                            <!-- 动作三要点 -->
-                            <div class="space-y-2">
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-truck text-sky-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">上车挂前进挡，【缓慢往前开】</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-tv text-amber-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">眼睛盯着【左侧监视器】看后轮挡板</span>
-                                    </div>
-                                
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid fa-road text-emerald-400 text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">确认【后轮挡板完全落下趴平】后，安全驶离！</span>
-                                    </div>
-                                
-                            </div>
-
-                            <!-- 安全红线警示 -->
-                            <div class="bg-rose-950/60 border border-rose-500/60 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-rose-200 text-sm sm:text-base font-bold">
-                                <i class="fa-solid fa-circle-exclamation text-rose-400 text-lg shrink-0"></i>
-                                <span>后轮挡板没完全落下前，千万别猛踩油门硬冲，确认落平后再开走！</span>
-                            </div>
-                        </div>
-
-                        <!-- 右：直观SVG示意图 (6列) -->
-                        <div class="lg:col-span-6 bg-slate-950 rounded-2xl border border-slate-800 p-3 flex flex-col items-center justify-center">
-                            
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 左侧监视器放大框 -->
-                        <rect x="16" y="18" width="245" height="195" rx="14" fill="#090d16" stroke="#38bdf8" stroke-width="4"></rect>
-                        <rect x="16" y="18" width="245" height="32" rx="10" fill="#0284c7"></rect>
-                        <text x="138" y="39" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">📺 盯紧左侧监视器</text>
-
-                        <!-- 监控内地面与后挡板 -->
-                        <rect x="30" y="172" width="215" height="10" fill="#475569"></rect>
-                        
-                            <rect x="85" y="164" width="65" height="9" rx="3" fill="#10b981" stroke="#fff" stroke-width="2"></rect>
-                            <text x="138" y="135" text-anchor="middle" fill="#34d399" font-size="17" font-weight="900">✅ 后挡已完全落下趴平</text>
-                        
-
-                        <!-- 右侧：货车往前驶离 -->
-                        <rect x="275" y="175" width="230" height="12" rx="3" fill="#334155"></rect>
-                        <g transform="translate(285, 92)">
-                            <rect x="0" y="0" width="125" height="56" rx="5" fill="#2563eb"></rect>
-                            <path d="M128 14 L165 14 L175 38 L175 56 L128 56 Z" fill="#f59e0b"></path>
-                            <circle cx="30" cy="68" r="14" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                            <circle cx="145" cy="68" r="14" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                            <text x="62" y="34" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">缓慢往前开 ➔</text>
-                        </g>
-
-                        <!-- 驶离指示 -->
-                        <path d="M310 55 L445 55" stroke="#10b981" stroke-width="8" stroke-linecap="round"></path>
-                        <polygon points="445,44 468,55 445,66" fill="#10b981"></polygon>
-                        <text x="390" y="38" text-anchor="middle" fill="#34d399" font-size="16" font-weight="900">
-                            🎉 确认趴平，安全驶离！
-                        </text>
-                    </svg>
-                            <button onclick="jumpToSimStep(6)" class="mt-2 text-xs sm:text-sm text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-hand-pointer"></i>
-                                <span>点此进入第 7 步互动模拟演练 ➔</span>
-                            </button>
-                        </div>
-
-                    </div>
-                </div>
-
-                <!-- 步骤之间的向下大箭头（最后一步不显示） -->
-                
-                    <div class="bg-emerald-950/80 border-2 border-emerald-500 rounded-3xl p-5 text-center mt-4">
-                        <div class="text-2xl sm:text-3xl font-black text-emerald-300 mb-1">
-                            🎉 卸车全部完成，祝各位司机师傅一路顺风！
-                        </div>
-                        <p class="text-emerald-200/80 font-bold text-sm sm:text-base">如有拿不准的情况，请随时在操作室呼叫现场工作人员协助</p>
-                    </div>
-                
-            </div>
+            <div id="flowchart-container" class="space-y-3"></div>
         </div>
 
         <!-- ==================== 视图 2：手把手互动演练（分步模拟器） ==================== -->
@@ -1538,34 +207,8 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             <!-- 顶部步骤进度球 -->
             <div class="bg-slate-900 border border-slate-700 rounded-3xl p-4 mb-5 shadow-lg">
                 <div class="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto pb-1" id="sim-stepper">
-                <button onclick="selectSimStep(0)" class="flex items-center gap-2 px-3 py-2 rounded-2xl font-black text-sm sm:text-base transition-all shrink-0 bg-amber-500 text-slate-950 shadow-lg scale-105">
-                    <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs bg-slate-950 text-amber-400">1</span>
-                    <span>等空房</span>
-                </button>
-                <button onclick="selectSimStep(1)" class="flex items-center gap-2 px-3 py-2 rounded-2xl font-black text-sm sm:text-base transition-all shrink-0 bg-slate-800 text-slate-400 hover:text-white">
-                    <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs bg-slate-700 text-slate-300">2</span>
-                    <span>看右前灯</span>
-                </button>
-                <button onclick="selectSimStep(2)" class="flex items-center gap-2 px-3 py-2 rounded-2xl font-black text-sm sm:text-base transition-all shrink-0 bg-slate-800 text-slate-400 hover:text-white">
-                    <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs bg-slate-700 text-slate-300">3</span>
-                    <span>看左电视</span>
-                </button>
-                <button onclick="selectSimStep(3)" class="flex items-center gap-2 px-3 py-2 rounded-2xl font-black text-sm sm:text-base transition-all shrink-0 bg-slate-800 text-slate-400 hover:text-white">
-                    <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs bg-slate-700 text-slate-300">4</span>
-                    <span>绕看前轮</span>
-                </button>
-                <button onclick="selectSimStep(4)" class="flex items-center gap-2 px-3 py-2 rounded-2xl font-black text-sm sm:text-base transition-all shrink-0 bg-slate-800 text-slate-400 hover:text-white">
-                    <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs bg-slate-700 text-slate-300">5</span>
-                    <span>进屋按键</span>
-                </button>
-                <button onclick="selectSimStep(5)" class="flex items-center gap-2 px-3 py-2 rounded-2xl font-black text-sm sm:text-base transition-all shrink-0 bg-slate-800 text-slate-400 hover:text-white">
-                    <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs bg-slate-700 text-slate-300">6</span>
-                    <span>按卸车完</span>
-                </button>
-                <button onclick="selectSimStep(6)" class="flex items-center gap-2 px-3 py-2 rounded-2xl font-black text-sm sm:text-base transition-all shrink-0 bg-slate-800 text-slate-400 hover:text-white">
-                    <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs bg-slate-700 text-slate-300">7</span>
-                    <span>看屏慢走</span>
-                </button></div>
+                    <!-- JS生成1-7步骤球 -->
+                </div>
             </div>
 
             <!-- 互动演练主舞台 -->
@@ -1574,7 +217,7 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                 <div class="bg-slate-800/90 px-5 py-4 border-b border-slate-700 flex flex-wrap items-center justify-between gap-3">
                     <div class="flex items-center gap-3">
                         <span id="sim-step-badge" class="px-4 py-1.5 rounded-2xl bg-amber-500 text-slate-950 font-black text-lg">第 1 步</span>
-                        <h2 id="sim-step-title" class="text-2xl sm:text-3xl font-black text-white">等空房 · 看落杆</h2>
+                        <h2 id="sim-step-title" class="text-2xl sm:text-3xl font-black text-white">等空房、看落杆</h2>
                     </div>
                     <button onclick="speakCurrentSimStep()" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-4 py-2.5 rounded-2xl text-base flex items-center gap-2">
                         <i class="fa-solid fa-volume-high text-xl"></i>
@@ -1588,60 +231,12 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                     <!-- 左侧：超大可视化动态图解舞台 (7列) -->
                     <div class="lg:col-span-7 bg-slate-950 rounded-3xl border-2 border-slate-800 p-4 flex flex-col items-center justify-center relative min-h-[290px] sm:min-h-[340px]">
                         <div id="sim-svg-stage" class="w-full h-full flex items-center justify-center">
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 背景地面 -->
-                        <rect x="10" y="185" width="500" height="12" rx="4" fill="#334155"></rect>
-                        <!-- 卸车室房屋框架 -->
-                        <rect x="210" y="30" width="270" height="155" rx="8" fill="#1e293b" stroke="#10b981" stroke-width="4" stroke-dasharray="10 6"></rect>
-                        <text x="345" y="60" text-anchor="middle" fill="#94a3b8" font-size="16" font-weight="bold">卸车室内部</text>
-
-                        <!-- 室内状态：无车 vs 有车 -->
-                        
-                            <circle cx="345" cy="115" r="28" fill="#065f46" stroke="#10b981" stroke-width="3"></circle>
-                            <text x="345" y="122" text-anchor="middle" fill="#34d399" font-size="18" font-weight="900">空房无车</text>
-                        
-
-                        <!-- 入口道闸杆 -->
-                        <rect x="200" y="120" width="14" height="65" fill="#f59e0b"></rect>
-                        
-                            <!-- 落下状态 -->
-                            <rect x="145" y="125" width="65" height="10" rx="4" fill="#ef4444" stroke="#fff" stroke-width="2"></rect>
-                            <text x="175" y="112" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">入口杆已落</text>
-                        
-
-                        <!-- 出口道闸杆 -->
-                        <rect x="476" y="120" width="14" height="65" fill="#f59e0b"></rect>
-                        <rect x="440" y="125" width="46" height="10" rx="4" fill="#ef4444" stroke="#fff" stroke-width="2"></rect>
-                        <text x="465" y="112" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">出口杆已落</text>
-
-                        <!-- 等待区大货车 -->
-                        <g transform="translate(18, 105)">
-                            <rect x="0" y="10" width="75" height="48" rx="4" fill="#3b82f6"></rect>
-                            <path d="M77 22 L105 22 L115 40 L115 58 L77 58 Z" fill="#f59e0b"></path>
-                            <rect x="92" y="27" width="16" height="14" rx="2" fill="#0f172a"></rect>
-                            <circle cx="22" cy="65" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                            <circle cx="58" cy="65" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                            <circle cx="96" cy="65" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"></circle>
-                            <text x="37" y="40" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">等待区</text>
-                        </g>
-
-                        <!-- 行驶指示箭头 -->
-                        
-                            <path d="M145 160 L195 160" stroke="#10b981" stroke-width="6" stroke-linecap="round"></path>
-                            <polygon points="195,152 210,160 195,168" fill="#10b981"></polygon>
-                            <text x="175" y="180" text-anchor="middle" fill="#34d399" font-size="13" font-weight="900">慢速驶入</text>
-                        
-                    </svg></div>
+                            <!-- 动态SVG插入处 -->
+                        </div>
                         <!-- 情景互动切换条 -->
                         <div id="sim-interactive-controls" class="w-full mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-center gap-2.5">
-                    <button onclick="setSimSubState('ok')" class="ind-btn px-4 py-2.5 rounded-xl font-black text-sm sm:text-base transition-all bg-emerald-500 text-slate-950 ring-4 ring-white/40">
-                        ✅ 可进：无车 + 双杆落下
-                    </button>
-                
-                    <button onclick="setSimSubState('no')" class="ind-btn px-4 py-2.5 rounded-xl font-black text-sm sm:text-base transition-all bg-slate-800 text-slate-300 hover:bg-slate-700">
-                        ❌ 禁进：里面有车 / 杆未落
-                    </button>
-                </div>
+                            <!-- 动态情景切换按钮 -->
+                        </div>
                     </div>
 
                     <!-- 右侧：大字口诀 + 傻瓜式动作清单 (5列) -->
@@ -1649,54 +244,102 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                         <!-- 核心口诀卡 -->
                         <div class="bg-amber-500/15 border-2 border-amber-500/40 rounded-2xl p-4">
                             <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">记住这一句</div>
-                            <div id="sim-slogan" class="text-2xl sm:text-3xl font-black text-amber-300 leading-snug">屋里没车、前后杆都落下，再慢点开进去！</div>
+                            <div id="sim-slogan" class="text-2xl sm:text-3xl font-black text-amber-300 leading-snug"></div>
                         </div>
 
                         <!-- 具体动作分解 -->
                         <div class="space-y-3" id="sim-action-list">
-                <div class="flex items-center gap-3.5 bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700">
-                    <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-square-parking text-sky-400 text-xl"></i>
-                    </div>
-                    <span class="text-lg sm:text-xl font-black text-white leading-snug">先把车停在【等待区】等着</span>
-                </div>
-            
-                <div class="flex items-center gap-3.5 bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700">
-                    <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-eye text-amber-400 text-xl"></i>
-                    </div>
-                    <span class="text-lg sm:text-xl font-black text-white leading-snug">看里面【没车】，且进出口【两根杆子都落下关闭】</span>
-                </div>
-            
-                <div class="flex items-center gap-3.5 bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700">
-                    <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center shrink-0">
-                        <i class="fa-solid fa-truck-moving text-emerald-400 text-xl"></i>
-                    </div>
-                    <span class="text-lg sm:text-xl font-black text-white leading-snug">确认好后，缓慢开进卸车室</span>
-                </div>
-            </div>
+                            <!-- 动态动作列表 -->
+                        </div>
+
+                        <!-- 对应步骤实景照片展示区（第3、4、5步自动显示） -->
+                        <div id="sim-photo-box" class="hidden"></div>
 
                         <!-- 特别安全红线提醒 -->
                         <div id="sim-warning-box" class="bg-rose-950/80 border-2 border-rose-500 rounded-2xl p-4 flex items-start gap-3">
                             <i class="fa-solid fa-triangle-exclamation text-rose-400 text-2xl shrink-0 mt-0.5"></i>
-                            <div id="sim-warning-text" class="text-base sm:text-lg font-bold text-rose-200 leading-snug">只要里面还有车，或者进出杆子没落下，千万别往里闯！</div>
+                            <div id="sim-warning-text" class="text-base sm:text-lg font-bold text-rose-200 leading-snug"></div>
                         </div>
                     </div>
                 </div>
 
                 <!-- 底部上一页/下一页超大导航按钮 -->
                 <div class="bg-slate-800/80 px-5 py-4 border-t border-slate-700 flex items-center justify-between gap-4">
-                    <button id="btn-prev" onclick="changeSimStep(-1)" class="ind-btn flex-1 sm:flex-initial px-6 py-3.5 rounded-2xl bg-slate-700 hover:bg-slate-600 text-white font-black text-lg flex items-center justify-center gap-2 disabled:opacity-40" disabled="">
+                    <button id="btn-prev" onclick="changeSimStep(-1)" class="ind-btn flex-1 sm:flex-initial px-6 py-3.5 rounded-2xl bg-slate-700 hover:bg-slate-600 text-white font-black text-lg flex items-center justify-center gap-2 disabled:opacity-40">
                         <i class="fa-solid fa-arrow-left"></i>
                         <span>上一步</span>
                     </button>
-                    <div id="sim-progress-text" class="hidden sm:block text-slate-400 font-bold text-base">第 1 / 7 步</div>
-                    <button id="btn-next" onclick="changeSimStep(1)" class="ind-btn flex-1 sm:flex-initial px-8 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-lg flex items-center justify-center gap-2"><span>下一步</span><i class="fa-solid fa-arrow-right"></i></button>
+                    <div id="sim-progress-text" class="hidden sm:block text-slate-400 font-bold text-base">
+                        第 1 / 7 步
+                    </div>
+                    <button id="btn-next" onclick="changeSimStep(1)" class="ind-btn flex-1 sm:flex-initial px-8 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-lg flex items-center justify-center gap-2">
+                        <span>下一步</span>
+                        <i class="fa-solid fa-arrow-right"></i>
+                    </button>
                 </div>
             </div>
         </div>
 
+        <!-- 底部企业信息与紧急联系栏（含最底部不起眼的导出按钮） -->
+        <footer class="mt-8 bg-slate-900 border-2 border-slate-800 rounded-3xl p-5 text-center space-y-3 shadow-lg">
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5">
+                <div class="bg-white rounded-lg p-1 h-8 px-2 flex items-center justify-center">
+                    <img src="容实LOGO.png" alt="RunShark LOGO" class="h-full w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                    <span class="hidden text-slate-950 font-black text-xs tracking-tighter">RunShark</span>
+                </div>
+                <div class="text-amber-400 font-black text-lg sm:text-xl flex items-center justify-center gap-2">
+                    <span>河南容实重型装备有限公司 · 自动化汽车卸车机操作流程</span>
+                </div>
+            </div>
+            <div class="flex flex-col md:flex-row items-center justify-center gap-3 pt-1">
+                <div class="bg-rose-600/20 border-2 border-rose-500 text-rose-300 px-4 py-2 rounded-2xl font-black text-sm sm:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-hand-fist text-rose-400 text-lg animate-pulse"></i>
+                    <span>遇突发情况：请立即拍下<strong class="text-white underline mx-1">【急停按钮】</strong></span>
+                </div>
+                <div class="bg-sky-500/15 border-2 border-sky-400/60 text-sky-200 px-4 py-2 rounded-2xl font-black text-sm sm:text-base flex items-center gap-2">
+                    <i class="fa-solid fa-microphone-lines text-sky-400 text-lg"></i>
+                    <span>有设备疑问：请联系<strong class="text-amber-300 mx-1">当班工作人员</strong>或用<strong class="text-emerald-300 mx-1">【语音话筒】</strong>与中控室对话</span>
+                </div>
+            </div>
+            <!-- 最底部不起眼的单文件与PDF导出入口 -->
+            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-end gap-3 no-print">
+                <button onclick="exportPageToPdf()" class="text-[11px] text-slate-500 hover:text-amber-400 transition-colors flex items-center gap-1 px-2 py-0.5 rounded" title="导出彩色图文PDF文档">
+                    <i class="fa-solid fa-file-pdf text-[10px]"></i>
+                    <span>导出 PDF</span>
+                </button>
+                <button onclick="downloadIndexHtml()" class="text-[11px] text-slate-600 hover:text-slate-400 transition-colors flex items-center gap-1 px-2 py-0.5 rounded" title="管理员工具：导出单文件 index.html">
+                    <i class="fa-solid fa-code text-[10px]"></i>
+                    <span>导出 index.html</span>
+                </button>
+            </div>
+        </footer>
+
     </main>
+
+    <!-- 实景图片全屏放大查看器 (Lightbox) -->
+    <div id="photo-lightbox" class="fixed inset-0 z-50 hidden bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-6" onclick="closePhotoLightbox()">
+        <div class="max-w-4xl w-full bg-slate-900 border-2 border-amber-500 rounded-3xl overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
+            <div class="bg-slate-800 px-5 py-3.5 border-b border-slate-700 flex items-center justify-between gap-2">
+                <div class="flex items-center gap-2">
+                    <span id="lightbox-badge" class="bg-amber-500 text-slate-950 font-black px-3 py-1 rounded-lg text-xs sm:text-sm">实景大图</span>
+                    <h3 id="lightbox-title" class="text-base sm:text-xl font-black text-white"></h3>
+                </div>
+                <button onclick="closePhotoLightbox()" class="w-9 h-9 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-lg flex items-center justify-center">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+            <div class="bg-black flex items-center justify-center max-h-[68vh] overflow-hidden p-2">
+                <img id="lightbox-img" src="" alt="现场实景大图" class="max-h-[65vh] w-auto object-contain rounded-xl">
+            </div>
+            <div class="p-4 sm:p-5 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+                <p id="lightbox-desc" class="text-slate-200 font-bold text-sm sm:text-base leading-relaxed"></p>
+                <button id="lightbox-voice-btn" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-4 py-2 rounded-xl text-sm shrink-0 flex items-center gap-1.5">
+                    <i class="fa-solid fa-volume-high"></i>
+                    <span>听看图要点</span>
+                </button>
+            </div>
+        </div>
+    </div>
 
     <!-- 语音播报状态浮动提示框 -->
     <div id="voice-toast" class="fixed bottom-5 right-5 z-50 hidden bg-amber-400 text-slate-950 px-5 py-3 rounded-2xl font-black shadow-2xl border-2 border-white items-center gap-3">
@@ -1711,118 +354,317 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         <span id="action-toast-text">操作成功！</span>
     </div>
 
-    <!-- ==================== 导出 index.html & 生成微信二维码专属链接 弹窗 ==================== -->
-    <div id="deploy-modal" class="fixed inset-0 z-50 bg-slate-950/85 backdrop-blur-sm flex items-center justify-center p-3 sm:p-6 overflow-y-auto hidden">
-        <div class="bg-slate-900 border-2 border-amber-500 rounded-3xl max-w-4xl w-full overflow-hidden shadow-2xl my-auto">
-            <!-- 弹窗头部 -->
-            <div class="bg-slate-800 px-5 py-4 border-b border-slate-700 flex items-center justify-between">
-                <div class="flex items-center gap-2.5">
-                    <i class="fa-solid fa-qrcode text-amber-400 text-2xl"></i>
-                    <h3 class="text-xl sm:text-2xl font-black text-white">导出 index.html 与生成微信扫码立牌（3步搞定）</h3>
-                </div>
-                <button onclick="closeDeployModal()" class="w-10 h-10 rounded-xl bg-slate-700 hover:bg-rose-500 text-white font-black text-lg flex items-center justify-center transition-colors">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-
-            <!-- 弹窗主体内容 -->
-            <div class="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 max-h-[82vh] overflow-y-auto">
-                
-                <!-- 左侧：三步傻瓜式操作教程 (7列) -->
-                <div class="lg:col-span-7 space-y-4">
-                    
-                    <!-- 第一步：下载 index.html -->
-                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4">
-                        <div class="flex items-center gap-2 text-amber-400 font-black text-lg mb-2">
-                            <span class="w-7 h-7 rounded-full bg-amber-500 text-slate-950 text-sm flex items-center justify-center">1</span>
-                            <span>第一步：保存单文件 `index.html` 到电脑</span>
-                        </div>
-                        <p class="text-slate-300 text-sm mb-3">
-                            所有图形、语音和交互代码已打包在同一个文件里，点击下方按钮直接下载保存：
-                        </p>
-                        <div class="flex flex-wrap gap-2.5">
-                            <button onclick="downloadIndexHtml()" class="ind-btn bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2.5 rounded-xl text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-file-arrow-down text-lg"></i>
-                                <span>一键下载 index.html 文件</span>
-                            </button>
-                            <button onclick="copyFullHtmlCode()" class="ind-btn bg-slate-700 hover:bg-slate-600 text-white font-bold px-4 py-2.5 rounded-xl text-sm flex items-center gap-2">
-                                <i class="fa-solid fa-copy"></i>
-                                <span>备用：复制完整代码</span>
-                            </button>
-                        </div>
-                    </div>
-
-                    <!-- 第二步：获取专属链接 -->
-                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4 space-y-2.5">
-                        <div class="flex items-center gap-2 text-amber-400 font-black text-lg">
-                            <span class="w-7 h-7 rounded-full bg-amber-500 text-slate-950 text-sm flex items-center justify-center">2</span>
-                            <span>第二步：把 `index.html` 变成专属链接（3选1）</span>
-                        </div>
-                        <div class="space-y-2 text-sm text-slate-200">
-                            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
-                                <div class="font-black text-emerald-400 mb-1">🔥 方法 A（最快·零代码拖拽）：使用 EdgeOne / Netlify Drop</div>
-                                <p class="text-slate-300 text-xs leading-relaxed">
-                                    电脑浏览器打开 <code class="bg-slate-800 px-1.5 py-0.5 rounded text-amber-300">app.netlify.com/drop</code> 或腾讯云静态托管，把刚才下载的 <strong class="text-white">index.html</strong> 放进一个新建文件夹拖进去，<strong>10秒钟自动生成</strong>形如 <code class="text-sky-300">https://xxx.netlify.app</code> 的专属链接。
-                                </p>
-                            </div>
-                            <div class="bg-slate-900 p-3 rounded-xl border border-slate-800">
-                                <div class="font-black text-sky-400 mb-1">🏢 方法 B（最稳·国内秒开）：放入公司服务器或云存储</div>
-                                <p class="text-slate-300 text-xs leading-relaxed">
-                                    把 <strong class="text-white">index.html</strong> 发给公司 IT 人员，放到公司网站目录下或阿里云 OSS / 腾讯云 COS 桶中，即可获得公司域名的专属链接。
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- 第三步：输入链接生成二维码 -->
-                    <div class="bg-slate-950 border border-slate-800 rounded-2xl p-4">
-                        <div class="flex items-center gap-2 text-amber-400 font-black text-lg mb-2">
-                            <span class="w-7 h-7 rounded-full bg-amber-500 text-slate-950 text-sm flex items-center justify-center">3</span>
-                            <span>第三步：粘贴专属链接，右侧实时生成扫码立牌</span>
-                        </div>
-                        <div class="flex gap-2">
-                            <input id="qr-url-input" type="text" value="https://your-company.com/driver-guide/index.html" oninput="renderQrCode()" placeholder="粘贴您的 https:// 专属网址..." class="flex-1 bg-slate-900 border-2 border-slate-700 focus:border-amber-400 rounded-xl px-3.5 py-2 text-sm text-white outline-none font-mono">
-                            <button onclick="renderQrCode()" class="ind-btn bg-amber-500 text-slate-950 font-black px-4 py-2 rounded-xl text-sm shrink-0">
-                                生成二维码
-                            </button>
-                        </div>
-                    </div>
-
-                </div>
-
-                <!-- 右侧：可直接截图打印的【候车区微信扫码立牌】 (5列) -->
-                <div class="lg:col-span-5 flex flex-col items-center justify-center">
-                    <div id="printable-poster" class="bg-gradient-to-b from-amber-400 via-amber-500 to-amber-600 text-slate-950 rounded-3xl p-5 w-full max-w-[310px] shadow-2xl border-4 border-white text-center">
-                        <div class="bg-slate-950 text-amber-400 font-black text-xs py-1 px-3 rounded-full inline-block mb-2">
-                            ⚠️ 进入卸车室前必看
-                        </div>
-                        <h4 class="text-2xl font-black tracking-tight leading-tight">汽车卸车机</h4>
-                        <p class="text-base font-black text-slate-900 mb-3">司机看图 &amp; 语音操作指南</p>
-                        
-                        <!-- 二维码白底容器 -->
-                        <div class="bg-white p-4 rounded-2xl shadow-inner mx-auto flex flex-col items-center justify-center w-[200px] h-[200px]">
-                            <div id="qrcode-box" class="flex items-center justify-center" title="https://your-company.com/driver-guide/index.html"><canvas width="168" height="168" style="display: none;"></canvas><img src="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAKgAAACoCAYAAAB0S6W0AAAJ30lEQVR4AeybW27kNhREDW8g+UvWkOx/KdlDPrODyVwDMjTXh+2S+JRUg9Atluo+WCwIFLrz/tsff/1YZfyAfz16gzKoAfEI69Fjzkl1S1iOjXmJm/HgrjTe3/zPCiysgA268Oa4tbc3G9QuWFoBG3Tp7XFzaND//v3nrfeYKf3vf/79lkdNP6pWVINiiVeL5fXGXM1JPbbGSr2gQUvkX3BPrMAABWzQASK7xHkFbNDz2jlygAI26ACRXeK8ArJB41B9dpxv7637y9qrwz71TRqoPKpFsSpGvQTWug71E3XODspXwmSDlhIYtwI9FZhh0J7rce6bKWCD3mxD77YcG/RuO3qz9SxvUDqI0x6oPIotYWpO4qkvKhRb6kfFe+RUa7fmLW/Q1gt2vmspYINea78e1+21DPq47fGCbVB7YGkFljcovWzQSwDxeihPdQijHqkfiiXeEaxHziP1W3KXN2jLxTrX9RSwQa+3Z4/q2AZ91HZfb7FPMej1dsYdfyggG5QO3ir2UanhH6pL6elFJTCVS7zWWPSTB9XInJgTr4SpmpXiM075VCznejWXDfoqie9ZgV4K2KC9lHXeJgrYoE1kdJJeCtigvZR13iYKoEHjAN57qN1THxRLvNKhXeV+1BH+qPlUHpWktRCvhFHtEjfjFNsayzW3ORp0u+lPKzBbARt09g64/ksFbNCX8vjmbAVs0Nk74PovFXinw/cs7GWnE26SDtQG8eglgmJXw2gtMzE/Qfs5xJkbKGCDNhDRKfopYIP209aZGyhggzYQ0Sn6KfCuHuaJRxi1SjwVowM6xR6pSznVeOLVYLQW6k/lRazKpb4plniEqbHEK2F+gpLSxpZRwAZdZit2jfjyUwEb9FMKX6yogA264q64p08F8JskOrDG4VsZn5m/uaBcFEK9EE/NR7G1GPU4sx9aD/VIPMJmxUYvfoKGCh7LKmCDLrs1biwUsEFDhfuM263EBr3dlt5rQUO+SaIXBjp4E4/kJh7lo9hRGPVDfRNGPRKPagSmxtfwok4eNfkoNjA/QUMFj2UVsEGX3Ro3FgrYoKGCx7IK2KDLbs3gxhYth98kqb0eObjnA7UaS73kXDEnXgkLvjJK8Qquro/6UPLP5tD61J6OxPoJqqpq3hQFbNApsruoqoANqipl3hQFbNApsruoqoANqiplXkmBrrj8VeeRN6/cMcXS2yvxcq7S/EgscVWM6lMs8UZh1A/pTZjaY+tY6jkwP0HVHTFvigI26BTZXVRVwAZVlTJvigI26BTZXVRVAL/qjMNpHmpClZfzx5wO3oErg+qW4ohLtYlHWE0s9ajWoNjAKD5wZVAsYUqu4FDsJyZc+AkqiGTKPAVs0Hnau7KggA0qiGTKPAVs0Hnau7KgABqUDv2ECfmLlJn51NrEI4wWqfIodiZW07caGy9PeZTWjAYtkY1bgdEKFAw6ug3XswKsgA3KuhhdRAEbdJGNcBusAP7cLh9gS3NKSVyVp8bSYVyNjV6OcIO/H2os8QijtRC272G7Jl5g2/39Z+DK2Mds12rfG3//STX397+79hP0O4V8f6oCNuhU+V38OwWaG/S7gr5vBY4oYIMeUcvc4Qrgz+3oYDsCo9VTXTq0U2wJo5zEpToUSzzKR7HEU/NR7N0wP0HvtqM3W48NerMNvdtybNC77ejN1rOQQW+mrJfTRIGlvklSXyJo5Udi1ZeQIzlzTxRLdQmj2Jz/1VyNp9qv8p65RzWovxLmJ+gZ1R0zTAEbdJjULnRGARv0jGqOGaaADTpMahc6o8AQg6oHZeIpiwpOTWyL+MjRavRYC+WkFxNag8qrqUGxgQ0xKC3amBVQFLBBFZXMmaaADTpNehdWFLBBFZXMmaZA1c/tqGs6UBMWB+A8iEc1CKPYEqbGE0/F8tpiTrHUI/EiPg/iBUY5Ccv5jsyjjjIoJ8VRf4E9/AlKUhlbSQEbdKXdcC9fFLBBv0hiYCUFbNCVdsO9fFEADUoH2xrsS9WfQByA86AaP6lf/stxMf9CegEEPw+qrWIvSv1yK9eMOdUIXBkUW8J+aaTBhOooPQeHYkstoUFLZONWYLQCNuhJxR02RgEbdIzOrnJSARv0pHAOG6MA/j9JrUvToZiwOEDnUdML1QiMcua6MR/BoxrRozIoNrDoPQ/KF9w8clxpnuNiTjUIC646/ARVlTJvigI26BTZXVRVwAZVlWrGc6IjCtigR9Qyd7gC+HO7EV3Q4ZsO1DUY1QiMcqprptjImYear4aXa25zyrnd238Sj9ZHvBps38N2XcrnJ2hJGeNLKGCDLrENbqKkgA1aUsb4EgrYoEtsg9bEE1k26BN3/UJrRoNub1b7z9ZrUt8W9z28uqb+qEZglCfwPIhHdQjLuWJOvNY1og4Nql2DUd+EqTWo58DQoGpS86xAbwVs0N4KO3+VAjZolXwO7q2ADdpb4SXyX7cJ/D1oHE7zoCXSoZgwNZZ4PbC8tpi37lvNF7XzUNdMNQKrjY8c+6Hmy+uIOcUGngfxAvMTNFTwWFYBG3TZrXFjoYANGip4LKuADbrs1rixUKDq96D5oFuaR6E8iJs5s+ete6R8+5eR7ZrWvd3bfxLvCEb9ZKw0pzr73rZr4h3B/AQ9opa5wxWwQYdL7oJHFLBBj6hl7nAFbNDhkrvgEQXwm6TtgDv6U22cDu7Uq5qvxKOcVJviVR7FqnWpRmAUT3UIq4mN2nnU1vATlBQ01kCBNils0DY6OksnBWzQTsI6bRsFbNA2OjpLJwXQoPmg22Nes56ag3zUVeNp3Wps1FEG1SCsdd1Sb1S7xM049UgY1SBeYGjQXNhzKzBLARt0lvKuW1Rgf8MG3avh6+UUsEGX2xI3tFdANmgcWM+OfcGj13SgPpoj89WctF6KJYxicx+lOcVSjVK8ilMdFaMaPXqUDUoNGbMCvRWwQXsr7PxVCtigVfI5uLcCxwzauxvntwJJgeUNSof2tIbilGJLGB3wCSsWE26UamdcSPVByXHb/OOm8IfWRxilIt5Wf/9JPMpXwpY3aKlx489QwAZ9xj5fdpU26GW37hmN26DP2OfLrnKUQbsLRIfxI9j+YP/qumYh1A/lIx71RLzA1JzEozrEIyxq56Hmy3Hb/DYGJcGMXV8BG/T6e3jrFdigt97e6y/OBr3+Ht56BbJBt0Prmc8aBaleTb6IVQ/uwc2DYgnLcTFXecHNo1YHqk1Yrluaq7Fq35QvMNmgpUa74y7waAVs0Edv//qLt0HX36NHd2iDPnr71188GjQOp72HKg31ocZegVfzEnFkfWod4hGm1lb3j2oEhgZVi5tnBXorcGeD9tbO+QcoYIMOENklzitgg57XzpEDFLBBB4jsEucV+B8AAP//KWMB9wAAAAZJREFUAwAbUeSd6KgmZgAAAABJRU5ErkJggg==" style="display: block;"></div>
-                        </div>
-
-                        <div class="mt-3 bg-slate-950 text-white rounded-2xl p-2.5 text-left space-y-1 text-xs font-bold">
-                            <div class="flex items-center gap-1.5 text-emerald-400">
-                                <i class="fa-brands fa-weixin text-base"></i>
-                                <span>打开微信【扫一扫】上方二维码</span>
-                            </div>
-                            <div class="text-slate-300">🔊 自带真人语音播报，不用费劲看字</div>
-                            <div class="text-slate-300">📊 7步动图演示，30秒看懂怎么卸车</div>
-                        </div>
-                    </div>
-                    <p class="text-xs text-slate-400 mt-2 text-center font-bold">
-                        💡 生成后可直接截图保存上方黄牌，打印贴在【候车等待区】
-                    </p>
-                </div>
-
-            </div>
-        </div>
-    </div>
-
     <script>
+        // ==================== 现场三张实景图配置（图1、图2为左右前轮前挡，图3为后挡提升到位） ====================
+        const realPhotos = {
+            frontWide: {
+                key: "frontWide",
+                stepBadge: "实景图一 · 对应第 4 步",
+                title: "左右前轮的前挡（侧面全景）",
+                src: "be1431e5402449bea1b377df67d0b81c.jpg",
+                shortTip: "下车绕看左右前轮：黄色前挡挡舌必须停留在两轮中间",
+                desc: "【实景图一：左右前轮的前挡（侧面全景）】下车后绕看左右前轮，确认黄色机械臂上的竖向“前挡挡舌”（两侧带黑色液压油缸）准确停留在前后两个轮胎的中间位置。",
+                tags: ["① 左右前轮前挡", "② 停留在两轮中间", "③ 侧面全景对照"]
+            },
+            frontClose: {
+                key: "frontClose",
+                stepBadge: "实景图二 · 对应第 4 步",
+                title: "左右前轮的前挡（居中近景特写）",
+                src: "ffc504a5fe3b077a201cc4ecc5545c36.jpg",
+                shortTip: "近看黄色前挡挡舌在两轮正中间（红点对齐），即可去开后车门",
+                desc: "【实景图二：左右前轮的前挡（近景特写）】走近观察左右前轮之间：黄色前挡挡舌正好处于两轮空隙的正中央（轮胎与挡舌上的红点标记对齐），不偏左也不偏右，确认停留在中间后立即前往车尾打开后车门！",
+                tags: ["① 前挡挡舌居中", "② 红点标记对齐", "③ 确认后去开后门"]
+            },
+            rearStop: {
+                key: "rearStop",
+                stepBadge: "实景图三 · 对应第 3 步",
+                title: "后挡完全提升到位实景",
+                src: "78e14a6005423bf7d94fefa9c80486f4.jpg",
+                shortTip: "后轮靠近挡板、两块后轮挡板完全垂直升起，即可停车放气下车",
+                desc: "【实景图三：后挡提升到位的照片】倒车观察左侧监控：图中车轮后方两块厚钢板即为“后轮挡板”，当后挡完全垂直提升到位且后轮靠稳后，即可执行停车、放气（断气刹）、下车。（注：车轮上方红白“一路平安”皮帘即为挡泥板）",
+                tags: ["① 后挡完全提升到位", "② 后轮紧靠挡板", "③ 停稳放气下车"]
+            }
+        };
+
+        // 当预览环境未挂载本地 jpg 文件时，使用高还原 Canvas 绘制清晰实景对照图
+        function generateRealisticFallbackCanvas(photoKey) {
+            const canvas = document.createElement("canvas");
+            canvas.width = 640;
+            canvas.height = 460;
+            const ctx = canvas.getContext("2d");
+
+            if (photoKey === "rearStop") {
+                // 还原实景图3：后挡提升到位的照片
+                ctx.fillStyle = "#475569";
+                ctx.fillRect(0, 0, 640, 460);
+                ctx.fillStyle = "#64748b";
+                ctx.fillRect(0, 290, 640, 170);
+                // 右侧矿石料堆
+                ctx.fillStyle = "#1e293b";
+                ctx.beginPath();
+                ctx.moveTo(390, 460);
+                ctx.quadraticCurveTo(480, 240, 640, 270);
+                ctx.lineTo(640, 460);
+                ctx.fill();
+                // 红色车厢大梁
+                ctx.fillStyle = "#991b1b";
+                ctx.fillRect(0, 0, 560, 95);
+                // 后轮轮胎
+                ctx.fillStyle = "#1e293b";
+                ctx.beginPath();
+                ctx.arc(140, 210, 125, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.fillStyle = "#cbd5e1";
+                ctx.beginPath();
+                ctx.arc(140, 210, 65, 0, Math.PI * 2);
+                ctx.fill();
+                // 完全升起的后轮挡板（带黄色磨损漆面）
+                ctx.fillStyle = "#334155";
+                ctx.strokeStyle = "#facc15";
+                ctx.lineWidth = 4;
+                ctx.fillRect(235, 185, 78, 165);
+                ctx.strokeRect(235, 185, 78, 165);
+                ctx.fillStyle = "#eab308";
+                ctx.fillRect(245, 200, 24, 130);
+                // 远端右侧第二个后轮挡板
+                ctx.fillStyle = "#334155";
+                ctx.fillRect(390, 175, 55, 115);
+                ctx.strokeRect(390, 175, 55, 115);
+                // 红色挡泥板 + 白色“一路平安”皮帘
+                ctx.fillStyle = "#dc2626";
+                ctx.fillRect(240, 45, 85, 110);
+                ctx.fillStyle = "#f8fafc";
+                ctx.fillRect(245, 145, 78, 52);
+                ctx.fillStyle = "#dc2626";
+                ctx.font = "bold 18px sans-serif";
+                ctx.fillText("一路平安", 248, 175);
+                // 底部标注说明
+                ctx.fillStyle = "rgba(15,23,42,0.9)";
+                ctx.fillRect(18, 368, 604, 74);
+                ctx.strokeStyle = "#10b981";
+                ctx.strokeRect(18, 368, 604, 74);
+                ctx.fillStyle = "#34d399";
+                ctx.font = "bold 22px sans-serif";
+                ctx.fillText("实景图三：后轮挡板完全提升到位（轮胎紧靠后挡）", 35, 402);
+                ctx.fillStyle = "#fde047";
+                ctx.font = "bold 16px sans-serif";
+                ctx.fillText("确认后挡完全垂直升起并靠稳后 ➔ 停车、放气、下车", 35, 429);
+            } else if (photoKey === "frontWide") {
+                // 还原实景图1：左右前轮的前挡（侧面全景）
+                ctx.fillStyle = "#334155";
+                ctx.fillRect(0, 0, 640, 460);
+                ctx.fillStyle = "#b91c1c";
+                ctx.fillRect(0, 0, 640, 75);
+                // 左右两轮胎
+                ctx.fillStyle = "#1e293b";
+                ctx.strokeStyle = "#64748b";
+                ctx.lineWidth = 8;
+                ctx.beginPath();
+                ctx.arc(175, 220, 115, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                ctx.beginPath();
+                ctx.arc(485, 220, 115, 0, Math.PI * 2);
+                ctx.fill();
+                ctx.stroke();
+                // 底部黄色机械横梁与拖链
+                ctx.fillStyle = "#ca8a04";
+                ctx.fillRect(0, 325, 640, 135);
+                ctx.fillStyle = "#0f172a";
+                ctx.fillRect(10, 350, 320, 28);
+                // 中间黄色前挡挡舌立柱
+                ctx.fillStyle = "#facc15";
+                ctx.strokeStyle = "#ffffff";
+                ctx.lineWidth = 3;
+                ctx.fillRect(298, 120, 52, 205);
+                ctx.strokeRect(298, 120, 52, 205);
+                // 两侧黑色液压油缸
+                ctx.fillStyle = "#0f172a";
+                ctx.fillRect(245, 225, 34, 95);
+                ctx.fillRect(368, 225, 34, 95);
+                // 底部标注说明
+                ctx.fillStyle = "rgba(15,23,42,0.9)";
+                ctx.fillRect(18, 372, 604, 72);
+                ctx.strokeStyle = "#facc15";
+                ctx.strokeRect(18, 372, 604, 72);
+                ctx.fillStyle = "#fde047";
+                ctx.font = "bold 22px sans-serif";
+                ctx.fillText("实景图一：左右前轮的前挡（黄色挡舌在两轮中间）", 35, 405);
+                ctx.fillStyle = "#cbd5e1";
+                ctx.font = "bold 16px sans-serif";
+                ctx.fillText("下车绕看左右前轮，确认黄色前挡挡舌停留在两轮正中间", 35, 432);
+            } else {
+                // 还原实景图2：左右前轮的前挡（近景特写）
+                ctx.fillStyle = "#334155";
+                ctx.fillRect(0, 0, 640, 460);
+                ctx.fillStyle = "#475569";
+                ctx.beginPath();
+                ctx.arc(60, 175, 195, -Math.PI * 0.4, Math.PI * 0.55);
+                ctx.fill();
+                ctx.beginPath();
+                ctx.arc(580, 175, 195, Math.PI * 0.45, Math.PI * 1.4);
+                ctx.fill();
+                // 中间黄色前挡挡舌特写
+                ctx.fillStyle = "#eab308";
+                ctx.strokeStyle = "#fef08a";
+                ctx.lineWidth = 4;
+                ctx.fillRect(268, 15, 96, 345);
+                ctx.strokeRect(268, 15, 96, 345);
+                ctx.fillStyle = "#1e293b";
+                ctx.beginPath();
+                ctx.roundRect(298, 195, 36, 62, 16);
+                ctx.fill();
+                // 红点对齐标记
+                ctx.fillStyle = "#ef4444";
+                ctx.beginPath();
+                ctx.arc(195, 165, 8, 0, Math.PI * 2);
+                ctx.arc(316, 165, 8, 0, Math.PI * 2);
+                ctx.arc(435, 165, 8, 0, Math.PI * 2);
+                ctx.fill();
+                // 底部标注说明
+                ctx.fillStyle = "rgba(15,23,42,0.9)";
+                ctx.fillRect(18, 370, 604, 75);
+                ctx.strokeStyle = "#10b981";
+                ctx.strokeRect(18, 370, 604, 75);
+                ctx.fillStyle = "#34d399";
+                ctx.font = "bold 22px sans-serif";
+                ctx.fillText("实景图二：左右前轮的前挡特写（居中红点对齐）", 35, 405);
+                ctx.fillStyle = "#fde047";
+                ctx.font = "bold 16px sans-serif";
+                ctx.fillText("确认前挡挡舌停留在两轮中间后，立即前往车尾打开后车门", 35, 432);
+            }
+            return canvas.toDataURL("image/png");
+        }
+
+        function handleImgError(imgEl, photoKey) {
+            if (imgEl.dataset.fallbackApplied === "true") return;
+            imgEl.dataset.fallbackApplied = "true";
+            imgEl.src = generateRealisticFallbackCanvas(photoKey);
+        }
+
+        // 渲染顶部三大实景照片速览卡
+        function renderTopPhotoGallery() {
+            const container = document.getElementById("top-photo-gallery");
+            if (!container) return;
+            container.innerHTML = Object.values(realPhotos).map(p => `
+                <div onclick="openPhotoLightbox('${p.key}')" class="group cursor-pointer bg-slate-950 border-2 border-slate-800 hover:border-amber-400 rounded-2xl overflow-hidden transition-all shadow-lg flex flex-col">
+                    <div class="relative h-44 bg-black overflow-hidden flex items-center justify-center">
+                        <img src="${p.src}" data-photo-key="${p.key}" onerror="handleImgError(this, '${p.key}')" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
+                        <span class="absolute top-2.5 left-2.5 bg-amber-500 text-slate-950 font-black text-xs px-2.5 py-1 rounded-lg shadow">
+                            ${p.stepBadge}
+                        </span>
+                        <span class="absolute bottom-2.5 right-2.5 bg-slate-900/90 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-lg border border-sky-500/40 flex items-center gap-1">
+                            <i class="fa-solid fa-magnifying-glass-plus"></i> 点击放大
+                        </span>
+                    </div>
+                    <div class="p-3.5 flex-1 flex flex-col justify-between">
+                        <div>
+                            <h4 class="text-base font-black text-white group-hover:text-amber-300 transition-colors">${p.title}</h4>
+                            <p class="text-xs sm:text-sm text-slate-300 font-bold mt-1 leading-snug">${p.shortTip}</p>
+                        </div>
+                        <div class="flex flex-wrap gap-1.5 mt-2.5">
+                            ${p.tags.map(t => `<span class="bg-slate-800 text-amber-300 text-xs font-bold px-2 py-0.5 rounded">${t}</span>`).join('')}
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // 生成内嵌在具体步骤卡片中的实景照片组件
+        function getStepPhotosHTML(stepId) {
+            if (stepId === 3) {
+                const p = realPhotos.rearStop;
+                return `
+                <div class="mt-3 bg-slate-900/95 border-2 border-emerald-500/50 rounded-2xl p-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs sm:text-sm font-black text-emerald-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-camera"></i> 现场实拍对照：后轮挡板完全升起状态
+                        </span>
+                        <button onclick="openPhotoLightbox('rearStop')" class="text-xs bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-lg font-bold hover:bg-emerald-500 hover:text-slate-950 transition-colors">
+                            <i class="fa-solid fa-expand mr-1"></i>点图放大
+                        </button>
+                    </div>
+                    <div onclick="openPhotoLightbox('rearStop')" class="cursor-pointer grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
+                        <div class="sm:col-span-6 h-36 bg-black rounded-xl overflow-hidden border border-slate-700">
+                            <img src="${p.src}" data-photo-key="rearStop" onerror="handleImgError(this, 'rearStop')" alt="${p.title}" class="w-full h-full object-cover hover:scale-105 transition-transform">
+                        </div>
+                        <div class="sm:col-span-6 space-y-1.5 text-left">
+                            <div class="text-sm font-black text-white">✅ 什么叫“后挡完全提升到位”？</div>
+                            <p class="text-xs text-slate-300 font-bold leading-relaxed">
+                                如左图实拍：车轮后方两块厚钢板<strong class="text-amber-300">完全垂直竖起</strong>，后轮倒车靠稳钢板后，即可停车、断气刹放气、下车。
+                            </p>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            if (stepId === 4) {
+                const p1 = realPhotos.frontWide;
+                const p2 = realPhotos.frontClose;
+                return `
+                <div class="mt-3 bg-slate-900/95 border-2 border-amber-500/60 rounded-2xl p-3">
+                    <div class="flex items-center justify-between mb-2">
+                        <span class="text-xs sm:text-sm font-black text-amber-400 flex items-center gap-1.5">
+                            <i class="fa-solid fa-camera"></i> 现场实拍对照：前挡挡舌停在两轮正中间（远景 + 特写）
+                        </span>
+                        <span class="text-xs text-sky-300 font-bold">点击任意照片放大</span>
+                    </div>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                        <div onclick="openPhotoLightbox('frontWide')" class="cursor-pointer bg-slate-950 rounded-xl p-2 border border-slate-800 hover:border-amber-400 transition-all">
+                            <div class="h-32 bg-black rounded-lg overflow-hidden mb-1.5">
+                                <img src="${p1.src}" data-photo-key="frontWide" onerror="handleImgError(this, 'frontWide')" alt="${p1.title}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="text-xs font-black text-amber-300">① 侧面远景：黄舌伸入两轮之间</div>
+                        </div>
+                        <div onclick="openPhotoLightbox('frontClose')" class="cursor-pointer bg-slate-950 rounded-xl p-2 border border-slate-800 hover:border-emerald-400 transition-all">
+                            <div class="h-32 bg-black rounded-lg overflow-hidden mb-1.5">
+                                <img src="${p2.src}" data-photo-key="frontClose" onerror="handleImgError(this, 'frontClose')" alt="${p2.title}" class="w-full h-full object-cover">
+                            </div>
+                            <div class="text-xs font-black text-emerald-300">② 近景特写：挡舌居中(红点对齐)</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            if (stepId === 5) {
+                const p = realPhotos.rearStop;
+                return `
+                <div class="mt-3 bg-slate-900/95 border border-sky-500/50 rounded-2xl p-3 flex items-center justify-between gap-3">
+                    <div class="flex items-center gap-3">
+                        <img onclick="openPhotoLightbox('rearStop')" src="${p.src}" data-photo-key="rearStop" onerror="handleImgError(this, 'rearStop')" class="w-20 h-14 object-cover rounded-lg border border-slate-700 cursor-pointer shrink-0">
+                        <div class="text-left">
+                            <div class="text-xs sm:text-sm font-black text-sky-300">💡 怎么选【有挡泥板 / 无挡泥板】？</div>
+                            <div class="text-xs text-slate-300 font-bold">看左图：后轮上方有红白“一路平安”皮帘即为【有挡泥板】（点图放大）</div>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            return "";
+        }
+
+        // 打开/关闭实景图全屏放大器
+        let currentLightboxKey = "rearStop";
+        function openPhotoLightbox(photoKey) {
+            currentLightboxKey = photoKey;
+            const p = realPhotos[photoKey];
+            if (!p) return;
+            const modal = document.getElementById("photo-lightbox");
+            const imgEl = document.getElementById("lightbox-img");
+            document.getElementById("lightbox-badge").textContent = p.stepBadge;
+            document.getElementById("lightbox-title").textContent = p.title;
+            document.getElementById("lightbox-desc").textContent = p.desc;
+
+            // 优先使用页面上已加载或替换的图像源
+            const existingImg = document.querySelector(`img[data-photo-key="${photoKey}"]`);
+            imgEl.src = existingImg ? existingImg.src : p.src;
+
+            document.getElementById("lightbox-voice-btn").onclick = () => speakText(p.desc);
+
+            modal.classList.remove("hidden");
+        }
+
+        function closePhotoLightbox() {
+            document.getElementById("photo-lightbox").classList.add("hidden");
+        }
+
         // ==================== 7步核心数据结构（大白话 + 状态分支 + SVG绘制逻辑） ====================
         const stepsData = [
             {
@@ -2345,10 +1187,13 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                             </div>
                         </div>
 
-                        <!-- 右：直观SVG示意图 (6列) -->
+                        <!-- 右：直观SVG示意图 + 现场实景图 (6列) -->
                         <div class="lg:col-span-6 bg-slate-950 rounded-2xl border border-slate-800 p-3 flex flex-col items-center justify-center">
                             ${getStepSVG(step.id, step.defaultSubState)}
-                            <button onclick="jumpToSimStep(${index})" class="mt-2 text-xs sm:text-sm text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
+                            <div class="w-full">
+                                ${getStepPhotosHTML(step.id)}
+                            </div>
+                            <button onclick="jumpToSimStep(${index})" class="mt-3 text-xs sm:text-sm text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
                                 <i class="fa-solid fa-hand-pointer"></i>
                                 <span>点此进入第 ${step.id} 步互动模拟演练 ➔</span>
                             </button>
@@ -2367,9 +1212,11 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                 ` : `
                     <div class="bg-emerald-950/80 border-2 border-emerald-500 rounded-3xl p-5 text-center mt-4">
                         <div class="text-2xl sm:text-3xl font-black text-emerald-300 mb-1">
-                            🎉 卸车全部完成，祝各位司机师傅一路顺风！
+                            🎉 卸车全部完成，河南容实重型装备祝您一路顺风！
                         </div>
-                        <p class="text-emerald-200/80 font-bold text-sm sm:text-base">如有拿不准的情况，请随时在操作室呼叫现场工作人员协助</p>
+                        <p class="text-emerald-200/90 font-bold text-sm sm:text-base">
+                            🚨 遇突发情况请立即拍<strong class="text-rose-400 mx-1">【急停按钮】</strong>；设备疑问请联系<strong class="text-amber-300 mx-1">当班工作人员</strong>或用<strong class="text-sky-300 mx-1">【语音话筒】</strong>与中控室对话
+                        </p>
                     </div>
                 `}
             `).join('');
@@ -2416,6 +1263,17 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
                     <span class="text-lg sm:text-xl font-black text-white leading-snug">${act.text}</span>
                 </div>
             `).join('');
+
+            // 渲染对应步骤的现场实景图（第3、4、5步自动展示）
+            const simPhotoBox = document.getElementById("sim-photo-box");
+            const stepPhotoHtml = getStepPhotosHTML(step.id);
+            if (stepPhotoHtml) {
+                simPhotoBox.innerHTML = stepPhotoHtml;
+                simPhotoBox.classList.remove("hidden");
+            } else {
+                simPhotoBox.innerHTML = "";
+                simPhotoBox.classList.add("hidden");
+            }
 
             // 渲染SVG舞台
             document.getElementById("sim-svg-stage").innerHTML = getStepSVG(step.id, currentSubState);
@@ -2586,10 +1444,8 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
         function getCleanHtmlSource() {
             // 克隆当前文档节点，确保导出的 index.html 初始处于干净的默认状态
             const clone = document.documentElement.cloneNode(true);
-            const modal = clone.querySelector("#deploy-modal");
-            if (modal) {
-                modal.classList.add("hidden");
-            }
+            const lightbox = clone.querySelector("#photo-lightbox");
+            if (lightbox) lightbox.classList.add("hidden");
             const toast1 = clone.querySelector("#voice-toast");
             if (toast1) toast1.classList.add("hidden");
             const toast2 = clone.querySelector("#action-toast");
@@ -2626,42 +1482,38 @@ url:e,reason:"blocked_domain_not_allowlisted"},b.parentOrigin);throw new DOMExce
             showActionToast("✅ 完整 HTML 代码已复制！新建 index.html 粘贴即可");
         }
 
-        function openDeployModal() {
-            const modal = document.getElementById("deploy-modal");
-            modal.classList.remove("hidden");
-            renderQrCode();
-        }
+        // 将当前完整图文流程页导出为 PDF 文件
+        function exportPageToPdf() {
+            // 确保切换到“一张图看懂（含实景图）”全流程视图以导出完整内容
+            switchView('flow');
+            showActionToast("⏳ 正在生成彩色图文 PDF 文档，请稍候...");
 
-        function closeDeployModal() {
-            const modal = document.getElementById("deploy-modal");
-            modal.classList.add("hidden");
-        }
-
-        function renderQrCode() {
-            const container = document.getElementById("qrcode-box");
-            const urlInput = document.getElementById("qr-url-input");
-            if (!container || !urlInput) return;
-            const targetUrl = urlInput.value.trim() || "https://example.com";
-            container.innerHTML = "";
-            if (typeof QRCode !== "undefined") {
-                new QRCode(container, {
-                    text: targetUrl,
-                    width: 168,
-                    height: 168,
-                    colorDark: "#0f172a",
-                    colorLight: "#ffffff",
-                    correctLevel: QRCode.CorrectLevel.M
+            const targetEl = document.body;
+            if (typeof html2pdf !== "undefined") {
+                const opt = {
+                    margin: [5, 5, 5, 5],
+                    filename: "自动化汽车卸车机操作流程-河南容实重型装备有限公司.pdf",
+                    image: { type: "jpeg", quality: 0.98 },
+                    html2canvas: { scale: 2, useCORS: true, backgroundColor: "#0f172a" },
+                    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+                    pagebreak: { mode: ["avoid-all", "css", "legacy"] }
+                };
+                html2pdf().set(opt).from(targetEl).save().then(() => {
+                    showActionToast("✅ PDF 文档已成功生成并开始下载！");
+                }).catch(() => {
+                    window.print();
                 });
             } else {
-                container.innerHTML = `<div class="text-xs text-slate-600 font-bold p-2">二维码组件加载中</div>`;
+                window.print();
             }
         }
 
         // 页面初始化
         window.onload = function () {
+            renderTopPhotoGallery();
             renderFlowchartView();
             renderSimCurrentStep();
         };
     </script>
-
-</body></html>
+</body>
+</html>
