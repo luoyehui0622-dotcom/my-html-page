@@ -2,7 +2,7 @@
 <html lang="zh-CN">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
     <title>自动化汽车卸车机操作流程 - 河南容实重型装备有限公司</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
@@ -10,12 +10,52 @@
     <style>
         @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+SC:wght@500;700;900&display=swap');
         
-        body {
+        :root {
+            --app-height: 100dvh;
+        }
+
+        html, body {
             font-family: 'Noto Sans SC', -apple-system, BlinkMacSystemFont, sans-serif;
             background-color: #0f172a;
             color: #f8fafc;
             user-select: none;
             -webkit-tap-highlight-color: transparent;
+            overscroll-behavior-y: none;
+            height: 100%;
+            overflow: hidden;
+        }
+
+        /* 手机屏幕动态视口容器：自动分配顶置区与滑动内容区 */
+        .app-viewport {
+            height: 100vh;
+            height: var(--app-height, 100dvh);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        /* 顶置区域平滑折叠过渡 */
+        #brand-banner {
+            transition: max-height 0.25s cubic-bezier(0.4, 0, 0.2, 1), opacity 0.2s ease, padding 0.25s ease, margin 0.25s ease;
+            max-height: 160px;
+            overflow: hidden;
+        }
+        #brand-banner.header-collapsed {
+            max-height: 0 !important;
+            opacity: 0 !important;
+            padding-top: 0 !important;
+            padding-bottom: 0 !important;
+            margin-bottom: 0 !important;
+            border-bottom-width: 0 !important;
+        }
+
+        /* 隐藏横向滚动条但保留滑动功能 */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
         }
 
         /* 工业警示条纹背景 */
@@ -23,16 +63,16 @@
             background: repeating-linear-gradient(
                 -45deg,
                 #f59e0b,
-                #f59e0b 14px,
-                #1e293b 14px,
-                #1e293b 28px
+                #f59e0b 12px,
+                #1e293b 12px,
+                #1e293b 24px
             );
         }
 
         /* 呼吸灯动画 */
         @keyframes pulse-glow {
             0%, 100% { filter: drop-shadow(0 0 6px currentColor); transform: scale(1); }
-            50% { filter: drop-shadow(0 0 16px currentColor); transform: scale(1.06); }
+            50% { filter: drop-shadow(0 0 14px currentColor); transform: scale(1.05); }
         }
         .glow-anim {
             animation: pulse-glow 1.6s infinite ease-in-out;
@@ -51,9 +91,9 @@
 
         /* 流程连接箭头动画 */
         @keyframes flow-down {
-            0% { transform: translateY(-4px); opacity: 0.4; }
-            50% { transform: translateY(4px); opacity: 1; }
-            100% { transform: translateY(-4px); opacity: 0.4; }
+            0% { transform: translateY(-3px); opacity: 0.45; }
+            50% { transform: translateY(3px); opacity: 1; }
+            100% { transform: translateY(-3px); opacity: 0.45; }
         }
         .arrow-bounce {
             animation: flow-down 1.5s infinite ease-in-out;
@@ -62,19 +102,25 @@
         /* 拟物化工业按钮 */
         .ind-btn {
             transition: all 0.15s ease;
-            box-shadow: 0 5px 0 rgba(0,0,0,0.45), inset 0 1px 1px rgba(255,255,255,0.3);
+            box-shadow: 0 4px 0 rgba(0,0,0,0.45), inset 0 1px 1px rgba(255,255,255,0.25);
         }
         .ind-btn:active {
-            transform: translateY(4px);
+            transform: translateY(3px);
             box-shadow: 0 1px 0 rgba(0,0,0,0.45);
         }
 
-        /* 打印与导出PDF自适应样式 */
+        /* 打印与导出PDF自适应样式（解除高度锁定） */
         @media print {
-            body {
+            html, body, .app-viewport, #main-scroll-area {
+                height: auto !important;
+                overflow: visible !important;
                 background-color: #0f172a !important;
                 -webkit-print-color-adjust: exact !important;
                 print-color-adjust: exact !important;
+            }
+            #brand-banner {
+                max-height: none !important;
+                opacity: 1 !important;
             }
             .no-print {
                 display: none !important;
@@ -82,19 +128,21 @@
         }
     </style>
 </head>
-<body class="min-h-screen pb-16">
+<body>
 
-    <!-- 顶部工业安全警示条 -->
-    <div class="hazard-stripes h-3 w-full"></div>
+<div id="app-root" class="app-viewport">
 
-    <!-- 顶部标题栏与模式切换 -->
-    <header class="bg-slate-900/95 border-b border-slate-700 sticky top-0 z-40 backdrop-blur-md shadow-xl">
-        <div class="max-w-5xl mx-auto px-4 py-3 flex flex-col gap-3">
-            <!-- 第一行：公司LOGO、公司名称、主标题与联系电话 -->
-            <div class="flex flex-col md:flex-row items-center justify-between gap-3 border-b border-slate-800 pb-3">
-                <div class="flex flex-col sm:flex-row items-center gap-3 text-center sm:text-left">
-                    <!-- 容实重装 RunShark LOGO（优先加载 容实LOGO.png，内置1:1矢量高还原兜底） -->
-                    <div class="bg-white rounded-xl p-1.5 shadow-md flex items-center justify-center shrink-0 h-12 sm:h-14 px-2.5">
+    <!-- ==================== 1. 自适应顶置区域（根据屏幕大小及滑动状态自动缩放） ==================== -->
+    <header id="top-sticky-header" class="bg-slate-900/98 border-b border-slate-700/90 z-40 shrink-0 shadow-xl backdrop-blur-md">
+        <!-- 顶部细安全警示条 -->
+        <div class="hazard-stripes h-1.5 sm:h-2.5 w-full"></div>
+
+        <div class="max-w-5xl mx-auto px-2.5 sm:px-5 pt-2 pb-2">
+            <!-- 第一层：企业品牌与主标题（手机向下滑动时自动折叠收起，释放阅读空间） -->
+            <div id="brand-banner" class="flex items-center justify-between gap-2 border-b border-slate-800 pb-2 mb-2">
+                <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                    <!-- 容实重装 RunShark LOGO -->
+                    <div class="bg-white rounded-lg sm:rounded-xl p-1 shadow flex items-center justify-center shrink-0 h-9 sm:h-12 px-1.5 sm:px-2.5">
                         <img src="容实LOGO.png" alt="河南容实重型装备有限公司 LOGO" class="h-full w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
                         <svg viewBox="0 0 220 140" class="hidden h-full w-auto">
                             <rect x="35" y="10" width="150" height="82" fill="none" stroke="#000000" stroke-width="11"/>
@@ -103,1375 +151,1463 @@
                             <text x="110" y="128" text-anchor="middle" fill="#000000" font-family="Arial Black, Impact, sans-serif" font-weight="900" font-size="31" letter-spacing="0.5">RunShark</text>
                         </svg>
                     </div>
-                    <div class="flex flex-col items-center sm:items-start">
-                        <span class="bg-amber-500 text-slate-950 font-black px-2.5 py-0.5 rounded-md text-xs sm:text-sm tracking-wide shadow mb-1">
-                            河南容实重型装备有限公司
-                        </span>
-                        <h1 class="text-xl sm:text-2xl md:text-3xl font-black text-white tracking-tight">
+                    <div class="min-w-0">
+                        <div class="flex items-center gap-1.5">
+                            <span class="bg-amber-500 text-slate-950 font-black px-1.5 py-0.5 rounded text-[10px] sm:text-xs tracking-wide truncate">
+                                河南容实重型装备有限公司
+                            </span>
+                        </div>
+                        <h1 class="text-base sm:text-xl md:text-2xl font-black text-white tracking-tight truncate mt-0.5">
                             自动化汽车卸车机操作流程
                         </h1>
                     </div>
                 </div>
-                <a href="tel:18937161255" class="ind-btn bg-slate-800 hover:bg-slate-700 border border-amber-500/60 text-amber-400 px-3.5 py-2 rounded-xl font-black text-sm sm:text-base flex items-center gap-2 shrink-0">
-                    <i class="fa-solid fa-phone-volume animate-pulse text-emerald-400"></i>
-                    <span>服务热线：18937161255</span>
-                    <span class="bg-emerald-500 text-slate-950 text-xs px-1.5 py-0.5 rounded font-black">一键拨打</span>
-                </a>
+
+                <!-- 右侧：一键听口诀按钮 -->
+                <button onclick="speakRhyme()" class="ind-btn bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-2.5 sm:px-3.5 py-1.5 sm:py-2 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 shrink-0">
+                    <i class="fa-solid fa-volume-high text-sm sm:text-base"></i>
+                    <span>听口诀</span>
+                </button>
             </div>
 
-            <!-- 第二行：视图切换大按钮 -->
-            <div class="flex items-center justify-center sm:justify-start w-full">
-                <div class="flex bg-slate-800 p-1.5 rounded-2xl border border-slate-700 w-full sm:w-auto">
-                    <button id="tab-flow" onclick="switchView('flow')" class="flex-1 sm:flex-initial px-5 py-2 rounded-xl font-black text-sm sm:text-base flex items-center justify-center gap-2 transition-all bg-amber-500 text-slate-950 shadow-md">
-                        <i class="fa-solid fa-diagram-project"></i>
-                        <span>一张图看懂（含实景图）</span>
+            <!-- 第二层：模式切换 + 手机端折叠展开开关 -->
+            <div class="flex items-center justify-between gap-2">
+                <div class="flex bg-slate-800 p-1 rounded-xl border border-slate-700 flex-1 sm:flex-initial">
+                    <button id="tab-flow" onclick="switchView('flow')" class="flex-1 sm:flex-initial px-3 sm:px-5 py-1.5 rounded-lg font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all bg-amber-500 text-slate-950 shadow">
+                        <i class="fa-solid fa-bars-progress"></i>
+                        <span>一图看懂(含实景)</span>
                     </button>
-                    <button id="tab-sim" onclick="switchView('sim')" class="flex-1 sm:flex-initial px-5 py-2 rounded-xl font-black text-sm sm:text-base flex items-center justify-center gap-2 transition-all text-slate-300 hover:text-white">
+                    <button id="tab-sim" onclick="switchView('sim')" class="flex-1 sm:flex-initial px-3 sm:px-5 py-1.5 rounded-lg font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:text-white">
                         <i class="fa-solid fa-hand-pointer"></i>
                         <span>手把手演练</span>
                     </button>
                 </div>
+
+                <!-- 顶栏手动收起/展开小按钮（方便小屏手机随时切换） -->
+                <button id="btn-toggle-header" onclick="toggleHeaderManual()" class="bg-slate-800 hover:bg-slate-700 text-slate-300 border border-slate-700 px-2.5 py-1.5 rounded-xl text-xs font-bold flex items-center gap-1 shrink-0" title="收起/展开顶部标题">
+                    <i id="icon-toggle-header" class="fa-solid fa-chevron-up text-amber-400"></i>
+                    <span id="text-toggle-header" class="hidden xs:inline">收起顶栏</span>
+                </button>
+            </div>
+
+            <!-- 第三层：1~7步横向速跳导航条（手机一点即达对应步骤，无需盲目翻找） -->
+            <div id="quick-jump-bar" class="flex items-center gap-1.5 overflow-x-auto no-scrollbar pt-2 mt-1.5 border-t border-slate-800/80">
+                <button onclick="scrollToSection('section-rhyme')" id="nav-pill-rhyme" class="nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-amber-500 text-slate-950 transition-all">
+                    口诀
+                </button>
+                <button onclick="scrollToSection('section-photos')" id="nav-pill-photos" class="nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 text-sky-300 border border-sky-500/40 transition-all">
+                    📷实景图
+                </button>
+                <button onclick="quickJumpStep(0)" id="nav-pill-step-1" class="nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition-all">
+                    1.进场
+                </button>
+                <button onclick="quickJumpStep(1)" id="nav-pill-step-2" class="nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition-all">
+                    2.看灯
+                </button>
+                <button onclick="quickJumpStep(2)" id="nav-pill-step-3" class="nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition-all">
+                    3.后挡
+                </button>
+                <button onclick="quickJumpStep(3)" id="nav-pill-step-4" class="nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition-all">
+                    4.前挡
+                </button>
+                <button onclick="quickJumpStep(4)" id="nav-pill-step-5" class="nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition-all">
+                    5.启动
+                </button>
+                <button onclick="quickJumpStep(5)" id="nav-pill-step-6" class="nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition-all">
+                    6.关门
+                </button>
+                <button onclick="quickJumpStep(6)" id="nav-pill-step-7" class="nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition-all">
+                    7.驶离
+                </button>
             </div>
         </div>
     </header>
 
-    <main class="max-w-5xl mx-auto px-3 sm:px-6 pt-5">
+    <!-- ==================== 2. 自适应独立滑动内容区域（自动填满剩余屏幕高度） ==================== -->
+    <main id="main-scroll-area" class="flex-1 overflow-y-auto overscroll-contain scroll-smooth px-2.5 sm:px-6 pt-3 pb-24">
+        <div class="max-w-5xl mx-auto">
 
-        <!-- 朗朗上口：司机7句安全顺口溜横幅 -->
-        <section class="bg-gradient-to-r from-amber-500/20 via-amber-500/10 to-slate-800 border-2 border-amber-500/50 rounded-3xl p-4 sm:p-5 mb-6 shadow-lg">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 mb-3">
-                <div class="flex items-center gap-2">
-                    <span class="bg-amber-500 text-slate-950 font-black px-3 py-1 rounded-full text-sm">好记口诀</span>
-                    <h2 class="text-lg sm:text-xl font-black text-amber-300">卸车七步顺口溜（30秒记住）</h2>
-                </div>
-                <button onclick="speakRhyme()" class="ind-btn bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black px-4 py-2 rounded-xl text-sm flex items-center justify-center gap-2 self-start sm:self-auto">
-                    <i class="fa-solid fa-volume-high text-lg"></i>
-                    <span>语音念口诀</span>
-                </button>
-            </div>
-            <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2.5 text-base sm:text-lg font-bold">
-                <div class="bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">1</span>
-                    <span><strong class="text-amber-400">空房落杆</strong>慢进场</span>
-                </div>
-                <div class="bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">2</span>
-                    <span><strong class="text-emerald-400">绿灯前进</strong><strong class="text-yellow-400">黄灯倒</strong></span>
-                </div>
-                <div class="bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">3</span>
-                    <span>左屏<strong class="text-sky-400">后挡升到底</strong></span>
-                </div>
-                <div class="bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">4</span>
-                    <span><strong class="text-amber-400">舌在轮中</strong>开后门</span>
-                </div>
-                <div class="bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">5</span>
-                    <span><strong class="text-purple-400">选板启动</strong>人别走</span>
-                </div>
-                <div class="bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">6</span>
-                    <span><strong class="text-rose-400">盖板关严</strong>再关门</span>
-                </div>
-                <div class="bg-slate-900/90 px-3.5 py-2 rounded-xl border border-slate-700 flex items-center gap-2 sm:col-span-2">
-                    <span class="w-6 h-6 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">7</span>
-                    <span>往前慢开看左屏，<strong class="text-emerald-400">后挡趴平</strong>安全走！</span>
-                </div>
-            </div>
-        </section>
+            <!-- ==================== 视图 1：一图看懂全流程（针对手机竖屏优化的流式布局） ==================== -->
+            <div id="view-flow">
 
-        <!-- 现场关键部位实景照片速览栏（点图可放大） -->
-        <section class="bg-slate-900 border-2 border-sky-500/50 rounded-3xl p-4 sm:p-5 mb-6 shadow-xl">
-            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 mb-4">
-                <div class="flex items-center gap-2.5">
-                    <span class="bg-sky-400 text-slate-950 font-black px-3 py-1 rounded-full text-xs sm:text-sm flex items-center gap-1">
-                        <i class="fa-solid fa-camera"></i> 现场实拍对照
-                    </span>
-                    <h2 class="text-base sm:text-xl font-black text-white">左右前轮前挡 & 后轮后挡提升到位实景图（点击图片可放大）</h2>
-                </div>
-            </div>
-            <div class="grid grid-cols-1 md:grid-cols-3 gap-4" id="top-photo-gallery">
-                <!-- 由 JS 渲染 3 张现场实景对照卡 -->
-            </div>
-        </section>
-
-        <!-- ==================== 视图 1：一张图看懂全流程（图文大字流程图） ==================== -->
-        <div id="view-flow" class="space-y-2">
-            <!-- 动态生成的7步图文流程图容器 -->
-            <div id="flowchart-container" class="space-y-3"></div>
-        </div>
-
-        <!-- ==================== 视图 2：手把手互动演练（分步模拟器） ==================== -->
-        <div id="view-sim" class="hidden">
-            <!-- 顶部步骤进度球 -->
-            <div class="bg-slate-900 border border-slate-700 rounded-3xl p-4 mb-5 shadow-lg">
-                <div class="flex items-center justify-between gap-1 sm:gap-2 overflow-x-auto pb-1" id="sim-stepper">
-                    <!-- JS生成1-7步骤球 -->
-                </div>
-            </div>
-
-            <!-- 互动演练主舞台 -->
-            <div class="bg-slate-900 border-2 border-slate-700 rounded-3xl overflow-hidden shadow-2xl">
-                <!-- 舞台头部 -->
-                <div class="bg-slate-800/90 px-5 py-4 border-b border-slate-700 flex flex-wrap items-center justify-between gap-3">
-                    <div class="flex items-center gap-3">
-                        <span id="sim-step-badge" class="px-4 py-1.5 rounded-2xl bg-amber-500 text-slate-950 font-black text-lg">第 1 步</span>
-                        <h2 id="sim-step-title" class="text-2xl sm:text-3xl font-black text-white">等空房、看落杆</h2>
-                    </div>
-                    <button onclick="speakCurrentSimStep()" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-4 py-2.5 rounded-2xl text-base flex items-center gap-2">
-                        <i class="fa-solid fa-volume-high text-xl"></i>
-                        <span>听语音讲解</span>
-                    </button>
-                </div>
-
-                <!-- 动态SVG图示区 + 情景切换按钮 -->
-                <div class="p-4 sm:p-6 grid grid-cols-1 lg:grid-cols-12 gap-6 items-center">
-                    
-                    <!-- 左侧：超大可视化动态图解舞台 (7列) -->
-                    <div class="lg:col-span-7 bg-slate-950 rounded-3xl border-2 border-slate-800 p-4 flex flex-col items-center justify-center relative min-h-[290px] sm:min-h-[340px]">
-                        <div id="sim-svg-stage" class="w-full h-full flex items-center justify-center">
-                            <!-- 动态SVG插入处 -->
+                <!-- 司机7句安全顺口溜（手机端紧凑高对比卡片） -->
+                <section id="section-rhyme" class="bg-gradient-to-br from-amber-500/20 via-slate-900 to-slate-900 border-2 border-amber-500/50 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 mb-4 shadow-lg scroll-mt-3">
+                    <div class="flex items-center justify-between gap-2 mb-2.5">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-amber-500 text-slate-950 font-black px-2.5 py-0.5 rounded-full text-xs">30秒速记</span>
+                            <h2 class="text-base sm:text-xl font-black text-amber-300">卸车七步顺口溜</h2>
                         </div>
-                        <!-- 情景互动切换条 -->
-                        <div id="sim-interactive-controls" class="w-full mt-4 pt-3 border-t border-slate-800 flex flex-wrap items-center justify-center gap-2.5">
-                            <!-- 动态情景切换按钮 -->
-                        </div>
-                    </div>
-
-                    <!-- 右侧：大字口诀 + 傻瓜式动作清单 (5列) -->
-                    <div class="lg:col-span-5 flex flex-col justify-between space-y-4">
-                        <!-- 核心口诀卡 -->
-                        <div class="bg-amber-500/15 border-2 border-amber-500/40 rounded-2xl p-4">
-                            <div class="text-xs font-bold text-amber-400 uppercase tracking-wider mb-1">记住这一句</div>
-                            <div id="sim-slogan" class="text-2xl sm:text-3xl font-black text-amber-300 leading-snug"></div>
-                        </div>
-
-                        <!-- 具体动作分解 -->
-                        <div class="space-y-3" id="sim-action-list">
-                            <!-- 动态动作列表 -->
-                        </div>
-
-                        <!-- 对应步骤实景照片展示区（第3、4、5步自动显示） -->
-                        <div id="sim-photo-box" class="hidden"></div>
-
-                        <!-- 特别安全红线提醒 -->
-                        <div id="sim-warning-box" class="bg-rose-950/80 border-2 border-rose-500 rounded-2xl p-4 flex items-start gap-3">
-                            <i class="fa-solid fa-triangle-exclamation text-rose-400 text-2xl shrink-0 mt-0.5"></i>
-                            <div id="sim-warning-text" class="text-base sm:text-lg font-bold text-rose-200 leading-snug"></div>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 底部上一页/下一页超大导航按钮 -->
-                <div class="bg-slate-800/80 px-5 py-4 border-t border-slate-700 flex items-center justify-between gap-4">
-                    <button id="btn-prev" onclick="changeSimStep(-1)" class="ind-btn flex-1 sm:flex-initial px-6 py-3.5 rounded-2xl bg-slate-700 hover:bg-slate-600 text-white font-black text-lg flex items-center justify-center gap-2 disabled:opacity-40">
-                        <i class="fa-solid fa-arrow-left"></i>
-                        <span>上一步</span>
-                    </button>
-                    <div id="sim-progress-text" class="hidden sm:block text-slate-400 font-bold text-base">
-                        第 1 / 7 步
-                    </div>
-                    <button id="btn-next" onclick="changeSimStep(1)" class="ind-btn flex-1 sm:flex-initial px-8 py-3.5 rounded-2xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-lg flex items-center justify-center gap-2">
-                        <span>下一步</span>
-                        <i class="fa-solid fa-arrow-right"></i>
-                    </button>
-                </div>
-            </div>
-        </div>
-
-        <!-- 底部企业信息与紧急联系栏（含最底部不起眼的导出按钮） -->
-        <footer class="mt-8 bg-slate-900 border-2 border-slate-800 rounded-3xl p-5 text-center space-y-3 shadow-lg">
-            <div class="flex flex-col sm:flex-row items-center justify-center gap-2.5">
-                <div class="bg-white rounded-lg p-1 h-8 px-2 flex items-center justify-center">
-                    <img src="容实LOGO.png" alt="RunShark LOGO" class="h-full w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
-                    <span class="hidden text-slate-950 font-black text-xs tracking-tighter">RunShark</span>
-                </div>
-                <div class="text-amber-400 font-black text-lg sm:text-xl flex items-center justify-center gap-2">
-                    <span>河南容实重型装备有限公司 · 自动化汽车卸车机操作流程</span>
-                </div>
-            </div>
-            <div class="flex flex-col md:flex-row items-center justify-center gap-3 pt-1">
-                <div class="bg-rose-600/20 border-2 border-rose-500 text-rose-300 px-4 py-2 rounded-2xl font-black text-sm sm:text-base flex items-center gap-2">
-                    <i class="fa-solid fa-hand-fist text-rose-400 text-lg animate-pulse"></i>
-                    <span>遇突发情况：请立即拍下<strong class="text-white underline mx-1">【急停按钮】</strong></span>
-                </div>
-                <div class="bg-sky-500/15 border-2 border-sky-400/60 text-sky-200 px-4 py-2 rounded-2xl font-black text-sm sm:text-base flex items-center gap-2">
-                    <i class="fa-solid fa-microphone-lines text-sky-400 text-lg"></i>
-                    <span>有设备疑问：请联系<strong class="text-amber-300 mx-1">当班工作人员</strong>或用<strong class="text-emerald-300 mx-1">【语音话筒】</strong>与中控室对话</span>
-                </div>
-            </div>
-            <!-- 最底部不起眼的单文件与PDF导出入口 -->
-            <div class="pt-3 border-t border-slate-800/80 flex items-center justify-end gap-3 no-print">
-                <button onclick="exportPageToPdf()" class="text-[11px] text-slate-500 hover:text-amber-400 transition-colors flex items-center gap-1 px-2 py-0.5 rounded" title="导出彩色图文PDF文档">
-                    <i class="fa-solid fa-file-pdf text-[10px]"></i>
-                    <span>导出 PDF</span>
-                </button>
-                <button onclick="downloadIndexHtml()" class="text-[11px] text-slate-600 hover:text-slate-400 transition-colors flex items-center gap-1 px-2 py-0.5 rounded" title="管理员工具：导出单文件 index.html">
-                    <i class="fa-solid fa-code text-[10px]"></i>
-                    <span>导出 index.html</span>
-                </button>
-            </div>
-        </footer>
-
-    </main>
-
-    <!-- 实景图片全屏放大查看器 (Lightbox) -->
-    <div id="photo-lightbox" class="fixed inset-0 z-50 hidden bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center p-3 sm:p-6" onclick="closePhotoLightbox()">
-        <div class="max-w-4xl w-full bg-slate-900 border-2 border-amber-500 rounded-3xl overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
-            <div class="bg-slate-800 px-5 py-3.5 border-b border-slate-700 flex items-center justify-between gap-2">
-                <div class="flex items-center gap-2">
-                    <span id="lightbox-badge" class="bg-amber-500 text-slate-950 font-black px-3 py-1 rounded-lg text-xs sm:text-sm">实景大图</span>
-                    <h3 id="lightbox-title" class="text-base sm:text-xl font-black text-white"></h3>
-                </div>
-                <button onclick="closePhotoLightbox()" class="w-9 h-9 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-lg flex items-center justify-center">
-                    <i class="fa-solid fa-xmark"></i>
-                </button>
-            </div>
-            <div class="bg-black flex items-center justify-center max-h-[68vh] overflow-hidden p-2">
-                <img id="lightbox-img" src="" alt="现场实景大图" class="max-h-[65vh] w-auto object-contain rounded-xl">
-            </div>
-            <div class="p-4 sm:p-5 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
-                <p id="lightbox-desc" class="text-slate-200 font-bold text-sm sm:text-base leading-relaxed"></p>
-                <button id="lightbox-voice-btn" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-4 py-2 rounded-xl text-sm shrink-0 flex items-center gap-1.5">
-                    <i class="fa-solid fa-volume-high"></i>
-                    <span>听看图要点</span>
-                </button>
-            </div>
-        </div>
-    </div>
-
-    <!-- 语音播报状态浮动提示框 -->
-    <div id="voice-toast" class="fixed bottom-5 right-5 z-50 hidden bg-amber-400 text-slate-950 px-5 py-3 rounded-2xl font-black shadow-2xl border-2 border-white items-center gap-3">
-        <i class="fa-solid fa-volume-high text-xl animate-bounce"></i>
-        <span id="voice-toast-text">正在语音播报...</span>
-        <button onclick="stopSpeech()" class="ml-2 bg-slate-900 text-white px-2.5 py-1 rounded-lg text-xs">停止</button>
-    </div>
-
-    <!-- 导出成功/复制成功 顶部轻提示框 -->
-    <div id="action-toast" class="fixed top-20 left-1/2 -translate-x-1/2 z-50 hidden bg-emerald-500 text-slate-950 px-6 py-3 rounded-2xl font-black shadow-2xl border-2 border-white items-center gap-2 text-base">
-        <i class="fa-solid fa-circle-check text-xl"></i>
-        <span id="action-toast-text">操作成功！</span>
-    </div>
-
-    <script>
-        // ==================== 现场三张实景图配置（图1、图2为左右前轮前挡，图3为后挡提升到位） ====================
-        const realPhotos = {
-            frontWide: {
-                key: "frontWide",
-                stepBadge: "实景图一 · 对应第 4 步",
-                title: "左右前轮的前挡（侧面全景）",
-                src: "be1431e5402449bea1b377df67d0b81c.jpg",
-                shortTip: "下车绕看左右前轮：黄色前挡挡舌必须停留在两轮中间",
-                desc: "【实景图一：左右前轮的前挡（侧面全景）】下车后绕看左右前轮，确认黄色机械臂上的竖向“前挡挡舌”（两侧带黑色液压油缸）准确停留在前后两个轮胎的中间位置。",
-                tags: ["① 左右前轮前挡", "② 停留在两轮中间", "③ 侧面全景对照"]
-            },
-            frontClose: {
-                key: "frontClose",
-                stepBadge: "实景图二 · 对应第 4 步",
-                title: "左右前轮的前挡（居中近景特写）",
-                src: "ffc504a5fe3b077a201cc4ecc5545c36.jpg",
-                shortTip: "近看黄色前挡挡舌在两轮正中间（红点对齐），即可去开后车门",
-                desc: "【实景图二：左右前轮的前挡（近景特写）】走近观察左右前轮之间：黄色前挡挡舌正好处于两轮空隙的正中央（轮胎与挡舌上的红点标记对齐），不偏左也不偏右，确认停留在中间后立即前往车尾打开后车门！",
-                tags: ["① 前挡挡舌居中", "② 红点标记对齐", "③ 确认后去开后门"]
-            },
-            rearStop: {
-                key: "rearStop",
-                stepBadge: "实景图三 · 对应第 3 步",
-                title: "后挡完全提升到位实景",
-                src: "78e14a6005423bf7d94fefa9c80486f4.jpg",
-                shortTip: "后轮靠近挡板、两块后轮挡板完全垂直升起，即可停车放气下车",
-                desc: "【实景图三：后挡提升到位的照片】倒车观察左侧监控：图中车轮后方两块厚钢板即为“后轮挡板”，当后挡完全垂直提升到位且后轮靠稳后，即可执行停车、放气（断气刹）、下车。（注：车轮上方红白“一路平安”皮帘即为挡泥板）",
-                tags: ["① 后挡完全提升到位", "② 后轮紧靠挡板", "③ 停稳放气下车"]
-            }
-        };
-
-        // 当预览环境未挂载本地 jpg 文件时，使用高还原 Canvas 绘制清晰实景对照图
-        function generateRealisticFallbackCanvas(photoKey) {
-            const canvas = document.createElement("canvas");
-            canvas.width = 640;
-            canvas.height = 460;
-            const ctx = canvas.getContext("2d");
-
-            if (photoKey === "rearStop") {
-                // 还原实景图3：后挡提升到位的照片
-                ctx.fillStyle = "#475569";
-                ctx.fillRect(0, 0, 640, 460);
-                ctx.fillStyle = "#64748b";
-                ctx.fillRect(0, 290, 640, 170);
-                // 右侧矿石料堆
-                ctx.fillStyle = "#1e293b";
-                ctx.beginPath();
-                ctx.moveTo(390, 460);
-                ctx.quadraticCurveTo(480, 240, 640, 270);
-                ctx.lineTo(640, 460);
-                ctx.fill();
-                // 红色车厢大梁
-                ctx.fillStyle = "#991b1b";
-                ctx.fillRect(0, 0, 560, 95);
-                // 后轮轮胎
-                ctx.fillStyle = "#1e293b";
-                ctx.beginPath();
-                ctx.arc(140, 210, 125, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.fillStyle = "#cbd5e1";
-                ctx.beginPath();
-                ctx.arc(140, 210, 65, 0, Math.PI * 2);
-                ctx.fill();
-                // 完全升起的后轮挡板（带黄色磨损漆面）
-                ctx.fillStyle = "#334155";
-                ctx.strokeStyle = "#facc15";
-                ctx.lineWidth = 4;
-                ctx.fillRect(235, 185, 78, 165);
-                ctx.strokeRect(235, 185, 78, 165);
-                ctx.fillStyle = "#eab308";
-                ctx.fillRect(245, 200, 24, 130);
-                // 远端右侧第二个后轮挡板
-                ctx.fillStyle = "#334155";
-                ctx.fillRect(390, 175, 55, 115);
-                ctx.strokeRect(390, 175, 55, 115);
-                // 红色挡泥板 + 白色“一路平安”皮帘
-                ctx.fillStyle = "#dc2626";
-                ctx.fillRect(240, 45, 85, 110);
-                ctx.fillStyle = "#f8fafc";
-                ctx.fillRect(245, 145, 78, 52);
-                ctx.fillStyle = "#dc2626";
-                ctx.font = "bold 18px sans-serif";
-                ctx.fillText("一路平安", 248, 175);
-                // 底部标注说明
-                ctx.fillStyle = "rgba(15,23,42,0.9)";
-                ctx.fillRect(18, 368, 604, 74);
-                ctx.strokeStyle = "#10b981";
-                ctx.strokeRect(18, 368, 604, 74);
-                ctx.fillStyle = "#34d399";
-                ctx.font = "bold 22px sans-serif";
-                ctx.fillText("实景图三：后轮挡板完全提升到位（轮胎紧靠后挡）", 35, 402);
-                ctx.fillStyle = "#fde047";
-                ctx.font = "bold 16px sans-serif";
-                ctx.fillText("确认后挡完全垂直升起并靠稳后 ➔ 停车、放气、下车", 35, 429);
-            } else if (photoKey === "frontWide") {
-                // 还原实景图1：左右前轮的前挡（侧面全景）
-                ctx.fillStyle = "#334155";
-                ctx.fillRect(0, 0, 640, 460);
-                ctx.fillStyle = "#b91c1c";
-                ctx.fillRect(0, 0, 640, 75);
-                // 左右两轮胎
-                ctx.fillStyle = "#1e293b";
-                ctx.strokeStyle = "#64748b";
-                ctx.lineWidth = 8;
-                ctx.beginPath();
-                ctx.arc(175, 220, 115, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                ctx.beginPath();
-                ctx.arc(485, 220, 115, 0, Math.PI * 2);
-                ctx.fill();
-                ctx.stroke();
-                // 底部黄色机械横梁与拖链
-                ctx.fillStyle = "#ca8a04";
-                ctx.fillRect(0, 325, 640, 135);
-                ctx.fillStyle = "#0f172a";
-                ctx.fillRect(10, 350, 320, 28);
-                // 中间黄色前挡挡舌立柱
-                ctx.fillStyle = "#facc15";
-                ctx.strokeStyle = "#ffffff";
-                ctx.lineWidth = 3;
-                ctx.fillRect(298, 120, 52, 205);
-                ctx.strokeRect(298, 120, 52, 205);
-                // 两侧黑色液压油缸
-                ctx.fillStyle = "#0f172a";
-                ctx.fillRect(245, 225, 34, 95);
-                ctx.fillRect(368, 225, 34, 95);
-                // 底部标注说明
-                ctx.fillStyle = "rgba(15,23,42,0.9)";
-                ctx.fillRect(18, 372, 604, 72);
-                ctx.strokeStyle = "#facc15";
-                ctx.strokeRect(18, 372, 604, 72);
-                ctx.fillStyle = "#fde047";
-                ctx.font = "bold 22px sans-serif";
-                ctx.fillText("实景图一：左右前轮的前挡（黄色挡舌在两轮中间）", 35, 405);
-                ctx.fillStyle = "#cbd5e1";
-                ctx.font = "bold 16px sans-serif";
-                ctx.fillText("下车绕看左右前轮，确认黄色前挡挡舌停留在两轮正中间", 35, 432);
-            } else {
-                // 还原实景图2：左右前轮的前挡（近景特写）
-                ctx.fillStyle = "#334155";
-                ctx.fillRect(0, 0, 640, 460);
-                ctx.fillStyle = "#475569";
-                ctx.beginPath();
-                ctx.arc(60, 175, 195, -Math.PI * 0.4, Math.PI * 0.55);
-                ctx.fill();
-                ctx.beginPath();
-                ctx.arc(580, 175, 195, Math.PI * 0.45, Math.PI * 1.4);
-                ctx.fill();
-                // 中间黄色前挡挡舌特写
-                ctx.fillStyle = "#eab308";
-                ctx.strokeStyle = "#fef08a";
-                ctx.lineWidth = 4;
-                ctx.fillRect(268, 15, 96, 345);
-                ctx.strokeRect(268, 15, 96, 345);
-                ctx.fillStyle = "#1e293b";
-                ctx.beginPath();
-                ctx.roundRect(298, 195, 36, 62, 16);
-                ctx.fill();
-                // 红点对齐标记
-                ctx.fillStyle = "#ef4444";
-                ctx.beginPath();
-                ctx.arc(195, 165, 8, 0, Math.PI * 2);
-                ctx.arc(316, 165, 8, 0, Math.PI * 2);
-                ctx.arc(435, 165, 8, 0, Math.PI * 2);
-                ctx.fill();
-                // 底部标注说明
-                ctx.fillStyle = "rgba(15,23,42,0.9)";
-                ctx.fillRect(18, 370, 604, 75);
-                ctx.strokeStyle = "#10b981";
-                ctx.strokeRect(18, 370, 604, 75);
-                ctx.fillStyle = "#34d399";
-                ctx.font = "bold 22px sans-serif";
-                ctx.fillText("实景图二：左右前轮的前挡特写（居中红点对齐）", 35, 405);
-                ctx.fillStyle = "#fde047";
-                ctx.font = "bold 16px sans-serif";
-                ctx.fillText("确认前挡挡舌停留在两轮中间后，立即前往车尾打开后车门", 35, 432);
-            }
-            return canvas.toDataURL("image/png");
-        }
-
-        function handleImgError(imgEl, photoKey) {
-            if (imgEl.dataset.fallbackApplied === "true") return;
-            imgEl.dataset.fallbackApplied = "true";
-            imgEl.src = generateRealisticFallbackCanvas(photoKey);
-        }
-
-        // 渲染顶部三大实景照片速览卡
-        function renderTopPhotoGallery() {
-            const container = document.getElementById("top-photo-gallery");
-            if (!container) return;
-            container.innerHTML = Object.values(realPhotos).map(p => `
-                <div onclick="openPhotoLightbox('${p.key}')" class="group cursor-pointer bg-slate-950 border-2 border-slate-800 hover:border-amber-400 rounded-2xl overflow-hidden transition-all shadow-lg flex flex-col">
-                    <div class="relative h-44 bg-black overflow-hidden flex items-center justify-center">
-                        <img src="${p.src}" data-photo-key="${p.key}" onerror="handleImgError(this, '${p.key}')" alt="${p.title}" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-300">
-                        <span class="absolute top-2.5 left-2.5 bg-amber-500 text-slate-950 font-black text-xs px-2.5 py-1 rounded-lg shadow">
-                            ${p.stepBadge}
-                        </span>
-                        <span class="absolute bottom-2.5 right-2.5 bg-slate-900/90 text-sky-300 font-bold text-xs px-2.5 py-1 rounded-lg border border-sky-500/40 flex items-center gap-1">
-                            <i class="fa-solid fa-magnifying-glass-plus"></i> 点击放大
-                        </span>
-                    </div>
-                    <div class="p-3.5 flex-1 flex flex-col justify-between">
-                        <div>
-                            <h4 class="text-base font-black text-white group-hover:text-amber-300 transition-colors">${p.title}</h4>
-                            <p class="text-xs sm:text-sm text-slate-300 font-bold mt-1 leading-snug">${p.shortTip}</p>
-                        </div>
-                        <div class="flex flex-wrap gap-1.5 mt-2.5">
-                            ${p.tags.map(t => `<span class="bg-slate-800 text-amber-300 text-xs font-bold px-2 py-0.5 rounded">${t}</span>`).join('')}
-                        </div>
-                    </div>
-                </div>
-            `).join('');
-        }
-
-        // 生成内嵌在具体步骤卡片中的实景照片组件
-        function getStepPhotosHTML(stepId) {
-            if (stepId === 3) {
-                const p = realPhotos.rearStop;
-                return `
-                <div class="mt-3 bg-slate-900/95 border-2 border-emerald-500/50 rounded-2xl p-3">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs sm:text-sm font-black text-emerald-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-camera"></i> 现场实拍对照：后轮挡板完全升起状态
-                        </span>
-                        <button onclick="openPhotoLightbox('rearStop')" class="text-xs bg-emerald-500/20 text-emerald-300 px-2.5 py-1 rounded-lg font-bold hover:bg-emerald-500 hover:text-slate-950 transition-colors">
-                            <i class="fa-solid fa-expand mr-1"></i>点图放大
+                        <button onclick="speakRhyme()" class="text-xs font-black text-emerald-400 bg-emerald-950/80 border border-emerald-500/40 px-2.5 py-1 rounded-lg flex items-center gap-1">
+                            <i class="fa-solid fa-volume-high"></i> 点此朗读
                         </button>
                     </div>
-                    <div onclick="openPhotoLightbox('rearStop')" class="cursor-pointer grid grid-cols-1 sm:grid-cols-12 gap-3 items-center">
-                        <div class="sm:col-span-6 h-36 bg-black rounded-xl overflow-hidden border border-slate-700">
-                            <img src="${p.src}" data-photo-key="rearStop" onerror="handleImgError(this, 'rearStop')" alt="${p.title}" class="w-full h-full object-cover hover:scale-105 transition-transform">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-2 text-sm sm:text-base font-bold">
+                        <div onclick="quickJumpStep(0)" class="cursor-pointer bg-slate-950/90 px-3 py-2 rounded-xl border border-slate-800 flex items-center gap-2 active:bg-slate-800">
+                            <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">1</span>
+                            <span><strong class="text-amber-400">空房落杆</strong>慢进场</span>
                         </div>
-                        <div class="sm:col-span-6 space-y-1.5 text-left">
-                            <div class="text-sm font-black text-white">✅ 什么叫“后挡完全提升到位”？</div>
-                            <p class="text-xs text-slate-300 font-bold leading-relaxed">
-                                如左图实拍：车轮后方两块厚钢板<strong class="text-amber-300">完全垂直竖起</strong>，后轮倒车靠稳钢板后，即可停车、断气刹放气、下车。
-                            </p>
+                        <div onclick="quickJumpStep(1)" class="cursor-pointer bg-slate-950/90 px-3 py-2 rounded-xl border border-slate-800 flex items-center gap-2 active:bg-slate-800">
+                            <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">2</span>
+                            <span><strong class="text-emerald-400">绿灯前进</strong><strong class="text-yellow-400">黄灯倒</strong></span>
                         </div>
-                    </div>
-                </div>`;
-            }
-            if (stepId === 4) {
-                const p1 = realPhotos.frontWide;
-                const p2 = realPhotos.frontClose;
-                return `
-                <div class="mt-3 bg-slate-900/95 border-2 border-amber-500/60 rounded-2xl p-3">
-                    <div class="flex items-center justify-between mb-2">
-                        <span class="text-xs sm:text-sm font-black text-amber-400 flex items-center gap-1.5">
-                            <i class="fa-solid fa-camera"></i> 现场实拍对照：前挡挡舌停在两轮正中间（远景 + 特写）
-                        </span>
-                        <span class="text-xs text-sky-300 font-bold">点击任意照片放大</span>
-                    </div>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
-                        <div onclick="openPhotoLightbox('frontWide')" class="cursor-pointer bg-slate-950 rounded-xl p-2 border border-slate-800 hover:border-amber-400 transition-all">
-                            <div class="h-32 bg-black rounded-lg overflow-hidden mb-1.5">
-                                <img src="${p1.src}" data-photo-key="frontWide" onerror="handleImgError(this, 'frontWide')" alt="${p1.title}" class="w-full h-full object-cover">
-                            </div>
-                            <div class="text-xs font-black text-amber-300">① 侧面远景：黄舌伸入两轮之间</div>
+                        <div onclick="quickJumpStep(2)" class="cursor-pointer bg-slate-950/90 px-3 py-2 rounded-xl border border-slate-800 flex items-center gap-2 active:bg-slate-800">
+                            <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">3</span>
+                            <span>左屏<strong class="text-sky-400">后挡升到底</strong></span>
                         </div>
-                        <div onclick="openPhotoLightbox('frontClose')" class="cursor-pointer bg-slate-950 rounded-xl p-2 border border-slate-800 hover:border-emerald-400 transition-all">
-                            <div class="h-32 bg-black rounded-lg overflow-hidden mb-1.5">
-                                <img src="${p2.src}" data-photo-key="frontClose" onerror="handleImgError(this, 'frontClose')" alt="${p2.title}" class="w-full h-full object-cover">
-                            </div>
-                            <div class="text-xs font-black text-emerald-300">② 近景特写：挡舌居中(红点对齐)</div>
+                        <div onclick="quickJumpStep(3)" class="cursor-pointer bg-slate-950/90 px-3 py-2 rounded-xl border border-slate-800 flex items-center gap-2 active:bg-slate-800">
+                            <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">4</span>
+                            <span><strong class="text-amber-400">舌在轮中</strong>开后门</span>
+                        </div>
+                        <div onclick="quickJumpStep(4)" class="cursor-pointer bg-slate-950/90 px-3 py-2 rounded-xl border border-slate-800 flex items-center gap-2 active:bg-slate-800">
+                            <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">5</span>
+                            <span><strong class="text-purple-400">选板启动</strong>人别走</span>
+                        </div>
+                        <div onclick="quickJumpStep(5)" class="cursor-pointer bg-slate-950/90 px-3 py-2 rounded-xl border border-slate-800 flex items-center gap-2 active:bg-slate-800">
+                            <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">6</span>
+                            <span><strong class="text-rose-400">盖板关严</strong>再关门</span>
+                        </div>
+                        <div onclick="quickJumpStep(6)" class="cursor-pointer bg-slate-950/90 px-3 py-2 rounded-xl border border-slate-800 flex items-center gap-2 sm:col-span-2 active:bg-slate-800">
+                            <span class="w-5 h-5 rounded-full bg-amber-500 text-slate-950 text-xs font-black flex items-center justify-center shrink-0">7</span>
+                            <span>往前慢开看左屏，<strong class="text-emerald-400">后挡趴平</strong>安全走！</span>
                         </div>
                     </div>
-                </div>`;
-            }
-            if (stepId === 5) {
-                const p = realPhotos.rearStop;
-                return `
-                <div class="mt-3 bg-slate-900/95 border border-sky-500/50 rounded-2xl p-3 flex items-center justify-between gap-3">
-                    <div class="flex items-center gap-3">
-                        <img onclick="openPhotoLightbox('rearStop')" src="${p.src}" data-photo-key="rearStop" onerror="handleImgError(this, 'rearStop')" class="w-20 h-14 object-cover rounded-lg border border-slate-700 cursor-pointer shrink-0">
-                        <div class="text-left">
-                            <div class="text-xs sm:text-sm font-black text-sky-300">💡 怎么选【有挡泥板 / 无挡泥板】？</div>
-                            <div class="text-xs text-slate-300 font-bold">看左图：后轮上方有红白“一路平安”皮帘即为【有挡泥板】（点图放大）</div>
+                </section>
+
+                <!-- 现场关键部位实景照片速览栏（手机支持横向滑动或点开大图） -->
+                <section id="section-photos" class="bg-slate-900 border-2 border-sky-500/50 rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 mb-4 shadow-xl scroll-mt-3">
+                    <div class="flex items-center justify-between gap-2 mb-3">
+                        <div class="flex items-center gap-2">
+                            <span class="bg-sky-400 text-slate-950 font-black px-2.5 py-0.5 rounded-full text-xs flex items-center gap-1 shrink-0">
+                                <i class="fa-solid fa-camera"></i> 现场实拍
+                            </span>
+                            <h2 class="text-sm sm:text-lg font-black text-white truncate">前轮前挡 & 后轮后挡标准对照（点图放大）</h2>
                         </div>
                     </div>
-                </div>`;
-            }
-            return "";
-        }
+                    <!-- 手机端紧凑三列/横滑画廊 -->
+                    <div class="grid grid-cols-1 sm:grid-cols-3 gap-3" id="top-photo-gallery">
+                        <!-- 由 JS 渲染 3 张现场实景对照卡 -->
+                    </div>
+                </section>
 
-        // 打开/关闭实景图全屏放大器
-        let currentLightboxKey = "rearStop";
-        function openPhotoLightbox(photoKey) {
-            currentLightboxKey = photoKey;
-            const p = realPhotos[photoKey];
-            if (!p) return;
-            const modal = document.getElementById("photo-lightbox");
-            const imgEl = document.getElementById("lightbox-img");
-            document.getElementById("lightbox-badge").textContent = p.stepBadge;
-            document.getElementById("lightbox-title").textContent = p.title;
-            document.getElementById("lightbox-desc").textContent = p.desc;
+                <!-- 动态生成的7步图文流程图容器 -->
+                <div id="flowchart-container" class="space-y-3"></div>
+            </div>
 
-            // 优先使用页面上已加载或替换的图像源
-            const existingImg = document.querySelector(`img[data-photo-key="${photoKey}"]`);
-            imgEl.src = existingImg ? existingImg.src : p.src;
-
-            document.getElementById("lightbox-voice-btn").onclick = () => speakText(p.desc);
-
-            modal.classList.remove("hidden");
-        }
-
-        function closePhotoLightbox() {
-            document.getElementById("photo-lightbox").classList.add("hidden");
-        }
-
-        // ==================== 7步核心数据结构（大白话 + 状态分支 + SVG绘制逻辑） ====================
-        const stepsData = [
-            {
-                id: 1,
-                shortTitle: "等空房 · 看落杆",
-                slogan: "屋里没车、前后杆都落下，再慢点开进去！",
-                voiceText: "第一步：等空房，看落杆。先把车停在等待区。看清楚卸车房里没有别的车，而且进口和出口的两根道闸杆子都落下来关闭了，再慢慢把车开进卸车室。",
-                actions: [
-                    { icon: "fa-square-parking", color: "text-sky-400", text: "先把车停在【等待区】等着" },
-                    { icon: "fa-eye", color: "text-amber-400", text: "看里面【没车】，且进出口【两根杆子都落下关闭】" },
-                    { icon: "fa-truck-moving", color: "text-emerald-400", text: "确认好后，缓慢开进卸车室" }
-                ],
-                warning: "只要里面还有车，或者进出杆子没落下，千万别往里闯！",
-                defaultSubState: "ok",
-                subStates: [
-                    { key: "ok", label: "✅ 可进：无车 + 双杆落下", btnClass: "bg-emerald-500 text-slate-950" },
-                    { key: "no", label: "❌ 禁进：里面有车 / 杆未落", btnClass: "bg-rose-500 text-white" }
-                ]
-            },
-            {
-                id: 2,
-                shortTitle: "看右前灯 · 绿进黄倒",
-                slogan: "盯着右前方信号灯：绿灯慢往前，黄灯慢倒车！",
-                voiceText: "第二步：看右前方信号灯。进屋后盯着右前方的红绿灯：亮绿灯的时候，慢慢往前开；一旦变成黄灯，马上停住，挂倒挡慢慢往后倒车！这时候后轮挡板会自动升起一半。",
-                actions: [
-                    { icon: "fa-traffic-light", color: "text-emerald-400", text: "右前灯亮【绿灯】👉 慢慢往前开" },
-                    { icon: "fa-traffic-light", color: "text-yellow-400", text: "右前灯亮【黄灯】👉 换倒挡，慢慢倒车" },
-                    { icon: "fa-angles-up", color: "text-sky-400", text: "倒车时，后轮挡板会自动升起一半高度" }
-                ],
-                warning: "千万看准右前方信号灯！绿灯前进、黄灯倒车，车速一定要慢！",
-                defaultSubState: "yellow",
-                subStates: [
-                    { key: "green", label: "🟢 绿灯亮：慢速往前开", btnClass: "bg-emerald-500 text-slate-950" },
-                    { key: "yellow", label: "🟡 黄灯亮：慢速倒车(挡板半升)", btnClass: "bg-amber-400 text-slate-950" }
-                ]
-            },
-            {
-                id: 3,
-                shortTitle: "看左电视 · 挡板升满",
-                slogan: "倒车盯紧左边电视：后挡完全升起靠稳，再拉刹下车！",
-                voiceText: "第三步：看左边电视监控对准后轮。倒车时看着左边的监控屏幕，后轮靠近挡板时，挡板会完全升起来。如果发现挡板没升到底，就把车往前挪一点点，等它完全升到位了再倒车靠紧！停稳后：拉手刹、断气刹放气、下车。",
-                actions: [
-                    { icon: "fa-tv", color: "text-sky-400", text: "倒车时眼睛盯着【左侧视频监控】看后轮" },
-                    { icon: "fa-arrows-Left-Right", color: "text-amber-400", text: "若挡板【没升到位】👉 往前开一点，等升满再倒车靠紧" },
-                    { icon: "fa-hand", color: "text-emerald-400", text: "靠稳后三连动作：【停车 ➔ 放气(断气刹) ➔ 下车】" }
-                ],
-                warning: "如果后挡板只升了一半没升满，必须往前挪一点等它全升起来再倒靠！下车前必须断气刹放气！",
-                defaultSubState: "full",
-                subStates: [
-                    { key: "full", label: "✅ 正常：后挡完全升起 ➔ 靠稳放气下车", btnClass: "bg-emerald-500 text-slate-950" },
-                    { key: "half", label: "⚠️ 没升满怎么办：往前挪一点等升满再倒", btnClass: "bg-amber-400 text-slate-950" }
-                ]
-            },
-            {
-                id: 4,
-                shortTitle: "绕看前轮 · 开车后门",
-                slogan: "下车先看左右前轮：铁舌头在两轮正中间，再去开后门！",
-                voiceText: "第四步：绕看前轮，再去开后门。下车以后，先绕着左右两个前轮看一眼，确认地上的前挡挡舌正好停在前后轮的中间位置。确认居中了，马上走到车尾把车厢后门打开。",
-                actions: [
-                    { icon: "fa-person-walking", color: "text-sky-400", text: "下车绕着【左右前轮】低头看一眼" },
-                    { icon: "fa-bullseye", color: "text-emerald-400", text: "确认【前挡挡舌】正好夹在两轮中间" },
-                    { icon: "fa-door-open", color: "text-amber-400", text: "位置对了，立即去车尾【打开后车门】" }
-                ],
-                warning: "如果前轮挡舌不在两轮中间，说明车没停准，必须重新上车调整，绝不能直接卸车！",
-                defaultSubState: "center",
-                subStates: [
-                    { key: "center", label: "✅ 挡舌在两轮正中间 ➔ 去开后门", btnClass: "bg-emerald-500 text-slate-950" },
-                    { key: "off", label: "❌ 挡舌偏了没居中 ➔ 上车重调", btnClass: "bg-rose-500 text-white" }
-                ]
-            },
-            {
-                id: 5,
-                shortTitle: "进屋按键 · 卸车别走",
-                slogan: "进操作室：先选【有无挡泥板】，再按【卸车启动】，人千万别出屋！",
-                voiceText: "第五步：进操作室按键卸车。打开车后门后回到操作室，先按你车的实际情况选择有挡泥板或者无挡泥板，选好后按下卸车启动按钮。卸车的时候震动器会自动震动，如果看车斗里还有剩料，可以自己再按一下震动器。记住：卸车全过程，人必须待在操作室里，千万不能出去！",
-                actions: [
-                    { icon: "fa-sliders", color: "text-sky-400", text: "第1步：按面板选【有挡泥板】或【无挡泥板】" },
-                    { icon: "fa-power-off", color: "text-emerald-400", text: "第2步：点击绿色【卸车启动】按钮" },
-                    { icon: "fa-bell", color: "text-amber-400", text: "第3步：自动震动清料，卸不净可【手动再开震动器】" }
-                ],
-                warning: "保命铁律：大车举升卸料期间，司机必须全程待在操作室屋里，严禁踏出房门半步！",
-                defaultSubState: "panel",
-                subStates: [
-                    { key: "panel", label: "🎛️ 点下方模拟按钮试试操作流程", btnClass: "bg-sky-500 text-slate-950" }
-                ]
-            },
-            {
-                id: 6,
-                shortTitle: "按卸车完 · 盖严关门",
-                slogan: "卸空按【卸车完成】，等大坑盖板彻底关严实了，再去关车后门！",
-                voiceText: "第六步：卸完复位，等盖板关严再关车门。看物料卸干净了，按下卸车完成按钮。这时候大车开始降下来，料仓后盖板也开始关闭。你可以走出操作室，但必须在安全区等着，亲眼看到料仓盖板彻底关严实了，才能走过去整理车辆、关上后车门！",
-                actions: [
-                    { icon: "fa-circle-check", color: "text-emerald-400", text: "看料卸净后，按【卸车完成】按钮（大板下降、盖板关闭）" },
-                    { icon: "fa-hourglass-half", color: "text-amber-400", text: "可走出操作室，但必须【等料仓盖板完全关闭到位】" },
-                    { icon: "fa-lock", color: "text-sky-400", text: "盖板彻底关严后，再上前【清理车尾、锁好后车门】" }
-                ],
-                warning: "料仓大盖板还没完全合上之前，车尾下方是大坑，严禁靠近车尾关门！",
-                defaultSubState: "closed",
-                subStates: [
-                    { key: "closing", label: "⏳ 盖板还在关：站在旁边等，别靠近车尾！", btnClass: "bg-amber-400 text-slate-950" },
-                    { key: "closed", label: "✅ 盖板完全关严：上前整理并关车后门", btnClass: "bg-emerald-500 text-slate-950" }
-                ]
-            },
-            {
-                id: 7,
-                shortTitle: "看屏慢走 · 挡落驶离",
-                slogan: "上车慢往前开，盯紧左边电视：看到后轮挡板彻底趴平了，再开走！",
-                voiceText: "第七步：看左屏幕，等后挡落平再开走。关好车后门回到驾驶室，挂前进挡慢慢往前开，同时眼睛盯着左边的电视监控。一直看到后轮挡板完全落平趴下了，就可以安心加速开出卸车室了。祝您一路平安！",
-                actions: [
-                    { icon: "fa-truck", color: "text-sky-400", text: "上车挂前进挡，【缓慢往前开】" },
-                    { icon: "fa-tv", color: "text-amber-400", text: "眼睛盯着【左侧监视器】看后轮挡板" },
-                    { icon: "fa-road", color: "text-emerald-400", text: "确认【后轮挡板完全落下趴平】后，安全驶离！" }
-                ],
-                warning: "后轮挡板没完全落下前，千万别猛踩油门硬冲，确认落平后再开走！",
-                defaultSubState: "flat",
-                subStates: [
-                    { key: "dropping", label: "⏳ 后挡还没落到底：继续慢行盯紧左屏", btnClass: "bg-amber-400 text-slate-950" },
-                    { key: "flat", label: "✅ 后挡已完全落下趴平：安全开走！", btnClass: "bg-emerald-500 text-slate-950" }
-                ]
-            }
-        ];
-
-        // 模拟操作室控制面板状态（第5步互动用）
-        let panelState = {
-            mudguard: "yes", // 'yes' | 'no'
-            started: false,
-            vibrating: false
-        };
-
-        let currentSimIndex = 0;
-        let currentSubState = stepsData[0].defaultSubState;
-
-        // ==================== 根据步骤与状态生成高对比度直观 SVG 图解 ====================
-        function getStepSVG(stepId, subState) {
-            switch (stepId) {
-                case 1: {
-                    const isOk = subState !== "no";
-                    return `
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 背景地面 -->
-                        <rect x="10" y="185" width="500" height="12" rx="4" fill="#334155"/>
-                        <!-- 卸车室房屋框架 -->
-                        <rect x="210" y="30" width="270" height="155" rx="8" fill="#1e293b" stroke="${isOk ? '#10b981' : '#f43f5e'}" stroke-width="4" stroke-dasharray="10 6"/>
-                        <text x="345" y="60" text-anchor="middle" fill="#94a3b8" font-size="16" font-weight="bold">卸车室内部</text>
-
-                        <!-- 室内状态：无车 vs 有车 -->
-                        ${isOk ? `
-                            <circle cx="345" cy="115" r="28" fill="#065f46" stroke="#10b981" stroke-width="3"/>
-                            <text x="345" y="122" text-anchor="middle" fill="#34d399" font-size="18" font-weight="900">空房无车</text>
-                        ` : `
-                            <rect x="280" y="110" width="130" height="50" rx="6" fill="#be123c"/>
-                            <circle cx="305" cy="170" r="12" fill="#0f172a" stroke="#cbd5e1" stroke-width="4"/>
-                            <circle cx="385" cy="170" r="12" fill="#0f172a" stroke="#cbd5e1" stroke-width="4"/>
-                            <text x="345" y="140" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">里面还有车！</text>
-                        `}
-
-                        <!-- 入口道闸杆 -->
-                        <rect x="200" y="120" width="14" height="65" fill="#f59e0b"/>
-                        ${isOk ? `
-                            <!-- 落下状态 -->
-                            <rect x="145" y="125" width="65" height="10" rx="4" fill="#ef4444" stroke="#fff" stroke-width="2"/>
-                            <text x="175" y="112" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">入口杆已落</text>
-                        ` : `
-                            <!-- 抬起状态 -->
-                            <rect x="202" y="65" width="10" height="65" rx="4" fill="#ef4444"/>
-                            <text x="175" y="112" text-anchor="middle" fill="#fb7185" font-size="13" font-weight="bold">杆未落好</text>
-                        `}
-
-                        <!-- 出口道闸杆 -->
-                        <rect x="476" y="120" width="14" height="65" fill="#f59e0b"/>
-                        <rect x="440" y="125" width="46" height="10" rx="4" fill="#ef4444" stroke="#fff" stroke-width="2"/>
-                        <text x="465" y="112" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">出口杆已落</text>
-
-                        <!-- 等待区大货车 -->
-                        <g transform="translate(18, 105)">
-                            <rect x="0" y="10" width="75" height="48" rx="4" fill="#3b82f6"/>
-                            <path d="M77 22 L105 22 L115 40 L115 58 L77 58 Z" fill="#f59e0b"/>
-                            <rect x="92" y="27" width="16" height="14" rx="2" fill="#0f172a"/>
-                            <circle cx="22" cy="65" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <circle cx="58" cy="65" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <circle cx="96" cy="65" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <text x="37" y="40" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">等待区</text>
-                        </g>
-
-                        <!-- 行驶指示箭头 -->
-                        ${isOk ? `
-                            <path d="M145 160 L195 160" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>
-                            <polygon points="195,152 210,160 195,168" fill="#10b981"/>
-                            <text x="175" y="180" text-anchor="middle" fill="#34d399" font-size="13" font-weight="900">慢速驶入</text>
-                        ` : `
-                            <text x="165" y="165" text-anchor="middle" fill="#f43f5e" font-size="22" font-weight="900">🚫 原地等待</text>
-                        `}
-                    </svg>`;
-                }
-
-                case 2: {
-                    const isGreen = subState === "green";
-                    return `
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 地面 -->
-                        <rect x="15" y="190" width="490" height="12" rx="4" fill="#334155"/>
-
-                        <!-- 右前方红绿灯立柱 -->
-                        <rect x="435" y="35" width="60" height="115" rx="12" fill="#0f172a" stroke="#64748b" stroke-width="4"/>
-                        <rect x="460" y="150" width="10" height="40" fill="#64748b"/>
-                        <text x="465" y="25" text-anchor="middle" fill="#f8fafc" font-size="14" font-weight="900">右前方信号灯</text>
-                        <!-- 绿灯 -->
-                        <circle cx="465" cy="68" r="20" fill="${isGreen ? '#10b981' : '#1e293b'}" class="${isGreen ? 'glow-anim' : ''}" stroke="#334155" stroke-width="2"/>
-                        <text x="465" y="74" text-anchor="middle" fill="${isGreen ? '#022c22' : '#475569'}" font-size="14" font-weight="900">绿</text>
-                        <!-- 黄灯 -->
-                        <circle cx="465" cy="116" r="20" fill="${!isGreen ? '#facc15' : '#1e293b'}" class="${!isGreen ? 'glow-anim' : ''}" stroke="#334155" stroke-width="2"/>
-                        <text x="465" y="122" text-anchor="middle" fill="${!isGreen ? '#422006' : '#475569'}" font-size="14" font-weight="900">黄</text>
-
-                        <!-- 后轮挡板状态（绿灯平，黄灯升一半） -->
-                        ${isGreen ? `
-                            <rect x="75" y="184" width="38" height="8" rx="3" fill="#64748b"/>
-                            <text x="94" y="175" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="bold">后挡平放</text>
-                        ` : `
-                            <polygon points="80,190 112,190 112,162" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
-                            <text x="92" y="150" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="900">后挡升起一半!</text>
-                        `}
-
-                        <!-- 大货车 -->
-                        <g transform="translate(${isGreen ? '155' : '125'}, 95)">
-                            <rect x="0" y="0" width="155" height="68" rx="6" fill="#2563eb"/>
-                            <path d="M158 18 L200 18 L215 45 L215 68 L158 68 Z" fill="#f59e0b"/>
-                            <rect x="182" y="24" width="22" height="18" rx="3" fill="#0f172a"/>
-                            <circle cx="35" cy="80" r="16" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
-                            <circle cx="85" cy="80" r="16" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
-                            <circle cx="185" cy="80" r="16" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
-                            <text x="77" y="42" text-anchor="middle" fill="#fff" font-size="18" font-weight="900">
-                                ${isGreen ? '绿灯：慢往前开 ➔' : '⬅ 黄灯：缓慢倒车'}
-                            </text>
-                        </g>
-
-                        <!-- 大号方向引导箭头 -->
-                        ${isGreen ? `
-                            <path d="M230 55 L340 55" stroke="#10b981" stroke-width="10" stroke-linecap="round"/>
-                            <polygon points="340,42 365,55 340,68" fill="#10b981"/>
-                        ` : `
-                            <path d="M290 55 L170 55" stroke="#facc15" stroke-width="10" stroke-linecap="round"/>
-                            <polygon points="170,42 145,55 170,68" fill="#facc15"/>
-                        `}
-                    </svg>`;
-                }
-
-                case 3: {
-                    const isFull = subState !== "half";
-                    return `
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 左侧电视监控大画面框 -->
-                        <rect x="18" y="16" width="275" height="195" rx="14" fill="#090d16" stroke="#38bdf8" stroke-width="4"/>
-                        <rect x="18" y="16" width="275" height="32" rx="10" fill="#0284c7"/>
-                        <text x="155" y="38" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">📺 左侧视频监控画面（放大）</text>
-
-                        <!-- 监控画面内的地面 -->
-                        <rect x="30" y="172" width="250" height="10" fill="#475569"/>
-
-                        ${isFull ? `
-                            <!-- 后挡完全升起 -->
-                            <polygon points="65,172 110,172 110,115" fill="#10b981" stroke="#fff" stroke-width="3"/>
-                            <text x="78" y="102" text-anchor="middle" fill="#34d399" font-size="15" font-weight="900">✅ 后挡完全升到位</text>
-                            <!-- 后轮紧靠挡板 -->
-                            <circle cx="142" cy="144" r="28" fill="#1e293b" stroke="#f8fafc" stroke-width="7"/>
-                            <circle cx="142" cy="144" r="10" fill="#94a3b8"/>
-                            <rect x="112" y="75" width="145" height="42" rx="4" fill="#2563eb"/>
-                            <text x="185" y="101" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">后轮已靠稳挡板</text>
-                        ` : `
-                            <!-- 后挡未升到位（仅一半） -->
-                            <polygon points="65,172 105,172 105,144" fill="#f59e0b" stroke="#ef4444" stroke-width="3"/>
-                            <text x="88" y="130" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="900">⚠️ 没升满（才一半）</text>
-                            <!-- 后轮往前挪一点 -->
-                            <circle cx="185" cy="144" r="28" fill="#1e293b" stroke="#f8fafc" stroke-width="7"/>
-                            <rect x="145" y="75" width="125" height="42" rx="4" fill="#2563eb"/>
-                            <path d="M165 60 L235 60" stroke="#facc15" stroke-width="6" stroke-linecap="round"/>
-                            <polygon points="235,52 252,60 235,68" fill="#facc15"/>
-                            <text x="200" y="46" text-anchor="middle" fill="#fde047" font-size="13" font-weight="900">1.先往前开一点等升满 ➔ 2.再倒靠</text>
-                        `}
-
-                        <!-- 右侧：停稳三步曲图标卡 -->
-                        <g transform="translate(310, 22)">
-                            <rect x="0" y="0" width="192" height="54" rx="10" fill="#1e293b" stroke="#475569" stroke-width="2"/>
-                            <circle cx="30" cy="27" r="16" fill="#ef4444"/>
-                            <text x="30" y="33" text-anchor="middle" fill="#fff" font-size="16" font-weight="900">停</text>
-                            <text x="115" y="33" text-anchor="middle" fill="#f8fafc" font-size="17" font-weight="900">1. 靠稳停车</text>
-
-                            <rect x="0" y="68" width="192" height="54" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
-                            <circle cx="30" cy="95" r="16" fill="#f59e0b"/>
-                            <text x="30" y="101" text-anchor="middle" fill="#0f172a" font-size="15" font-weight="900">气</text>
-                            <text x="115" y="101" text-anchor="middle" fill="#fbbf24" font-size="17" font-weight="900">2. 断气刹放气</text>
-
-                            <rect x="0" y="136" width="192" height="54" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
-                            <circle cx="30" cy="163" r="16" fill="#10b981"/>
-                            <text x="30" y="169" text-anchor="middle" fill="#0f172a" font-size="15" font-weight="900">下</text>
-                            <text x="115" y="169" text-anchor="middle" fill="#34d399" font-size="17" font-weight="900">3. 安全下车</text>
-                        </g>
-                    </svg>`;
-                }
-
-                case 4: {
-                    const isCenter = subState !== "off";
-                    return `
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 左半部分：绕看左右前轮与挡舌位置 -->
-                        <rect x="15" y="18" width="245" height="204" rx="14" fill="#1e293b" stroke="${isCenter ? '#10b981' : '#f43f5e'}" stroke-width="3"/>
-                        <text x="137" y="45" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="900">① 绕看左右前轮中间</text>
-
-                        <!-- 地面导轨 -->
-                        <rect x="30" y="172" width="215" height="10" rx="3" fill="#475569"/>
-                        <!-- 前轮1 -->
-                        <circle cx="75" cy="142" r="28" fill="#0f172a" stroke="#cbd5e1" stroke-width="7"/>
-                        <circle cx="75" cy="142" r="9" fill="#64748b"/>
-                        <text x="75" y="102" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="bold">前轮</text>
-                        <!-- 前轮2 -->
-                        <circle cx="198" cy="142" r="28" fill="#0f172a" stroke="#cbd5e1" stroke-width="7"/>
-                        <circle cx="198" cy="142" r="9" fill="#64748b"/>
-                        <text x="198" y="102" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="bold">前轮</text>
-
-                        <!-- 前挡挡舌 -->
-                        ${isCenter ? `
-                            <rect x="122" y="132" width="30" height="40" rx="5" fill="#10b981" stroke="#fff" stroke-width="3" class="glow-anim"/>
-                            <text x="137" y="118" text-anchor="middle" fill="#34d399" font-size="14" font-weight="900">✅ 挡舌正居中</text>
-                        ` : `
-                            <rect x="96" y="132" width="30" height="40" rx="5" fill="#f43f5e" stroke="#fff" stroke-width="3"/>
-                            <text x="137" y="118" text-anchor="middle" fill="#fb7185" font-size="14" font-weight="900">❌ 偏了！没在正中间</text>
-                        `}
-                        <text x="137" y="205" text-anchor="middle" fill="${isCenter ? '#34d399' : '#fb7185'}" font-size="14" font-weight="bold">
-                            ${isCenter ? '左右前轮都要看一眼！' : '必须上车重调位置！'}
-                        </text>
-
-                        <!-- 右半部分：去车尾打开后车门 -->
-                        <rect x="275" y="18" width="230" height="204" rx="14" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
-                        <text x="390" y="45" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="900">② 去车尾打开后车门</text>
-
-                        <!-- 车厢尾部示意图 -->
-                        <rect x="330" y="70" width="110" height="90" rx="6" fill="#2563eb" stroke="#93c5fd" stroke-width="3"/>
-                        <!-- 打开的后车门扇 -->
-                        <path d="M330 75 L295 95 L295 170 L330 155 Z" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
-                        <path d="M440 75 L475 95 L475 170 L440 155 Z" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
-                        <text x="385" y="122" text-anchor="middle" fill="#fff" font-size="16" font-weight="900">后车门打开</text>
-                        <text x="390" y="205" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="900">确认挡舌居中后立即开门</text>
-                    </svg>`;
-                }
-
-                case 5: {
-                    // 交互式控制面板 + 卸车房状态
-                    return `
-                    <div class="w-full flex flex-col gap-3">
-                        <svg viewBox="0 0 520 155" class="w-full max-w-[500px] h-auto mx-auto">
-                            <!-- 操作室安全屋 -->
-                            <rect x="15" y="15" width="165" height="128" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="3"/>
-                            <text x="97" y="40" text-anchor="middle" fill="#6ee7b7" font-size="15" font-weight="900">🏠 操作室（安全屋）</text>
-                            <circle cx="97" cy="75" r="16" fill="#fde047"/>
-                            <path d="M72 120 C72 95 122 95 122 120 Z" fill="#34d399"/>
-                            <text x="97" y="136" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">🚫 卸车时人绝不出屋</text>
-
-                            <!-- 右侧：正在举升卸车的货车 -->
-                            <rect x="210" y="130" width="290" height="10" rx="3" fill="#475569"/>
-                            <g class="${panelState.vibrating ? 'vibrating' : ''}" transform="${panelState.started ? 'translate(230, 35) rotate(-18 60 90)' : 'translate(230, 58)'}">
-                                <rect x="0" y="0" width="140" height="52" rx="5" fill="#2563eb"/>
-                                <path d="M143 12 L175 12 L185 35 L185 52 L143 52 Z" fill="#f59e0b"/>
-                                <circle cx="30" cy="60" r="12" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                                <circle cx="155" cy="60" r="12" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                                <text x="70" y="32" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">
-                                    ${panelState.started ? (panelState.vibrating ? '⚡ 强力震动清料中!' : '🔼 正在举升卸车中...') : '等待点击【卸车启动】'}
-                                </text>
-                            </g>
-                        </svg>
-
-                        <!-- 拟真操作台按钮面板（让司机直接点按体验） -->
-                        <div class="bg-slate-800 border-2 border-slate-600 rounded-2xl p-3.5 max-w-[500px] w-full mx-auto">
-                            <div class="text-xs font-bold text-slate-300 mb-2 flex items-center justify-between">
-                                <span>👇 点击下方模拟操作台按钮体验（顺序：1选挡泥板 ➔ 2按启动 ➔ 3按震动）：</span>
-                            </div>
-                            <div class="grid grid-cols-2 sm:grid-cols-4 gap-2">
-                                <button onclick="toggleMudguard('yes')" class="ind-btn py-2.5 px-2 rounded-xl font-black text-sm border-2 ${panelState.mudguard === 'yes' ? 'bg-amber-400 text-slate-950 border-white' : 'bg-slate-700 text-slate-300 border-slate-600'}">
-                                    ① 有挡泥板
-                                </button>
-                                <button onclick="toggleMudguard('no')" class="ind-btn py-2.5 px-2 rounded-xl font-black text-sm border-2 ${panelState.mudguard === 'no' ? 'bg-amber-400 text-slate-950 border-white' : 'bg-slate-700 text-slate-300 border-slate-600'}">
-                                    ① 无挡泥板
-                                </button>
-                                <button onclick="triggerUnloadStart()" class="ind-btn py-2.5 px-2 rounded-xl font-black text-sm bg-emerald-500 hover:bg-emerald-400 text-slate-950">
-                                    ② 卸车启动
-                                </button>
-                                <button onclick="triggerVibrator()" class="ind-btn py-2.5 px-2 rounded-xl font-black text-sm bg-sky-400 hover:bg-sky-300 text-slate-950">
-                                    ③ 再次开震动
-                                </button>
-                            </div>
+            <!-- ==================== 视图 2：手把手互动演练（单屏高密度适配版） ==================== -->
+            <div id="view-sim" class="hidden">
+                <!-- 互动演练主舞台 -->
+                <div class="bg-slate-900 border-2 border-slate-700 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl">
+                    <!-- 舞台头部 -->
+                    <div class="bg-slate-800/95 px-3.5 sm:px-5 py-3 border-b border-slate-700 flex items-center justify-between gap-2">
+                        <div class="flex items-center gap-2 sm:gap-3 min-w-0">
+                            <span id="sim-step-badge" class="px-3 py-1 rounded-xl bg-amber-500 text-slate-950 font-black text-sm sm:text-base shrink-0">第 1 步</span>
+                            <h2 id="sim-step-title" class="text-lg sm:text-2xl font-black text-white truncate">等空房、看落杆</h2>
                         </div>
-                    </div>`;
-                }
+                        <button onclick="speakCurrentSimStep()" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3 py-1.5 sm:px-4 sm:py-2 rounded-xl text-xs sm:text-sm flex items-center gap-1.5 shrink-0">
+                            <i class="fa-solid fa-volume-high text-base"></i>
+                            <span>语音讲解</span>
+                        </button>
+                    </div>
 
-                case 6: {
-                    const isClosed = subState !== "closing";
-                    return `
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 地面与料仓坑口 -->
-                        <rect x="15" y="175" width="160" height="14" fill="#334155"/>
-                        <rect x="175" y="175" width="145" height="55" fill="#090d16" stroke="#ef4444" stroke-width="3"/>
-                        <text x="247" y="212" text-anchor="middle" fill="#f87171" font-size="14" font-weight="900">料仓深坑</text>
-                        <rect x="320" y="175" width="185" height="14" fill="#334155"/>
-
-                        <!-- 料仓后盖板状态 -->
-                        ${isClosed ? `
-                            <!-- 完全关闭水平盖严 -->
-                            <rect x="172" y="166" width="152" height="12" rx="4" fill="#10b981" stroke="#fff" stroke-width="2"/>
-                            <text x="247" y="152" text-anchor="middle" fill="#34d399" font-size="16" font-weight="900">✅ 料仓盖板已完全关严！</text>
-                        ` : `
-                            <!-- 正在关闭半开状态 -->
-                            <rect x="175" y="105" width="12" height="72" rx="4" transform="rotate(38 175 175)" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
-                            <text x="245" y="120" text-anchor="middle" fill="#fbbf24" font-size="15" font-weight="900">⏳ 盖板正在关(还没关严!)</text>
-                        `}
-
-                        <!-- 货车已降平 -->
-                        <g transform="translate(310, 92)">
-                            <rect x="0" y="0" width="125" height="56" rx="5" fill="#2563eb"/>
-                            <path d="M128 14 L165 14 L175 38 L175 56 L128 56 Z" fill="#f59e0b"/>
-                            <circle cx="30" cy="68" r="14" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <circle cx="145" cy="68" r="14" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <text x="62" y="34" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">
-                                ${isClosed ? '现在去关后车门' : '平台下降中'}
-                            </text>
-                        </g>
-
-                        <!-- 司机位置提示 -->
-                        <g transform="translate(25, 45)">
-                            <rect x="0" y="0" width="150" height="82" rx="12" fill="#1e293b" stroke="${isClosed ? '#10b981' : '#f43f5e'}" stroke-width="3"/>
-                            <text x="75" y="32" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">
-                                ${isClosed ? '✅ 第2步：去关车门' : '✋ 第1步：屋里按完成'}
-                            </text>
-                            <text x="75" y="60" text-anchor="middle" fill="${isClosed ? '#34d399' : '#fda4af'}" font-size="13" font-weight="bold">
-                                ${isClosed ? '盖板严实了，安全！' : '盖板没关严别去车尾！'}
-                            </text>
-                        </g>
-                    </svg>`;
-                }
-
-                case 7: {
-                    const isFlat = subState !== "dropping";
-                    return `
-                    <svg viewBox="0 0 520 240" class="w-full max-w-[500px] h-auto">
-                        <!-- 左侧监视器放大框 -->
-                        <rect x="16" y="18" width="245" height="195" rx="14" fill="#090d16" stroke="#38bdf8" stroke-width="4"/>
-                        <rect x="16" y="18" width="245" height="32" rx="10" fill="#0284c7"/>
-                        <text x="138" y="39" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">📺 盯紧左侧监视器</text>
-
-                        <!-- 监控内地面与后挡板 -->
-                        <rect x="30" y="172" width="215" height="10" fill="#475569"/>
-                        ${isFlat ? `
-                            <rect x="85" y="164" width="65" height="9" rx="3" fill="#10b981" stroke="#fff" stroke-width="2"/>
-                            <text x="138" y="135" text-anchor="middle" fill="#34d399" font-size="17" font-weight="900">✅ 后挡已完全落下趴平</text>
-                        ` : `
-                            <polygon points="85,172 135,172 135,134" fill="#f59e0b" stroke="#ef4444" stroke-width="2"/>
-                            <text x="138" y="115" text-anchor="middle" fill="#fbbf24" font-size="15" font-weight="900">⏳ 后挡还没落平，慢点开！</text>
-                        `}
-
-                        <!-- 右侧：货车往前驶离 -->
-                        <rect x="275" y="175" width="230" height="12" rx="3" fill="#334155"/>
-                        <g transform="translate(285, 92)">
-                            <rect x="0" y="0" width="125" height="56" rx="5" fill="#2563eb"/>
-                            <path d="M128 14 L165 14 L175 38 L175 56 L128 56 Z" fill="#f59e0b"/>
-                            <circle cx="30" cy="68" r="14" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <circle cx="145" cy="68" r="14" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
-                            <text x="62" y="34" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">缓慢往前开 ➔</text>
-                        </g>
-
-                        <!-- 驶离指示 -->
-                        <path d="M310 55 L445 55" stroke="${isFlat ? '#10b981' : '#f59e0b'}" stroke-width="8" stroke-linecap="round"/>
-                        <polygon points="445,44 468,55 445,66" fill="${isFlat ? '#10b981' : '#f59e0b'}"/>
-                        <text x="390" y="38" text-anchor="middle" fill="${isFlat ? '#34d399' : '#fde047'}" font-size="16" font-weight="900">
-                            ${isFlat ? '🎉 确认趴平，安全驶离！' : '边慢走边看左屏幕'}
-                        </text>
-                    </svg>`;
-                }
-            }
-        }
-
-        // ==================== 渲染视图 1：一图看懂全流程（海报式垂直流程图） ====================
-        function renderFlowchartView() {
-            const container = document.getElementById("flowchart-container");
-            container.innerHTML = stepsData.map((step, index) => `
-                <!-- 单步大卡片 -->
-                <div class="bg-slate-900 border-2 border-slate-700 hover:border-amber-500/70 transition-all rounded-3xl p-4 sm:p-6 shadow-xl">
-                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5 items-center">
+                    <!-- 动态SVG图示区 + 动作说明 -->
+                    <div class="p-3 sm:p-5 grid grid-cols-1 lg:grid-cols-12 gap-4 items-center">
                         
-                        <!-- 左：步骤序号 + 核心大字 + 动作点 (6列) -->
-                        <div class="lg:col-span-6 space-y-3.5">
-                            <div class="flex items-center justify-between gap-2">
-                                <div class="flex items-center gap-3">
-                                    <span class="w-11 h-11 rounded-2xl bg-amber-500 text-slate-950 font-black text-2xl flex items-center justify-center shadow-md shrink-0">
-                                        ${step.id}
-                                    </span>
-                                    <h3 class="text-2xl sm:text-3xl font-black text-white">${step.shortTitle}</h3>
-                                </div>
-                                <button onclick="speakText('${step.voiceText}')" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3.5 py-2 rounded-xl text-sm flex items-center gap-1.5 shrink-0">
-                                    <i class="fa-solid fa-volume-high text-base"></i>
-                                    <span>听语音</span>
-                                </button>
+                        <!-- 左侧：超大可视化动态图解舞台 (7列) -->
+                        <div class="lg:col-span-7 bg-slate-950 rounded-2xl border-2 border-slate-800 p-3 flex flex-col items-center justify-center relative">
+                            <div id="sim-svg-stage" class="w-full flex items-center justify-center">
+                                <!-- 动态SVG插入处 -->
                             </div>
-
-                            <!-- 口诀高亮条 -->
-                            <div class="bg-slate-800/90 border-l-4 border-amber-400 px-4 py-2.5 rounded-r-xl">
-                                <p class="text-lg sm:text-xl font-black text-amber-300">${step.slogan}</p>
-                            </div>
-
-                            <!-- 动作三要点 -->
-                            <div class="space-y-2">
-                                ${step.actions.map(act => `
-                                    <div class="flex items-center gap-3 bg-slate-950/70 px-3.5 py-2.5 rounded-xl border border-slate-800">
-                                        <i class="fa-solid ${act.icon} ${act.color} text-xl w-6 text-center shrink-0"></i>
-                                        <span class="text-base sm:text-lg font-bold text-slate-100">${act.text}</span>
-                                    </div>
-                                `).join('')}
-                            </div>
-
-                            <!-- 安全红线警示 -->
-                            <div class="bg-rose-950/60 border border-rose-500/60 px-3.5 py-2 rounded-xl flex items-center gap-2.5 text-rose-200 text-sm sm:text-base font-bold">
-                                <i class="fa-solid fa-circle-exclamation text-rose-400 text-lg shrink-0"></i>
-                                <span>${step.warning}</span>
+                            <!-- 情景互动切换条 -->
+                            <div id="sim-interactive-controls" class="w-full mt-3 pt-2.5 border-t border-slate-800 flex flex-wrap items-center justify-center gap-2">
+                                <!-- 动态情景切换按钮 -->
                             </div>
                         </div>
 
-                        <!-- 右：直观SVG示意图 + 现场实景图 (6列) -->
-                        <div class="lg:col-span-6 bg-slate-950 rounded-2xl border border-slate-800 p-3 flex flex-col items-center justify-center">
-                            ${getStepSVG(step.id, step.defaultSubState)}
-                            <div class="w-full">
-                                ${getStepPhotosHTML(step.id)}
+                        <!-- 右侧：大字口诀 + 傻瓜式动作清单 (5列) -->
+                        <div class="lg:col-span-5 flex flex-col justify-between space-y-3">
+                            <!-- 核心口诀卡 -->
+                            <div class="bg-amber-500/15 border-2 border-amber-500/40 rounded-2xl p-3">
+                                <div class="text-[11px] font-bold text-amber-400 uppercase tracking-wider mb-0.5">核心口诀</div>
+                                <div id="sim-slogan" class="text-lg sm:text-2xl font-black text-amber-300 leading-snug"></div>
                             </div>
-                            <button onclick="jumpToSimStep(${index})" class="mt-3 text-xs sm:text-sm text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1">
-                                <i class="fa-solid fa-hand-pointer"></i>
-                                <span>点此进入第 ${step.id} 步互动模拟演练 ➔</span>
+
+                            <!-- 具体动作分解 -->
+                            <div class="space-y-2" id="sim-action-list">
+                                <!-- 动态动作列表 -->
+                            </div>
+
+                            <!-- 对应步骤实景照片展示区（第3、4、5步自动显示） -->
+                            <div id="sim-photo-box" class="hidden"></div>
+
+                            <!-- 特别安全红线提醒 -->
+                            <div id="sim-warning-box" class="bg-rose-950/80 border-2 border-rose-500 rounded-2xl p-3 flex items-start gap-2.5">
+                                <i class="fa-solid fa-triangle-exclamation text-rose-400 text-lg sm:text-xl shrink-0 mt-0.5"></i>
+                                <div id="sim-warning-text" class="text-sm sm:text-base font-bold text-rose-200 leading-snug"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 底部企业信息与紧急联系栏（含最底部不起眼的导出按钮） -->
+            <footer class="mt-6 bg-slate-900 border-2 border-slate-800 rounded-2xl sm:rounded-3xl p-4 sm:p-5 text-center space-y-3 shadow-lg">
+                <div class="flex flex-col sm:flex-row items-center justify-center gap-2">
+                    <div class="bg-white rounded-lg p-1 h-7 px-2 flex items-center justify-center">
+                        <img src="容实LOGO.png" alt="RunShark LOGO" class="h-full w-auto object-contain" onerror="this.style.display='none'; this.nextElementSibling.classList.remove('hidden');">
+                        <span class="hidden text-slate-950 font-black text-xs tracking-tighter">RunShark</span>
+                    </div>
+                    <div class="text-amber-400 font-black text-sm sm:text-lg">
+                        河南容实重型装备有限公司 · 自动化汽车卸车机操作流程
+                    </div>
+                </div>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-2.5 pt-1">
+                    <div class="w-full md:w-auto bg-rose-600/20 border-2 border-rose-500 text-rose-300 px-3.5 py-2 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-hand-fist text-rose-400 text-base animate-pulse"></i>
+                        <span>突发情况：请立即拍下<strong class="text-white underline mx-1">【急停按钮】</strong></span>
+                    </div>
+                    <div class="w-full md:w-auto bg-sky-500/15 border-2 border-sky-400/60 text-sky-200 px-3.5 py-2 rounded-xl font-black text-xs sm:text-sm flex items-center justify-center gap-2">
+                        <i class="fa-solid fa-microphone-lines text-sky-400 text-base"></i>
+                        <span>设备疑问：请联系<strong class="text-amber-300 mx-1">当班工作人员</strong>或用<strong class="text-emerald-300 mx-1">【语音话筒】</strong>与中控室对话</span>
+                    </div>
+                </div>
+                <!-- 最底部不起眼的单文件与PDF导出入口 -->
+                <div class="pt-2.5 border-t border-slate-800/80 flex items-center justify-end gap-3 no-print">
+                    <button onclick="exportPageToPdf()" class="text-[11px] text-slate-500 hover:text-amber-400 transition-colors flex items-center gap-1 px-2 py-0.5 rounded" title="导出彩色图文PDF文档">
+                        <i class="fa-solid fa-file-pdf text-[10px]"></i>
+                        <span>导出 PDF</span>
+                    </button>
+                    <button onclick="downloadIndexHtml()" class="text-[11px] text-slate-600 hover:text-slate-400 transition-colors flex items-center gap-1 px-2 py-0.5 rounded" title="管理员工具：导出单文件 index.html">
+                        <i class="fa-solid fa-code text-[10px]"></i>
+                        <span>导出 index.html</span>
+                    </button>
+                </div>
+            </footer>
+
+        </div>
+    </main>
+
+    <!-- ==================== 3. 手把手演练模式专属：底部固定单手翻页栏 ==================== -->
+    <div id="sim-bottom-bar" class="hidden bg-slate-900/98 border-t-2 border-slate-700 px-3 py-2.5 z-40 shrink-0 shadow-2xl">
+        <div class="max-w-5xl mx-auto flex items-center justify-between gap-2.5">
+            <button id="btn-prev" onclick="changeSimStep(-1)" class="ind-btn flex-1 py-2.5 px-4 rounded-xl bg-slate-700 hover:bg-slate-600 text-white font-black text-sm sm:text-base flex items-center justify-center gap-1.5 disabled:opacity-40">
+                <i class="fa-solid fa-arrow-left"></i>
+                <span>上一步</span>
+            </button>
+            <div id="sim-progress-text" class="text-amber-400 font-black text-xs sm:text-sm px-2 shrink-0">
+                1 / 7 步
+            </div>
+            <button id="btn-next" onclick="changeSimStep(1)" class="ind-btn flex-1 py-2.5 px-4 rounded-xl bg-emerald-500 hover:bg-emerald-400 text-slate-950 font-black text-sm sm:text-base flex items-center justify-center gap-1.5">
+                <span>下一步</span>
+                <i class="fa-solid fa-arrow-right"></i>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+<!-- 实景图片全屏放大查看器 (Lightbox) -->
+<div id="photo-lightbox" class="fixed inset-0 z-50 hidden bg-slate-950/95 backdrop-blur-md flex flex-col items-center justify-center p-2.5 sm:p-6" onclick="closePhotoLightbox()">
+    <div class="max-w-4xl w-full bg-slate-900 border-2 border-amber-500 rounded-2xl sm:rounded-3xl overflow-hidden shadow-2xl" onclick="event.stopPropagation()">
+        <div class="bg-slate-800 px-4 py-3 border-b border-slate-700 flex items-center justify-between gap-2">
+            <div class="flex items-center gap-2 min-w-0">
+                <span id="lightbox-badge" class="bg-amber-500 text-slate-950 font-black px-2.5 py-0.5 rounded-lg text-xs shrink-0">实景大图</span>
+                <h3 id="lightbox-title" class="text-sm sm:text-lg font-black text-white truncate"></h3>
+            </div>
+            <button onclick="closePhotoLightbox()" class="w-8 h-8 rounded-xl bg-rose-600 hover:bg-rose-500 text-white font-black text-base flex items-center justify-center shrink-0">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+        <div class="bg-black flex items-center justify-center max-h-[62vh] overflow-hidden p-1.5">
+            <img id="lightbox-img" src="" alt="现场实景大图" class="max-h-[60vh] w-auto object-contain rounded-lg">
+        </div>
+        <div class="p-3.5 sm:p-5 bg-slate-900 border-t border-slate-800 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3">
+            <p id="lightbox-desc" class="text-slate-200 font-bold text-xs sm:text-base leading-relaxed"></p>
+            <button id="lightbox-voice-btn" class="ind-btn w-full sm:w-auto bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-4 py-2 rounded-xl text-xs sm:text-sm shrink-0 flex items-center justify-center gap-1.5">
+                <i class="fa-solid fa-volume-high"></i>
+                <span>听看图要点</span>
+            </button>
+        </div>
+    </div>
+</div>
+
+<!-- 语音播报状态浮动提示框 -->
+<div id="voice-toast" class="fixed bottom-16 right-4 z-50 hidden bg-amber-400 text-slate-950 px-4 py-2.5 rounded-2xl font-black shadow-2xl border-2 border-white items-center gap-2.5 text-xs sm:text-sm">
+    <i class="fa-solid fa-volume-high text-base animate-bounce"></i>
+    <span id="voice-toast-text">正在语音播报...</span>
+    <button onclick="stopSpeech()" class="ml-1 bg-slate-900 text-white px-2 py-0.5 rounded-lg text-xs">停止</button>
+</div>
+
+<!-- 导出成功顶部轻提示框 -->
+<div id="action-toast" class="fixed top-16 left-1/2 -translate-x-1/2 z-50 hidden bg-emerald-500 text-slate-950 px-5 py-2.5 rounded-2xl font-black shadow-2xl border-2 border-white items-center gap-2 text-xs sm:text-sm">
+    <i class="fa-solid fa-circle-check text-base"></i>
+    <span id="action-toast-text">操作成功！</span>
+</div>
+
+<script>
+    // ==================== 1. 手机屏幕大小动态计算与顶置区智能折叠逻辑 ====================
+    let isHeaderManuallyCollapsed = false;
+    let lastScrollTop = 0;
+
+    function adjustViewportLayout() {
+        // 精准获取手机浏览器可视区域高度（解决微信浏览器地址栏/底栏遮挡问题）
+        const vh = window.visualViewport ? window.visualViewport.height : window.innerHeight;
+        document.documentElement.style.setProperty('--app-height', `${vh}px`);
+
+        // 若屏幕高度较小（如小屏手机横屏或紧凑竖屏 < 640px），默认自动收起品牌横幅，优先保障内容区
+        const brandBanner = document.getElementById('brand-banner');
+        if (vh < 560 && !isHeaderManuallyCollapsed) {
+            setHeaderCollapsed(true);
+        }
+    }
+
+    function setHeaderCollapsed(collapsed) {
+        const brandBanner = document.getElementById('brand-banner');
+        const icon = document.getElementById('icon-toggle-header');
+        const text = document.getElementById('text-toggle-header');
+        if (!brandBanner) return;
+
+        if (collapsed) {
+            brandBanner.classList.add('header-collapsed');
+            if (icon) icon.className = 'fa-solid fa-chevron-down text-amber-400';
+            if (text) text.textContent = '展开顶栏';
+        } else {
+            brandBanner.classList.remove('header-collapsed');
+            if (icon) icon.className = 'fa-solid fa-chevron-up text-amber-400';
+            if (text) text.textContent = '收起顶栏';
+        }
+    }
+
+    function toggleHeaderManual() {
+        const brandBanner = document.getElementById('brand-banner');
+        const isCurrentlyCollapsed = brandBanner.classList.contains('header-collapsed');
+        isHeaderManuallyCollapsed = !isCurrentlyCollapsed;
+        setHeaderCollapsed(!isCurrentlyCollapsed);
+    }
+
+    // 监听内容滑动：向下滑动自动收起顶部品牌横幅，滑回顶部自动展开，并同步高亮当前步骤胶囊
+    function initScrollListener() {
+        const scrollArea = document.getElementById('main-scroll-area');
+        if (!scrollArea) return;
+
+        scrollArea.addEventListener('scroll', () => {
+            const st = scrollArea.scrollTop;
+
+            // 自动折叠/展开顶部横幅（当向下滑动超过 55px 时自动折叠）
+            if (!isHeaderManuallyCollapsed) {
+                if (st > 55 && st > lastScrollTop) {
+                    setHeaderCollapsed(true);
+                } else if (st < 20) {
+                    setHeaderCollapsed(false);
+                }
+            }
+            lastScrollTop = st <= 0 ? 0 : st;
+
+            // 在“一图看懂”模式下，根据滚动位置自动高亮顶部对应的步骤胶囊
+            const flowView = document.getElementById('view-flow');
+            if (!flowView.classList.contains('hidden')) {
+                updateActiveNavPillOnScroll(scrollArea);
+            }
+        }, { passive: true });
+    }
+
+    function updateActiveNavPillOnScroll(scrollArea) {
+        const scrollPos = scrollArea.scrollTop + 90;
+        let activeId = 'nav-pill-rhyme';
+
+        const photosEl = document.getElementById('section-photos');
+        if (photosEl && scrollPos >= photosEl.offsetTop) {
+            activeId = 'nav-pill-photos';
+        }
+
+        for (let i = 1; i <= 7; i++) {
+            const stepEl = document.getElementById(`flow-step-card-${i}`);
+            if (stepEl && scrollPos >= stepEl.offsetTop) {
+                activeId = `nav-pill-step-${i}`;
+            }
+        }
+        highlightNavPill(activeId);
+    }
+
+    function highlightNavPill(activeId) {
+        document.querySelectorAll('.nav-pill').forEach(btn => {
+            if (btn.id === activeId) {
+                btn.className = 'nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-amber-500 text-slate-950 shadow transition-all scale-105';
+                // 确保高亮胶囊在横向滚动条可视范围内
+                btn.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'center' });
+            } else if (btn.id === 'nav-pill-photos') {
+                btn.className = 'nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 text-sky-300 border border-sky-500/40 transition-all';
+            } else {
+                btn.className = 'nav-pill shrink-0 px-2.5 py-1 rounded-lg text-xs font-black bg-slate-800 text-slate-300 border border-slate-700 transition-all';
+            }
+        });
+    }
+
+    function scrollToSection(sectionId) {
+        const flowView = document.getElementById('view-flow');
+        if (flowView.classList.contains('hidden')) {
+            switchView('flow');
+        }
+        const target = document.getElementById(sectionId);
+        if (target) {
+            target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        }
+    }
+
+    function quickJumpStep(stepIndex) {
+        const flowView = document.getElementById('view-flow');
+        if (!flowView.classList.contains('hidden')) {
+            const target = document.getElementById(`flow-step-card-${stepIndex + 1}`);
+            if (target) {
+                target.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                highlightNavPill(`nav-pill-step-${stepIndex + 1}`);
+            }
+        } else {
+            selectSimStep(stepIndex);
+            highlightNavPill(`nav-pill-step-${stepIndex + 1}`);
+        }
+    }
+
+    // ==================== 2. 现场三张实景图配置（图1、图2为左右前轮前挡，图3为后挡提升到位） ====================
+    const realPhotos = {
+        frontWide: {
+            key: "frontWide",
+            stepBadge: "实景图一 · 第4步",
+            title: "左右前轮的前挡（侧面全景）",
+            src: "be1431e5402449bea1b377df67d0b81c.jpg",
+            shortTip: "下车绕看左右前轮：黄色前挡挡舌必须停在两轮中间",
+            desc: "【实景图一：左右前轮的前挡（侧面全景）】下车后绕看左右前轮，确认黄色机械臂上的竖向“前挡挡舌”（两侧带黑色液压油缸）准确停留在前后两个轮胎的中间位置。",
+            tags: ["① 左右前轮前挡", "② 停在两轮中间"]
+        },
+        frontClose: {
+            key: "frontClose",
+            stepBadge: "实景图二 · 第4步",
+            title: "左右前轮的前挡（居中特写）",
+            src: "ffc504a5fe3b077a201cc4ecc5545c36.jpg",
+            shortTip: "近看黄色挡舌停在两轮正中间空隙，即可去开后门",
+            desc: "【实景图二：左右前轮的前挡（近景特写）】走近观察左右前轮之间：黄色前挡挡舌正好处于两轮空隙的正中央，确认居中后立即去车尾打开后车门！",
+            tags: ["① 前挡挡舌居中", "② 确认后开后门"]
+        },
+        rearStop: {
+            key: "rearStop",
+            stepBadge: "实景图三 · 第3步",
+            title: "后挡完全提升到位实景",
+            src: "78e14a6005423bf7d94fefa9c80486f4.jpg",
+            shortTip: "后轮靠近挡板、两块后挡板完全垂直升起，即可停车下车",
+            desc: "【实景图三：后挡提升到位的照片】倒车观察左侧监控：图中车轮后方两块厚钢板即为“后轮挡板”，当后挡完全垂直提升到位且后轮靠稳后，即可执行停车、放气（断气刹）、下车。（注：车轮上方红白“一路平安”皮帘即为挡泥板）",
+            tags: ["① 后挡提升到位", "② 停稳放气下车"]
+        }
+    };
+
+    // 当预览环境未挂载本地 jpg 文件时，使用高还原 Canvas 绘制清晰实景对照图
+    function generateRealisticFallbackCanvas(photoKey) {
+        const canvas = document.createElement("canvas");
+        canvas.width = 640;
+        canvas.height = 420;
+        const ctx = canvas.getContext("2d");
+
+        if (photoKey === "rearStop") {
+            ctx.fillStyle = "#475569";
+            ctx.fillRect(0, 0, 640, 420);
+            ctx.fillStyle = "#64748b";
+            ctx.fillRect(0, 270, 640, 150);
+            ctx.fillStyle = "#1e293b";
+            ctx.beginPath();
+            ctx.moveTo(390, 420);
+            ctx.quadraticCurveTo(480, 220, 640, 250);
+            ctx.lineTo(640, 420);
+            ctx.fill();
+            ctx.fillStyle = "#991b1b";
+            ctx.fillRect(0, 0, 560, 85);
+            ctx.fillStyle = "#1e293b";
+            ctx.beginPath();
+            ctx.arc(140, 195, 115, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#cbd5e1";
+            ctx.beginPath();
+            ctx.arc(140, 195, 60, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.fillStyle = "#334155";
+            ctx.strokeStyle = "#facc15";
+            ctx.lineWidth = 4;
+            ctx.fillRect(235, 170, 75, 155);
+            ctx.strokeRect(235, 170, 75, 155);
+            ctx.fillStyle = "#eab308";
+            ctx.fillRect(245, 185, 22, 120);
+            ctx.fillStyle = "#dc2626";
+            ctx.fillRect(240, 40, 82, 100);
+            ctx.fillStyle = "#f8fafc";
+            ctx.fillRect(245, 130, 75, 48);
+            ctx.fillStyle = "#dc2626";
+            ctx.font = "bold 17px sans-serif";
+            ctx.fillText("一路平安", 248, 160);
+            ctx.fillStyle = "rgba(15,23,42,0.92)";
+            ctx.fillRect(16, 335, 608, 70);
+            ctx.strokeStyle = "#10b981";
+            ctx.strokeRect(16, 335, 608, 70);
+            ctx.fillStyle = "#34d399";
+            ctx.font = "bold 21px sans-serif";
+            ctx.fillText("实景图三：后轮挡板完全提升到位（轮胎紧靠后挡）", 32, 366);
+            ctx.fillStyle = "#fde047";
+            ctx.font = "bold 16px sans-serif";
+            ctx.fillText("确认后挡完全垂直升起并靠稳后 ➔ 停车、放气、下车", 32, 392);
+        } else if (photoKey === "frontWide") {
+            ctx.fillStyle = "#334155";
+            ctx.fillRect(0, 0, 640, 420);
+            ctx.fillStyle = "#b91c1c";
+            ctx.fillRect(0, 0, 640, 68);
+            ctx.fillStyle = "#1e293b";
+            ctx.strokeStyle = "#64748b";
+            ctx.lineWidth = 8;
+            ctx.beginPath();
+            ctx.arc(175, 200, 108, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.arc(485, 200, 108, 0, Math.PI * 2);
+            ctx.fill();
+            ctx.stroke();
+            ctx.fillStyle = "#ca8a04";
+            ctx.fillRect(0, 300, 640, 120);
+            ctx.fillStyle = "#facc15";
+            ctx.strokeStyle = "#ffffff";
+            ctx.lineWidth = 3;
+            ctx.fillRect(298, 110, 50, 190);
+            ctx.strokeRect(298, 110, 50, 190);
+            ctx.fillStyle = "#0f172a";
+            ctx.fillRect(245, 210, 32, 88);
+            ctx.fillRect(368, 210, 32, 88);
+            ctx.fillStyle = "rgba(15,23,42,0.92)";
+            ctx.fillRect(16, 335, 608, 70);
+            ctx.strokeStyle = "#facc15";
+            ctx.strokeRect(16, 335, 608, 70);
+            ctx.fillStyle = "#fde047";
+            ctx.font = "bold 21px sans-serif";
+            ctx.fillText("实景图一：左右前轮的前挡（黄色挡舌在两轮中间）", 32, 366);
+            ctx.fillStyle = "#cbd5e1";
+            ctx.font = "bold 16px sans-serif";
+            ctx.fillText("下车绕看左右前轮，确认黄色前挡挡舌停留在两轮正中间", 32, 392);
+        } else {
+            ctx.fillStyle = "#334155";
+            ctx.fillRect(0, 0, 640, 420);
+            ctx.fillStyle = "#475569";
+            ctx.beginPath();
+            ctx.arc(60, 165, 185, -Math.PI * 0.4, Math.PI * 0.55);
+            ctx.fill();
+            ctx.beginPath();
+            ctx.arc(580, 165, 185, Math.PI * 0.45, Math.PI * 1.4);
+            ctx.fill();
+            ctx.fillStyle = "#eab308";
+            ctx.strokeStyle = "#fef08a";
+            ctx.lineWidth = 4;
+            ctx.fillRect(268, 15, 96, 315);
+            ctx.strokeRect(268, 15, 96, 315);
+            ctx.fillStyle = "rgba(15,23,42,0.92)";
+            ctx.fillRect(16, 335, 608, 70);
+            ctx.strokeStyle = "#10b981";
+            ctx.strokeRect(16, 335, 608, 70);
+            ctx.fillStyle = "#34d399";
+            ctx.font = "bold 21px sans-serif";
+            ctx.fillText("实景图二：左右前轮的前挡特写（挡舌居中）", 32, 366);
+            ctx.fillStyle = "#fde047";
+            ctx.font = "bold 16px sans-serif";
+            ctx.fillText("确认前挡挡舌停留在两轮中间后，立即前往车尾打开后车门", 32, 392);
+        }
+        return canvas.toDataURL("image/png");
+    }
+
+    // 针对实景图二原图：自动使用羽化仿制图章抹除轮胎与黄色挡舌上的红点（技术保密处理）
+    let cleanedFrontCloseDataUrl = null;
+
+    function paintFeatheredClonePatch(ctx, img, w, h, cxRatio, cyRatio, rRatio, sxRatio, syRatio) {
+        const cx = cxRatio * w;
+        const cy = cyRatio * h;
+        const r = rRatio * w;
+        const sx = sxRatio * w;
+        const sy = syRatio * h;
+
+        // 分层羽化融合，确保去红点后与周围轮胎/黄漆纹理完全自然过渡
+        const steps = [1.0, 0.82, 0.65, 0.48];
+        steps.forEach((scale, idx) => {
+            const curR = r * scale;
+            ctx.save();
+            ctx.beginPath();
+            ctx.arc(cx, cy, curR, 0, Math.PI * 2);
+            ctx.clip();
+            ctx.globalAlpha = idx === steps.length - 1 ? 1.0 : 0.45;
+            ctx.drawImage(
+                img,
+                sx - curR, sy - curR, curR * 2, curR * 2,
+                cx - curR, cy - curR, curR * 2, curR * 2
+            );
+            ctx.restore();
+        });
+    }
+
+    function removeRedDotsFromPhoto2(imgEl) {
+        if (!imgEl || imgEl.dataset.redDotsRemoved === "true" || imgEl.dataset.fallbackApplied === "true") return;
+        if (cleanedFrontCloseDataUrl) {
+            imgEl.dataset.redDotsRemoved = "true";
+            imgEl.src = cleanedFrontCloseDataUrl;
+            return;
+        }
+
+        const w = imgEl.naturalWidth || 640;
+        const h = imgEl.naturalHeight || 420;
+        if (!w || !h) return;
+
+        const canvas = document.createElement("canvas");
+        canvas.width = w;
+        canvas.height = h;
+        const ctx = canvas.getContext("2d");
+        ctx.drawImage(imgEl, 0, 0, w, h);
+
+        // 抹除实景图二中的各处红点标记（左轮红点、中间黄色挡舌红点、左右轮胎下方红漆印）
+        paintFeatheredClonePatch(ctx, imgEl, w, h, 0.258, 0.369, 0.020, 0.252, 0.332);
+        paintFeatheredClonePatch(ctx, imgEl, w, h, 0.491, 0.373, 0.020, 0.491, 0.412);
+        paintFeatheredClonePatch(ctx, imgEl, w, h, 0.276, 0.616, 0.022, 0.262, 0.582);
+        paintFeatheredClonePatch(ctx, imgEl, w, h, 0.713, 0.606, 0.020, 0.702, 0.574);
+        paintFeatheredClonePatch(ctx, imgEl, w, h, 0.796, 0.620, 0.024, 0.778, 0.588);
+
+        imgEl.dataset.redDotsRemoved = "true";
+
+        try {
+            cleanedFrontCloseDataUrl = canvas.toDataURL("image/jpeg", 0.94);
+            imgEl.src = cleanedFrontCloseDataUrl;
+        } catch (e) {
+            // 若在本地 file:// 协议下受浏览器跨域安全限制无法导出 DataURL，则直接用去红点后的 Canvas 替换显示
+            canvas.className = imgEl.className;
+            if (imgEl.parentNode) {
+                imgEl.parentNode.replaceChild(canvas, imgEl);
+            }
+        }
+    }
+
+    function handleImgError(imgEl, photoKey) {
+        if (imgEl.dataset.fallbackApplied === "true") return;
+        imgEl.dataset.fallbackApplied = "true";
+        imgEl.src = generateRealisticFallbackCanvas(photoKey);
+    }
+
+    // 渲染顶部三大实景照片速览卡（针对手机优化高度与排版）
+    function renderTopPhotoGallery() {
+        const container = document.getElementById("top-photo-gallery");
+        if (!container) return;
+        container.innerHTML = Object.values(realPhotos).map(p => `
+            <div onclick="openPhotoLightbox('${p.key}')" class="group cursor-pointer bg-slate-950 border border-slate-800 hover:border-amber-400 rounded-xl sm:rounded-2xl overflow-hidden transition-all shadow flex sm:flex-col items-center sm:items-stretch">
+                <div class="relative w-32 sm:w-full h-24 sm:h-36 bg-black overflow-hidden shrink-0 flex items-center justify-center">
+                    <img src="${p.src}" data-photo-key="${p.key}" ${p.key === 'frontClose' ? 'onload="removeRedDotsFromPhoto2(this)"' : ''} onerror="handleImgError(this, '${p.key}')" alt="${p.title}" class="w-full h-full object-cover">
+                    <span class="absolute top-1.5 left-1.5 bg-amber-500 text-slate-950 font-black text-[10px] sm:text-xs px-1.5 py-0.5 rounded shadow">
+                        ${p.stepBadge}
+                    </span>
+                    <span class="absolute bottom-1.5 right-1.5 bg-slate-900/90 text-sky-300 font-bold text-[10px] px-1.5 py-0.5 rounded border border-sky-500/40">
+                        <i class="fa-solid fa-magnifying-glass-plus"></i> 放大
+                    </span>
+                </div>
+                <div class="p-2.5 sm:p-3 flex-1 min-w-0">
+                    <h4 class="text-xs sm:text-sm font-black text-white truncate">${p.title}</h4>
+                    <p class="text-[11px] sm:text-xs text-slate-300 font-bold mt-1 line-clamp-2 leading-snug">${p.shortTip}</p>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    // 生成内嵌在具体步骤卡片中的实景照片组件
+    function getStepPhotosHTML(stepId) {
+        if (stepId === 3) {
+            const p = realPhotos.rearStop;
+            return `
+            <div class="mt-2.5 bg-slate-900/95 border border-emerald-500/50 rounded-xl p-2.5">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-black text-emerald-400 flex items-center gap-1">
+                        <i class="fa-solid fa-camera"></i> 实拍对照：后挡完全升起状态
+                    </span>
+                    <button onclick="openPhotoLightbox('rearStop')" class="text-[11px] bg-emerald-500/20 text-emerald-300 px-2 py-0.5 rounded font-bold">
+                        <i class="fa-solid fa-expand mr-0.5"></i>点图放大
+                    </button>
+                </div>
+                <div onclick="openPhotoLightbox('rearStop')" class="cursor-pointer flex items-center gap-2.5">
+                    <div class="w-28 sm:w-36 h-20 sm:h-24 bg-black rounded-lg overflow-hidden border border-slate-700 shrink-0">
+                        <img src="${p.src}" data-photo-key="rearStop" onerror="handleImgError(this, 'rearStop')" alt="${p.title}" class="w-full h-full object-cover">
+                    </div>
+                    <div class="text-left min-w-0">
+                        <div class="text-xs sm:text-sm font-black text-white">✅ 后挡完全提升到位</div>
+                        <p class="text-[11px] sm:text-xs text-slate-300 font-bold leading-snug mt-0.5">
+                            车轮后方两块厚钢板<strong class="text-amber-300">完全垂直竖起</strong>并靠稳后，即可停车、放气、下车。
+                        </p>
+                    </div>
+                </div>
+            </div>`;
+        }
+        if (stepId === 4) {
+            const p1 = realPhotos.frontWide;
+            const p2 = realPhotos.frontClose;
+            return `
+            <div class="mt-2.5 bg-slate-900/95 border border-amber-500/60 rounded-xl p-2.5">
+                <div class="flex items-center justify-between mb-1.5">
+                    <span class="text-xs font-black text-amber-400 flex items-center gap-1">
+                        <i class="fa-solid fa-camera"></i> 实拍对照：前挡挡舌在两轮中间
+                    </span>
+                    <span class="text-[11px] text-sky-300 font-bold">点图放大</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <div onclick="openPhotoLightbox('frontWide')" class="cursor-pointer bg-slate-950 rounded-lg p-1.5 border border-slate-800">
+                        <div class="h-20 sm:h-24 bg-black rounded overflow-hidden mb-1">
+                            <img src="${p1.src}" data-photo-key="frontWide" onerror="handleImgError(this, 'frontWide')" alt="${p1.title}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="text-[11px] font-black text-amber-300 truncate">① 侧面全景：黄舌居中</div>
+                    </div>
+                    <div onclick="openPhotoLightbox('frontClose')" class="cursor-pointer bg-slate-950 rounded-lg p-1.5 border border-slate-800">
+                        <div class="h-20 sm:h-24 bg-black rounded overflow-hidden mb-1">
+                            <img src="${p2.src}" data-photo-key="frontClose" onload="removeRedDotsFromPhoto2(this)" onerror="handleImgError(this, 'frontClose')" alt="${p2.title}" class="w-full h-full object-cover">
+                        </div>
+                        <div class="text-[11px] font-black text-emerald-300 truncate">② 近景特写：挡舌居中</div>
+                    </div>
+                </div>
+            </div>`;
+        }
+        if (stepId === 5) {
+            const p = realPhotos.rearStop;
+            return `
+            <div onclick="openPhotoLightbox('rearStop')" class="cursor-pointer mt-2.5 bg-slate-900/95 border border-sky-500/50 rounded-xl p-2.5 flex items-center gap-2.5">
+                <img src="${p.src}" data-photo-key="rearStop" onerror="handleImgError(this, 'rearStop')" class="w-16 h-12 object-cover rounded-lg border border-slate-700 shrink-0">
+                <div class="text-left min-w-0">
+                    <div class="text-xs font-black text-sky-300">💡 怎么选【有/无挡泥板】？</div>
+                    <div class="text-[11px] text-slate-300 font-bold leading-tight mt-0.5">后轮上方有红白“一路平安”皮帘即为【有挡泥板】（点图放大）</div>
+                </div>
+            </div>`;
+        }
+        return "";
+    }
+
+    function openPhotoLightbox(photoKey) {
+        const p = realPhotos[photoKey];
+        if (!p) return;
+        const modal = document.getElementById("photo-lightbox");
+        const imgEl = document.getElementById("lightbox-img");
+        document.getElementById("lightbox-badge").textContent = p.stepBadge;
+        document.getElementById("lightbox-title").textContent = p.title;
+        document.getElementById("lightbox-desc").textContent = p.desc;
+
+        delete imgEl.dataset.redDotsRemoved;
+        delete imgEl.dataset.fallbackApplied;
+
+        if (photoKey === "frontClose" && cleanedFrontCloseDataUrl) {
+            imgEl.dataset.redDotsRemoved = "true";
+            imgEl.src = cleanedFrontCloseDataUrl;
+        } else {
+            const existingImg = document.querySelector(`img[data-photo-key="${photoKey}"]`);
+            imgEl.onload = photoKey === "frontClose" ? function() { removeRedDotsFromPhoto2(imgEl); } : null;
+            imgEl.src = existingImg ? existingImg.src : p.src;
+        }
+        document.getElementById("lightbox-voice-btn").onclick = () => speakText(p.desc);
+        modal.classList.remove("hidden");
+    }
+
+    function closePhotoLightbox() {
+        document.getElementById("photo-lightbox").classList.add("hidden");
+    }
+
+    // ==================== 3. 七步核心流程数据 ====================
+    const stepsData = [
+        {
+            id: 1,
+            shortTitle: "等空房 · 看落杆",
+            slogan: "屋里没车、前后杆都落下，再慢点开进去！",
+            voiceText: "第一步：等空房，看落杆。先把车停在等待区。看清楚卸车房里没有别的车，而且进口和出口的两根道闸杆子都落下来关闭了，再慢慢把车开进卸车室。",
+            actions: [
+                { icon: "fa-square-parking", color: "text-sky-400", text: "先把车停在【等待区】等候" },
+                { icon: "fa-eye", color: "text-amber-400", text: "确认室内【无车】，且进出口【双杆均落下关闭】" },
+                { icon: "fa-truck-moving", color: "text-emerald-400", text: "确认无误后，缓慢驶入卸车室" }
+            ],
+            warning: "只要里面还有车，或者进出杆子没落下，严禁驶入！",
+            defaultSubState: "ok",
+            subStates: [
+                { key: "ok", label: "✅ 可进：无车+双杆落下", btnClass: "bg-emerald-500 text-slate-950" },
+                { key: "no", label: "❌ 禁进：有车/杆未落", btnClass: "bg-rose-500 text-white" }
+            ]
+        },
+        {
+            id: 2,
+            shortTitle: "看右前灯 · 绿进黄倒",
+            slogan: "盯紧右前方信号灯：绿灯慢往前，黄灯慢倒车！",
+            voiceText: "第二步：看右前方信号灯。进屋后盯着右前方的红绿灯：亮绿灯的时候，慢慢往前开；一旦变成黄灯，马上停住，挂倒挡慢慢往后倒车！这时候后轮挡板会自动升起一半。",
+            actions: [
+                { icon: "fa-traffic-light", color: "text-emerald-400", text: "右前灯亮【绿灯】👉 缓慢往前开" },
+                { icon: "fa-traffic-light", color: "text-yellow-400", text: "右前灯亮【黄灯】👉 换倒挡，缓慢倒车" },
+                { icon: "fa-angles-up", color: "text-sky-400", text: "倒车时，后轮挡板自动提升至一半位置" }
+            ],
+            warning: "严格按右前方信号灯指示行驶，车速务必缓慢！",
+            defaultSubState: "yellow",
+            subStates: [
+                { key: "green", label: "🟢 绿灯：慢速往前开", btnClass: "bg-emerald-500 text-slate-950" },
+                { key: "yellow", label: "🟡 黄灯：慢速倒车(挡板半升)", btnClass: "bg-amber-400 text-slate-950" }
+            ]
+        },
+        {
+            id: 3,
+            shortTitle: "看左电视 · 挡板升满",
+            slogan: "倒车盯紧左边监控：后挡完全升起靠稳，再拉刹下车！",
+            voiceText: "第三步：看左边电视监控对准后轮。倒车时看着左边的监控屏幕，后轮靠近挡板时，挡板会完全升起来。如果发现挡板没升到底，就把车往前挪一点点，等它完全升到位了再倒车靠紧！停稳后：拉手刹、断气刹放气、下车。",
+            actions: [
+                { icon: "fa-tv", color: "text-sky-400", text: "倒车观察【左侧视频监控】，后轮靠近时后挡完全升起" },
+                { icon: "fa-arrows-left-right", color: "text-amber-400", text: "若后挡【未升到位】👉 往前开一点，等升满再倒车靠紧" },
+                { icon: "fa-hand", color: "text-emerald-400", text: "停稳后三步：【停车 ➔ 放气(断气刹) ➔ 下车】" }
+            ],
+            warning: "后挡板未完全升起前严禁硬靠！下车前必须断气刹放气！",
+            defaultSubState: "full",
+            subStates: [
+                { key: "full", label: "✅ 后挡完全升起 ➔ 停车放气下车", btnClass: "bg-emerald-500 text-slate-950" },
+                { key: "half", label: "⚠️ 没升满：往前开一点等升满再倒", btnClass: "bg-amber-400 text-slate-950" }
+            ]
+        },
+        {
+            id: 4,
+            shortTitle: "绕看前轮 · 开车后门",
+            slogan: "下车先看左右前轮：黄色挡舌在两轮正中间，再去开后门！",
+            voiceText: "第四步：绕看前轮，再去开后门。下车以后，先绕着左右两个前轮看一眼，确认地上的前挡挡舌正好停在前后轮的中间位置。确认居中了，马上走到车尾把车厢后门打开。",
+            actions: [
+                { icon: "fa-person-walking", color: "text-sky-400", text: "下车绕看【左右前轮】中间位置" },
+                { icon: "fa-bullseye", color: "text-emerald-400", text: "确认黄色【前挡挡舌】停留在两轮正中间" },
+                { icon: "fa-door-open", color: "text-amber-400", text: "确认居中后，立即去车尾【打开后方车门】" }
+            ],
+            warning: "若前轮挡舌未在两轮中间，必须重新上车调整位置！",
+            defaultSubState: "center",
+            subStates: [
+                { key: "center", label: "✅ 挡舌居中 ➔ 去开后门", btnClass: "bg-emerald-500 text-slate-950" },
+                { key: "off", label: "❌ 挡舌偏了 ➔ 上车重调", btnClass: "bg-rose-500 text-white" }
+            ]
+        },
+        {
+            id: 5,
+            shortTitle: "进屋按键 · 卸车别走",
+            slogan: "回操作室：先选【有无挡泥板】，再按【卸车启动】，人别出屋！",
+            voiceText: "第五步：进操作室按键卸车。打开车后门后回到操作室，先按你车的实际情况选择有挡泥板或者无挡泥板，选好后按下卸车启动按钮。卸车的时候震动器会自动震动，如果看车斗里还有剩料，可以自己再按一下震动器。记住：卸车全过程，人必须待在操作室里，千万不能出去！",
+            actions: [
+                { icon: "fa-sliders", color: "text-sky-400", text: "回到操作室，按实际选择【有挡泥板】或【无挡泥板】" },
+                { icon: "fa-power-off", color: "text-emerald-400", text: "点击【卸车启动】开始卸车（司机必须留在操作室内）" },
+                { icon: "fa-bell", color: "text-amber-400", text: "震动器自动振动；可根据卸车情况决定【是否再次开启震动器】" }
+            ],
+            warning: "保命铁律：卸车过程中，司机必须全程停留在操作室内，严禁外出！",
+            defaultSubState: "panel",
+            subStates: [
+                { key: "panel", label: "🎛️ 点击上方模拟按钮体验操作", btnClass: "bg-sky-500 text-slate-950" }
+            ]
+        },
+        {
+            id: 6,
+            shortTitle: "按卸车完 · 盖严关门",
+            slogan: "卸完按【卸车完成】，等料仓盖板彻底关严后，再去关后车门！",
+            voiceText: "第六步：卸完复位，等盖板关严再关车门。看物料卸干净了，按下卸车完成按钮。这时候大车开始降下来，料仓后盖板也开始关闭。你可以走出操作室，但必须在安全区等着，亲眼看到料仓盖板彻底关严实了，才能走过去整理车辆、关上后车门！",
+            actions: [
+                { icon: "fa-circle-check", color: "text-emerald-400", text: "卸车完成后点击【卸车完成】（举升下降、料仓后盖板开始关闭）" },
+                { icon: "fa-hourglass-half", color: "text-amber-400", text: "可离开操作室，但必须【等待料仓盖板完全关闭之后】" },
+                { icon: "fa-lock", color: "text-sky-400", text: "盖板彻底关严后，再上前【整备车辆、关后方车门】" }
+            ],
+            warning: "料仓盖板未完全关严前，严禁靠近车尾深坑区域！",
+            defaultSubState: "closed",
+            subStates: [
+                { key: "closing", label: "⏳ 盖板关闭中：原地等待勿靠近", btnClass: "bg-amber-400 text-slate-950" },
+                { key: "closed", label: "✅ 盖板已关严：上前整备关后门", btnClass: "bg-emerald-500 text-slate-950" }
+            ]
+        },
+        {
+            id: 7,
+            shortTitle: "看屏慢走 · 挡落驶离",
+            slogan: "上车慢往前开，盯紧左屏：直到后挡完全落下后，方可驶离！",
+            voiceText: "第七步：看左屏幕，等后挡落平再开走。关好车后门回到驾驶室，挂前进挡慢慢往前开，同时眼睛盯着左边的电视监控。一直看到后轮挡板完全落平趴下了，就可以安心驶离卸车室了。祝您一路平安！",
+            actions: [
+                { icon: "fa-truck", color: "text-sky-400", text: "回到驾驶室，车辆【往前缓慢行驶】" },
+                { icon: "fa-tv", color: "text-amber-400", text: "密切观察【左侧监视器】中的后轮挡板" },
+                { icon: "fa-road", color: "text-emerald-400", text: "直到【后挡完全落下后】，方可安全驶离！" }
+            ],
+            warning: "后轮挡板完全落下前切勿加速硬冲，确认落平后再驶离！",
+            defaultSubState: "flat",
+            subStates: [
+                { key: "dropping", label: "⏳ 后挡未落平：慢行观察左屏", btnClass: "bg-amber-400 text-slate-950" },
+                { key: "flat", label: "✅ 后挡完全落下：安全驶离！", btnClass: "bg-emerald-500 text-slate-950" }
+            ]
+        }
+    ];
+
+    let panelState = {
+        mudguard: "yes",
+        started: false,
+        vibrating: false
+    };
+
+    let currentSimIndex = 0;
+    let currentSubState = stepsData[0].defaultSubState;
+
+    // ==================== 4. 生成 SVG 动态示意图 ====================
+    function getStepSVG(stepId, subState) {
+        switch (stepId) {
+            case 1: {
+                const isOk = subState !== "no";
+                return `
+                <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
+                    <rect x="10" y="168" width="500" height="10" rx="4" fill="#334155"/>
+                    <rect x="210" y="20" width="270" height="148" rx="8" fill="#1e293b" stroke="${isOk ? '#10b981' : '#f43f5e'}" stroke-width="4" stroke-dasharray="10 6"/>
+                    <text x="345" y="48" text-anchor="middle" fill="#94a3b8" font-size="15" font-weight="bold">卸车室内部</text>
+                    ${isOk ? `
+                        <circle cx="345" cy="100" r="26" fill="#065f46" stroke="#10b981" stroke-width="3"/>
+                        <text x="345" y="106" text-anchor="middle" fill="#34d399" font-size="17" font-weight="900">室内无车</text>
+                    ` : `
+                        <rect x="280" y="95" width="130" height="46" rx="6" fill="#be123c"/>
+                        <circle cx="305" cy="152" r="11" fill="#0f172a" stroke="#cbd5e1" stroke-width="4"/>
+                        <circle cx="385" cy="152" r="11" fill="#0f172a" stroke="#cbd5e1" stroke-width="4"/>
+                        <text x="345" y="123" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">里面还有车！</text>
+                    `}
+                    <rect x="200" y="105" width="12" height="63" fill="#f59e0b"/>
+                    ${isOk ? `
+                        <rect x="145" y="110" width="65" height="9" rx="4" fill="#ef4444" stroke="#fff" stroke-width="2"/>
+                        <text x="175" y="98" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">入口杆关闭</text>
+                    ` : `
+                        <rect x="202" y="55" width="9" height="60" rx="4" fill="#ef4444"/>
+                        <text x="175" y="98" text-anchor="middle" fill="#fb7185" font-size="13" font-weight="bold">杆未落好</text>
+                    `}
+                    <rect x="476" y="105" width="12" height="63" fill="#f59e0b"/>
+                    <rect x="440" y="110" width="46" height="9" rx="4" fill="#ef4444" stroke="#fff" stroke-width="2"/>
+                    <text x="465" y="98" text-anchor="middle" fill="#34d399" font-size="13" font-weight="bold">出口杆关闭</text>
+                    <g transform="translate(18, 90)">
+                        <rect x="0" y="10" width="75" height="45" rx="4" fill="#3b82f6"/>
+                        <path d="M77 20 L105 20 L115 38 L115 55 L77 55 Z" fill="#f59e0b"/>
+                        <circle cx="22" cy="62" r="12" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                        <circle cx="58" cy="62" r="12" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                        <circle cx="96" cy="62" r="12" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                        <text x="37" y="38" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">等待区</text>
+                    </g>
+                    ${isOk ? `
+                        <path d="M145 145 L195 145" stroke="#10b981" stroke-width="6" stroke-linecap="round"/>
+                        <polygon points="195,137 210,145 195,153" fill="#10b981"/>
+                        <text x="175" y="163" text-anchor="middle" fill="#34d399" font-size="13" font-weight="900">缓慢驶入</text>
+                    ` : `
+                        <text x="165" y="150" text-anchor="middle" fill="#f43f5e" font-size="19" font-weight="900">🚫 等待</text>
+                    `}
+                </svg>`;
+            }
+            case 2: {
+                const isGreen = subState === "green";
+                return `
+                <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
+                    <rect x="15" y="172" width="490" height="10" rx="4" fill="#334155"/>
+                    <rect x="435" y="25" width="58" height="110" rx="12" fill="#0f172a" stroke="#64748b" stroke-width="4"/>
+                    <rect x="459" y="135" width="10" height="37" fill="#64748b"/>
+                    <text x="464" y="16" text-anchor="middle" fill="#f8fafc" font-size="13" font-weight="900">右前方信号灯</text>
+                    <circle cx="464" cy="56" r="18" fill="${isGreen ? '#10b981' : '#1e293b'}" class="${isGreen ? 'glow-anim' : ''}" stroke="#334155" stroke-width="2"/>
+                    <text x="464" y="62" text-anchor="middle" fill="${isGreen ? '#022c22' : '#475569'}" font-size="13" font-weight="900">绿</text>
+                    <circle cx="464" cy="102" r="18" fill="${!isGreen ? '#facc15' : '#1e293b'}" class="${!isGreen ? 'glow-anim' : ''}" stroke="#334155" stroke-width="2"/>
+                    <text x="464" y="108" text-anchor="middle" fill="${!isGreen ? '#422006' : '#475569'}" font-size="13" font-weight="900">黄</text>
+                    ${isGreen ? `
+                        <rect x="75" y="166" width="38" height="8" rx="3" fill="#64748b"/>
+                        <text x="94" y="158" text-anchor="middle" fill="#94a3b8" font-size="12" font-weight="bold">后挡平放</text>
+                    ` : `
+                        <polygon points="80,172 112,172 112,145" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+                        <text x="92" y="135" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="900">后挡升一半!</text>
+                    `}
+                    <g transform="translate(${isGreen ? '155' : '125'}, 82)">
+                        <rect x="0" y="0" width="150" height="62" rx="6" fill="#2563eb"/>
+                        <path d="M153 16 L195 16 L208 42 L208 62 L153 62 Z" fill="#f59e0b"/>
+                        <circle cx="35" cy="74" r="15" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
+                        <circle cx="85" cy="74" r="15" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
+                        <circle cx="180" cy="74" r="15" fill="#0f172a" stroke="#e2e8f0" stroke-width="5"/>
+                        <text x="75" y="38" text-anchor="middle" fill="#fff" font-size="16" font-weight="900">
+                            ${isGreen ? '绿灯：慢往前开 ➔' : '⬅ 黄灯：缓慢倒车'}
+                        </text>
+                    </g>
+                    ${isGreen ? `
+                        <path d="M230 45 L340 45" stroke="#10b981" stroke-width="8" stroke-linecap="round"/>
+                        <polygon points="340,34 362,45 340,56" fill="#10b981"/>
+                    ` : `
+                        <path d="M290 45 L170 45" stroke="#facc15" stroke-width="8" stroke-linecap="round"/>
+                        <polygon points="170,34 148,45 170,56" fill="#facc15"/>
+                    `}
+                </svg>`;
+            }
+            case 3: {
+                const isFull = subState !== "half";
+                return `
+                <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
+                    <rect x="16" y="12" width="275" height="185" rx="12" fill="#090d16" stroke="#38bdf8" stroke-width="3"/>
+                    <rect x="16" y="12" width="275" height="28" rx="9" fill="#0284c7"/>
+                    <text x="153" y="31" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">📺 左侧视频监控画面</text>
+                    <rect x="28" y="162" width="250" height="9" fill="#475569"/>
+                    ${isFull ? `
+                        <polygon points="65,162 108,162 108,108" fill="#10b981" stroke="#fff" stroke-width="3"/>
+                        <text x="78" y="96" text-anchor="middle" fill="#34d399" font-size="14" font-weight="900">✅ 后挡完全升到位</text>
+                        <circle cx="140" cy="136" r="26" fill="#1e293b" stroke="#f8fafc" stroke-width="6"/>
+                        <rect x="112" y="70" width="142" height="38" rx="4" fill="#2563eb"/>
+                        <text x="183" y="94" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">后轮已靠稳挡板</text>
+                    ` : `
+                        <polygon points="65,162 105,162 105,136" fill="#f59e0b" stroke="#ef4444" stroke-width="3"/>
+                        <text x="88" y="122" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="900">⚠️ 未升满(仅一半)</text>
+                        <circle cx="185" cy="136" r="26" fill="#1e293b" stroke="#f8fafc" stroke-width="6"/>
+                        <rect x="145" y="70" width="122" height="38" rx="4" fill="#2563eb"/>
+                        <text x="195" y="56" text-anchor="middle" fill="#fde047" font-size="12" font-weight="900">往前开一点等升满再倒</text>
+                    `}
+                    <g transform="translate(308, 16)">
+                        <rect x="0" y="0" width="194" height="50" rx="10" fill="#1e293b" stroke="#475569" stroke-width="2"/>
+                        <circle cx="28" cy="25" r="15" fill="#ef4444"/>
+                        <text x="28" y="30" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">停</text>
+                        <text x="115" y="31" text-anchor="middle" fill="#f8fafc" font-size="16" font-weight="900">1. 靠稳停车</text>
+
+                        <rect x="0" y="64" width="194" height="50" rx="10" fill="#1e293b" stroke="#f59e0b" stroke-width="2"/>
+                        <circle cx="28" cy="89" r="15" fill="#f59e0b"/>
+                        <text x="28" y="94" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="900">气</text>
+                        <text x="115" y="95" text-anchor="middle" fill="#fbbf24" font-size="16" font-weight="900">2. 断气刹放气</text>
+
+                        <rect x="0" y="128" width="194" height="50" rx="10" fill="#1e293b" stroke="#10b981" stroke-width="2"/>
+                        <circle cx="28" cy="153" r="15" fill="#10b981"/>
+                        <text x="28" y="158" text-anchor="middle" fill="#0f172a" font-size="14" font-weight="900">下</text>
+                        <text x="115" y="159" text-anchor="middle" fill="#34d399" font-size="16" font-weight="900">3. 安全下车</text>
+                    </g>
+                </svg>`;
+            }
+            case 4: {
+                const isCenter = subState !== "off";
+                return `
+                <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
+                    <rect x="15" y="12" width="245" height="186" rx="12" fill="#1e293b" stroke="${isCenter ? '#10b981' : '#f43f5e'}" stroke-width="3"/>
+                    <text x="137" y="36" text-anchor="middle" fill="#f8fafc" font-size="15" font-weight="900">① 绕看左右前轮中间</text>
+                    <rect x="30" y="156" width="215" height="9" rx="3" fill="#475569"/>
+                    <circle cx="75" cy="128" r="26" fill="#0f172a" stroke="#cbd5e1" stroke-width="6"/>
+                    <circle cx="198" cy="128" r="26" fill="#0f172a" stroke="#cbd5e1" stroke-width="6"/>
+                    ${isCenter ? `
+                        <rect x="123" y="118" width="28" height="38" rx="5" fill="#10b981" stroke="#fff" stroke-width="3" class="glow-anim"/>
+                        <text x="137" y="102" text-anchor="middle" fill="#34d399" font-size="13" font-weight="900">✅ 挡舌正居中</text>
+                    ` : `
+                        <rect x="96" y="118" width="28" height="38" rx="5" fill="#f43f5e" stroke="#fff" stroke-width="3"/>
+                        <text x="137" y="102" text-anchor="middle" fill="#fb7185" font-size="13" font-weight="900">❌ 偏了未居中</text>
+                    `}
+                    <text x="137" y="184" text-anchor="middle" fill="${isCenter ? '#34d399' : '#fb7185'}" font-size="13" font-weight="bold">
+                        ${isCenter ? '停留在两轮正中间' : '必须上车重新调整！'}
+                    </text>
+
+                    <rect x="275" y="12" width="230" height="186" rx="12" fill="#1e293b" stroke="#f59e0b" stroke-width="3"/>
+                    <text x="390" y="36" text-anchor="middle" fill="#f8fafc" font-size="15" font-weight="900">② 去车尾打开后车门</text>
+                    <rect x="330" y="60" width="110" height="82" rx="6" fill="#2563eb" stroke="#93c5fd" stroke-width="3"/>
+                    <path d="M330 65 L296 82 L296 150 L330 138 Z" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+                    <path d="M440 65 L474 82 L474 150 L440 138 Z" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+                    <text x="385" y="108" text-anchor="middle" fill="#fff" font-size="15" font-weight="900">打开后车门</text>
+                    <text x="390" y="184" text-anchor="middle" fill="#fbbf24" font-size="13" font-weight="900">确认居中后立即去开门</text>
+                </svg>`;
+            }
+            case 5: {
+                return `
+                <div class="w-full flex flex-col gap-2.5">
+                    <svg viewBox="0 0 520 145" class="w-full max-w-[460px] h-auto mx-auto">
+                        <rect x="15" y="10" width="165" height="122" rx="12" fill="#064e3b" stroke="#10b981" stroke-width="3"/>
+                        <text x="97" y="34" text-anchor="middle" fill="#6ee7b7" font-size="14" font-weight="900">🏠 操作室（安全屋）</text>
+                        <circle cx="97" cy="68" r="15" fill="#fde047"/>
+                        <path d="M72 110 C72 88 122 88 122 110 Z" fill="#34d399"/>
+                        <text x="97" y="125" text-anchor="middle" fill="#fff" font-size="12" font-weight="900">🚫 卸车时人留在屋内</text>
+
+                        <rect x="210" y="122" width="290" height="9" rx="3" fill="#475569"/>
+                        <g class="${panelState.vibrating ? 'vibrating' : ''}" transform="${panelState.started ? 'translate(230, 30) rotate(-18 60 90)' : 'translate(230, 52)'}">
+                            <rect x="0" y="0" width="138" height="48" rx="5" fill="#2563eb"/>
+                            <path d="M141 12 L172 12 L182 32 L182 48 L141 48 Z" fill="#f59e0b"/>
+                            <circle cx="30" cy="56" r="11" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                            <circle cx="152" cy="56" r="11" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                            <text x="69" y="29" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">
+                                ${panelState.started ? (panelState.vibrating ? '⚡ 震动器振动中!' : '🔼 正在举升卸车...') : '等待点击【卸车启动】'}
+                            </text>
+                        </g>
+                    </svg>
+
+                    <div class="bg-slate-800 border border-slate-600 rounded-xl p-2.5 max-w-[460px] w-full mx-auto">
+                        <div class="text-[11px] font-bold text-slate-300 mb-1.5">
+                            👇 点击按钮模拟操作（1选挡泥板 ➔ 2卸车启动 ➔ 3再次开震动）：
+                        </div>
+                        <div class="grid grid-cols-2 sm:grid-cols-4 gap-1.5">
+                            <button onclick="toggleMudguard('yes')" class="ind-btn py-2 px-2 rounded-lg font-black text-xs border ${panelState.mudguard === 'yes' ? 'bg-amber-400 text-slate-950 border-white' : 'bg-slate-700 text-slate-300 border-slate-600'}">
+                                ① 有挡泥板
+                            </button>
+                            <button onclick="toggleMudguard('no')" class="ind-btn py-2 px-2 rounded-lg font-black text-xs border ${panelState.mudguard === 'no' ? 'bg-amber-400 text-slate-950 border-white' : 'bg-slate-700 text-slate-300 border-slate-600'}">
+                                ① 无挡泥板
+                            </button>
+                            <button onclick="triggerUnloadStart()" class="ind-btn py-2 px-2 rounded-lg font-black text-xs bg-emerald-500 text-slate-950">
+                                ② 卸车启动
+                            </button>
+                            <button onclick="triggerVibrator()" class="ind-btn py-2 px-2 rounded-lg font-black text-xs bg-sky-400 text-slate-950">
+                                ③ 再次开震动
+                            </button>
+                        </div>
+                    </div>
+                </div>`;
+            }
+            case 6: {
+                const isClosed = subState !== "closing";
+                return `
+                <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
+                    <rect x="15" y="155" width="160" height="12" fill="#334155"/>
+                    <rect x="175" y="155" width="145" height="45" fill="#090d16" stroke="#ef4444" stroke-width="3"/>
+                    <text x="247" y="184" text-anchor="middle" fill="#f87171" font-size="13" font-weight="900">料仓深坑</text>
+                    <rect x="320" y="155" width="185" height="12" fill="#334155"/>
+
+                    ${isClosed ? `
+                        <rect x="172" y="146" width="152" height="11" rx="4" fill="#10b981" stroke="#fff" stroke-width="2"/>
+                        <text x="247" y="132" text-anchor="middle" fill="#34d399" font-size="15" font-weight="900">✅ 料仓盖板已完全关闭！</text>
+                    ` : `
+                        <rect x="175" y="92" width="11" height="65" rx="4" transform="rotate(38 175 155)" fill="#f59e0b" stroke="#fff" stroke-width="2"/>
+                        <text x="245" y="105" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="900">⏳ 盖板关闭中(未关严)</text>
+                    `}
+
+                    <g transform="translate(310, 76)">
+                        <rect x="0" y="0" width="122" height="52" rx="5" fill="#2563eb"/>
+                        <path d="M125 14 L162 14 L172 36 L172 52 L125 52 Z" fill="#f59e0b"/>
+                        <circle cx="30" cy="64" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                        <circle cx="142" cy="64" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                        <text x="61" y="31" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">
+                            ${isClosed ? '整备并关后门' : '举升下降中'}
+                        </text>
+                    </g>
+
+                    <g transform="translate(22, 32)">
+                        <rect x="0" y="0" width="152" height="74" rx="10" fill="#1e293b" stroke="${isClosed ? '#10b981' : '#f43f5e'}" stroke-width="3"/>
+                        <text x="76" y="28" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">
+                            ${isClosed ? '✅ 可上前关车门' : '✋ 等待盖板关严'}
+                        </text>
+                        <text x="76" y="54" text-anchor="middle" fill="${isClosed ? '#34d399' : '#fda4af'}" font-size="12" font-weight="bold">
+                            ${isClosed ? '盖板完全关闭后整备' : '未关严前勿靠近车尾'}
+                        </text>
+                    </g>
+                </svg>`;
+            }
+            case 7: {
+                const isFlat = subState !== "dropping";
+                return `
+                <svg viewBox="0 0 520 210" class="w-full max-w-[460px] h-auto">
+                    <rect x="16" y="14" width="245" height="180" rx="12" fill="#090d16" stroke="#38bdf8" stroke-width="3"/>
+                    <rect x="16" y="14" width="245" height="28" rx="9" fill="#0284c7"/>
+                    <text x="138" y="33" text-anchor="middle" fill="#fff" font-size="14" font-weight="900">📺 观察左侧监视器</text>
+                    <rect x="30" y="156" width="215" height="9" fill="#475569"/>
+                    ${isFlat ? `
+                        <rect x="85" y="148" width="65" height="9" rx="3" fill="#10b981" stroke="#fff" stroke-width="2"/>
+                        <text x="138" y="122" text-anchor="middle" fill="#34d399" font-size="15" font-weight="900">✅ 后挡已完全落下</text>
+                    ` : `
+                        <polygon points="85,156 135,156 135,120" fill="#f59e0b" stroke="#ef4444" stroke-width="2"/>
+                        <text x="138" y="105" text-anchor="middle" fill="#fbbf24" font-size="14" font-weight="900">⏳ 后挡还未完全落下</text>
+                    `}
+
+                    <rect x="275" y="158" width="230" height="10" rx="3" fill="#334155"/>
+                    <g transform="translate(285, 80)">
+                        <rect x="0" y="0" width="122" height="52" rx="5" fill="#2563eb"/>
+                        <path d="M125 14 L162 14 L172 36 L172 52 L125 52 Z" fill="#f59e0b"/>
+                        <circle cx="30" cy="64" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                        <circle cx="142" cy="64" r="13" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+                        <text x="61" y="31" text-anchor="middle" fill="#fff" font-size="13" font-weight="900">往前缓慢行驶 ➔</text>
+                    </g>
+                    <path d="M310 46 L445 46" stroke="${isFlat ? '#10b981' : '#f59e0b'}" stroke-width="7" stroke-linecap="round"/>
+                    <polygon points="445,36 466,46 445,56" fill="${isFlat ? '#10b981' : '#f59e0b'}"/>
+                    <text x="390" y="30" text-anchor="middle" fill="${isFlat ? '#34d399' : '#fde047'}" font-size="14" font-weight="900">
+                        ${isFlat ? '🎉 后挡完全落下，方可驶离' : '缓慢前行观察左屏'}
+                    </text>
+                </svg>`;
+            }
+        }
+    }
+
+    // ==================== 5. 渲染视图 1：一图看懂全流程（手机端阅读优化版） ====================
+    function renderFlowchartView() {
+        const container = document.getElementById("flowchart-container");
+        container.innerHTML = stepsData.map((step, index) => `
+            <div id="flow-step-card-${step.id}" class="bg-slate-900 border-2 border-slate-700/90 hover:border-amber-500/70 transition-all rounded-2xl sm:rounded-3xl p-3.5 sm:p-5 shadow-xl scroll-mt-3">
+                <div class="grid grid-cols-1 lg:grid-cols-12 gap-3.5 sm:gap-5 items-center">
+                    
+                    <!-- 步骤标题 + 口诀 + 动作要点 (6列) -->
+                    <div class="lg:col-span-6 space-y-2.5 sm:space-y-3">
+                        <div class="flex items-center justify-between gap-2">
+                            <div class="flex items-center gap-2.5 min-w-0">
+                                <span class="w-9 h-9 sm:w-11 sm:h-11 rounded-xl sm:rounded-2xl bg-amber-500 text-slate-950 font-black text-lg sm:text-2xl flex items-center justify-center shadow shrink-0">
+                                    ${step.id}
+                                </span>
+                                <h3 class="text-lg sm:text-2xl font-black text-white truncate">${step.shortTitle}</h3>
+                            </div>
+                            <button onclick="speakText('${step.voiceText}')" class="ind-btn bg-amber-400 hover:bg-amber-300 text-slate-950 font-black px-3 py-1.5 rounded-xl text-xs sm:text-sm flex items-center gap-1 shrink-0">
+                                <i class="fa-solid fa-volume-high"></i>
+                                <span>听语音</span>
                             </button>
                         </div>
 
+                        <!-- 口诀高亮条 -->
+                        <div class="bg-slate-800/95 border-l-4 border-amber-400 px-3 py-2 rounded-r-xl">
+                            <p class="text-sm sm:text-lg font-black text-amber-300 leading-snug">${step.slogan}</p>
+                        </div>
+
+                        <!-- 动作三要点 -->
+                        <div class="space-y-1.5">
+                            ${step.actions.map(act => `
+                                <div class="flex items-center gap-2.5 bg-slate-950/80 px-3 py-2 rounded-xl border border-slate-800">
+                                    <i class="fa-solid ${act.icon} ${act.color} text-base sm:text-lg w-5 text-center shrink-0"></i>
+                                    <span class="text-xs sm:text-base font-bold text-slate-100 leading-snug">${act.text}</span>
+                                </div>
+                            `).join('')}
+                        </div>
+
+                        <!-- 安全红线警示 -->
+                        <div class="bg-rose-950/70 border border-rose-500/60 px-3 py-2 rounded-xl flex items-center gap-2 text-rose-200 text-xs sm:text-sm font-bold">
+                            <i class="fa-solid fa-circle-exclamation text-rose-400 text-base shrink-0"></i>
+                            <span>${step.warning}</span>
+                        </div>
+                    </div>
+
+                    <!-- 右：直观SVG示意图 + 现场实景图 (6列) -->
+                    <div class="lg:col-span-6 bg-slate-950 rounded-xl sm:rounded-2xl border border-slate-800 p-2.5 sm:p-3 flex flex-col items-center justify-center">
+                        ${getStepSVG(step.id, step.defaultSubState)}
+                        <div class="w-full">
+                            ${getStepPhotosHTML(step.id)}
+                        </div>
+                        <button onclick="jumpToSimStep(${index})" class="mt-2.5 text-xs text-sky-400 hover:text-sky-300 font-bold flex items-center gap-1 py-1">
+                            <i class="fa-solid fa-hand-pointer"></i>
+                            <span>进入第 ${step.id} 步互动模拟演练 ➔</span>
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+            ${index < stepsData.length - 1 ? `
+                <div class="flex justify-center py-0.5">
+                    <div class="w-8 h-8 rounded-full bg-amber-500/20 border border-amber-500 text-amber-400 flex items-center justify-center arrow-bounce">
+                        <i class="fa-solid fa-arrow-down text-sm"></i>
                     </div>
                 </div>
+            ` : `
+                <div class="bg-emerald-950/80 border-2 border-emerald-500 rounded-2xl sm:rounded-3xl p-4 text-center mt-3">
+                    <div class="text-base sm:text-2xl font-black text-emerald-300 mb-1">
+                        🎉 卸车全部完成，河南容实重型装备祝您一路顺风！
+                    </div>
+                    <p class="text-emerald-200/90 font-bold text-xs sm:text-sm">
+                        🚨 突发情况请立即拍<strong class="text-rose-400 mx-1">【急停按钮】</strong>；设备疑问请联系<strong class="text-amber-300 mx-1">当班工作人员</strong>或用<strong class="text-sky-300 mx-1">【语音话筒】</strong>与中控室对话
+                    </p>
+                </div>
+            `}
+        `).join('');
+    }
 
-                <!-- 步骤之间的向下大箭头（最后一步不显示） -->
-                ${index < stepsData.length - 1 ? `
-                    <div class="flex justify-center py-1">
-                        <div class="w-10 h-10 rounded-full bg-amber-500/20 border-2 border-amber-500 text-amber-400 flex items-center justify-center arrow-bounce">
-                            <i class="fa-solid fa-arrow-down text-xl"></i>
-                        </div>
-                    </div>
-                ` : `
-                    <div class="bg-emerald-950/80 border-2 border-emerald-500 rounded-3xl p-5 text-center mt-4">
-                        <div class="text-2xl sm:text-3xl font-black text-emerald-300 mb-1">
-                            🎉 卸车全部完成，河南容实重型装备祝您一路顺风！
-                        </div>
-                        <p class="text-emerald-200/90 font-bold text-sm sm:text-base">
-                            🚨 遇突发情况请立即拍<strong class="text-rose-400 mx-1">【急停按钮】</strong>；设备疑问请联系<strong class="text-amber-300 mx-1">当班工作人员</strong>或用<strong class="text-sky-300 mx-1">【语音话筒】</strong>与中控室对话
-                        </p>
-                    </div>
-                `}
-            `).join('');
+    // ==================== 6. 渲染视图 2：手把手互动演练 ====================
+    function renderSimCurrentStep() {
+        const step = stepsData[currentSimIndex];
+        highlightNavPill(`nav-pill-step-${step.id}`);
+
+        document.getElementById("sim-step-badge").textContent = `第 ${step.id} 步`;
+        document.getElementById("sim-step-title").textContent = step.shortTitle;
+        document.getElementById("sim-slogan").textContent = step.slogan;
+        document.getElementById("sim-warning-text").textContent = step.warning;
+        document.getElementById("sim-progress-text").textContent = `第 ${step.id} / ${stepsData.length} 步`;
+
+        document.getElementById("sim-action-list").innerHTML = step.actions.map(act => `
+            <div class="flex items-center gap-2.5 bg-slate-800/90 p-2.5 sm:p-3 rounded-xl border border-slate-700">
+                <div class="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center shrink-0">
+                    <i class="fa-solid ${act.icon} ${act.color} text-base"></i>
+                </div>
+                <span class="text-sm sm:text-base font-black text-white leading-snug">${act.text}</span>
+            </div>
+        `).join('');
+
+        const simPhotoBox = document.getElementById("sim-photo-box");
+        const stepPhotoHtml = getStepPhotosHTML(step.id);
+        if (stepPhotoHtml) {
+            simPhotoBox.innerHTML = stepPhotoHtml;
+            simPhotoBox.classList.remove("hidden");
+        } else {
+            simPhotoBox.innerHTML = "";
+            simPhotoBox.classList.add("hidden");
         }
 
-        // ==================== 渲染视图 2：手把手互动演练（分步模式） ====================
-        function renderSimStepper() {
-            const stepper = document.getElementById("sim-stepper");
-            stepper.innerHTML = stepsData.map((s, idx) => {
-                const isActive = idx === currentSimIndex;
-                const isPast = idx < currentSimIndex;
-                return `
-                <button onclick="selectSimStep(${idx})" class="flex items-center gap-2 px-3 py-2 rounded-2xl font-black text-sm sm:text-base transition-all shrink-0 ${
-                    isActive 
-                        ? 'bg-amber-500 text-slate-950 shadow-lg scale-105' 
-                        : isPast 
-                            ? 'bg-emerald-900/60 text-emerald-300 border border-emerald-600/50' 
-                            : 'bg-slate-800 text-slate-400 hover:text-white'
+        document.getElementById("sim-svg-stage").innerHTML = getStepSVG(step.id, currentSubState);
+
+        const ctrlContainer = document.getElementById("sim-interactive-controls");
+        if (step.id === 5) {
+            ctrlContainer.innerHTML = `<span class="text-xs font-bold text-amber-300">💡 直接点击上方模拟按钮体验操作顺序！</span>`;
+        } else {
+            ctrlContainer.innerHTML = step.subStates.map(sub => `
+                <button onclick="setSimSubState('${sub.key}')" class="ind-btn px-3 py-2 rounded-xl font-black text-xs sm:text-sm transition-all ${
+                    currentSubState === sub.key 
+                        ? sub.btnClass + ' ring-2 ring-white/50' 
+                        : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
                 }">
-                    <span class="w-6 h-6 rounded-full flex items-center justify-center text-xs ${
-                        isActive ? 'bg-slate-950 text-amber-400' : isPast ? 'bg-emerald-500 text-slate-950' : 'bg-slate-700 text-slate-300'
-                    }">${isPast ? '✓' : s.id}</span>
-                    <span>${s.shortTitle.split(' · ')[0]}</span>
-                </button>`;
-            }).join('');
-        }
-
-        function renderSimCurrentStep() {
-            const step = stepsData[currentSimIndex];
-            renderSimStepper();
-
-            document.getElementById("sim-step-badge").textContent = `第 ${step.id} 步`;
-            document.getElementById("sim-step-title").textContent = step.shortTitle;
-            document.getElementById("sim-slogan").textContent = step.slogan;
-            document.getElementById("sim-warning-text").textContent = step.warning;
-            document.getElementById("sim-progress-text").textContent = `第 ${step.id} / ${stepsData.length} 步`;
-
-            // 渲染动作列表
-            document.getElementById("sim-action-list").innerHTML = step.actions.map(act => `
-                <div class="flex items-center gap-3.5 bg-slate-800/90 p-3.5 rounded-2xl border border-slate-700">
-                    <div class="w-10 h-10 rounded-xl bg-slate-900 flex items-center justify-center shrink-0">
-                        <i class="fa-solid ${act.icon} ${act.color} text-xl"></i>
-                    </div>
-                    <span class="text-lg sm:text-xl font-black text-white leading-snug">${act.text}</span>
-                </div>
+                    ${sub.label}
+                </button>
             `).join('');
-
-            // 渲染对应步骤的现场实景图（第3、4、5步自动展示）
-            const simPhotoBox = document.getElementById("sim-photo-box");
-            const stepPhotoHtml = getStepPhotosHTML(step.id);
-            if (stepPhotoHtml) {
-                simPhotoBox.innerHTML = stepPhotoHtml;
-                simPhotoBox.classList.remove("hidden");
-            } else {
-                simPhotoBox.innerHTML = "";
-                simPhotoBox.classList.add("hidden");
-            }
-
-            // 渲染SVG舞台
-            document.getElementById("sim-svg-stage").innerHTML = getStepSVG(step.id, currentSubState);
-
-            // 渲染情景切换按钮
-            const ctrlContainer = document.getElementById("sim-interactive-controls");
-            if (step.id === 5) {
-                ctrlContainer.innerHTML = `<span class="text-xs sm:text-sm font-bold text-amber-300">💡 提示：直接点击上方【有/无挡泥板】【卸车启动】【再次开震动】按钮试试看！</span>`;
-            } else {
-                ctrlContainer.innerHTML = step.subStates.map(sub => `
-                    <button onclick="setSimSubState('${sub.key}')" class="ind-btn px-4 py-2.5 rounded-xl font-black text-sm sm:text-base transition-all ${
-                        currentSubState === sub.key 
-                            ? sub.btnClass + ' ring-4 ring-white/40' 
-                            : 'bg-slate-800 text-slate-300 hover:bg-slate-700'
-                    }">
-                        ${sub.label}
-                    </button>
-                `).join('');
-            }
-
-            // 更新上下步按钮状态
-            document.getElementById("btn-prev").disabled = currentSimIndex === 0;
-            const nextBtn = document.getElementById("btn-next");
-            if (currentSimIndex === stepsData.length - 1) {
-                nextBtn.innerHTML = `<i class="fa-solid fa-rotate-left"></i><span>从头再看一遍</span>`;
-            } else {
-                nextBtn.innerHTML = `<span>下一步</span><i class="fa-solid fa-arrow-right"></i>`;
-            }
         }
 
-        // ==================== 交互控制函数 ====================
-        function switchView(viewName) {
-            const flowView = document.getElementById("view-flow");
-            const simView = document.getElementById("view-sim");
-            const tabFlow = document.getElementById("tab-flow");
-            const tabSim = document.getElementById("tab-sim");
-
-            if (viewName === "flow") {
-                flowView.classList.remove("hidden");
-                simView.classList.add("hidden");
-                tabFlow.className = "flex-1 sm:flex-initial px-4 py-2.5 rounded-xl font-black text-sm sm:text-base flex items-center justify-center gap-2 transition-all bg-amber-500 text-slate-950 shadow-md";
-                tabSim.className = "flex-1 sm:flex-initial px-4 py-2.5 rounded-xl font-black text-sm sm:text-base flex items-center justify-center gap-2 transition-all text-slate-300 hover:text-white";
-                renderFlowchartView();
-            } else {
-                flowView.classList.add("hidden");
-                simView.classList.remove("hidden");
-                tabSim.className = "flex-1 sm:flex-initial px-4 py-2.5 rounded-xl font-black text-sm sm:text-base flex items-center justify-center gap-2 transition-all bg-amber-500 text-slate-950 shadow-md";
-                tabFlow.className = "flex-1 sm:flex-initial px-4 py-2.5 rounded-xl font-black text-sm sm:text-base flex items-center justify-center gap-2 transition-all text-slate-300 hover:text-white";
-                renderSimCurrentStep();
-            }
+        document.getElementById("btn-prev").disabled = currentSimIndex === 0;
+        const nextBtn = document.getElementById("btn-next");
+        if (currentSimIndex === stepsData.length - 1) {
+            nextBtn.innerHTML = `<i class="fa-solid fa-rotate-left"></i><span>从头再演练</span>`;
+        } else {
+            nextBtn.innerHTML = `<span>下一步</span><i class="fa-solid fa-arrow-right"></i>`;
         }
+    }
 
-        function jumpToSimStep(index) {
-            currentSimIndex = index;
-            currentSubState = stepsData[index].defaultSubState;
-            switchView("sim");
-            window.scrollTo({ top: 0, behavior: "smooth" });
-        }
+    // ==================== 7. 视图与步骤切换逻辑 ====================
+    function switchView(viewName) {
+        const flowView = document.getElementById("view-flow");
+        const simView = document.getElementById("view-sim");
+        const simBottomBar = document.getElementById("sim-bottom-bar");
+        const tabFlow = document.getElementById("tab-flow");
+        const tabSim = document.getElementById("tab-sim");
+        const scrollArea = document.getElementById("main-scroll-area");
 
-        function selectSimStep(index) {
-            currentSimIndex = index;
-            currentSubState = stepsData[index].defaultSubState;
+        if (viewName === "flow") {
+            flowView.classList.remove("hidden");
+            simView.classList.add("hidden");
+            simBottomBar.classList.add("hidden");
+            tabFlow.className = "flex-1 sm:flex-initial px-3 sm:px-5 py-1.5 rounded-lg font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all bg-amber-500 text-slate-950 shadow";
+            tabSim.className = "flex-1 sm:flex-initial px-3 sm:px-5 py-1.5 rounded-lg font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:text-white";
+            renderFlowchartView();
+        } else {
+            flowView.classList.add("hidden");
+            simView.classList.remove("hidden");
+            simBottomBar.classList.remove("hidden");
+            tabSim.className = "flex-1 sm:flex-initial px-3 sm:px-5 py-1.5 rounded-lg font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all bg-amber-500 text-slate-950 shadow";
+            tabFlow.className = "flex-1 sm:flex-initial px-3 sm:px-5 py-1.5 rounded-lg font-black text-xs sm:text-sm flex items-center justify-center gap-1.5 transition-all text-slate-300 hover:text-white";
             renderSimCurrentStep();
+            if (scrollArea) scrollArea.scrollTo({ top: 0, behavior: "smooth" });
         }
+    }
 
-        function changeSimStep(delta) {
-            if (currentSimIndex === stepsData.length - 1 && delta > 0) {
-                currentSimIndex = 0;
-            } else {
-                currentSimIndex = Math.max(0, Math.min(stepsData.length - 1, currentSimIndex + delta));
-            }
-            currentSubState = stepsData[currentSimIndex].defaultSubState;
+    function jumpToSimStep(index) {
+        currentSimIndex = index;
+        currentSubState = stepsData[index].defaultSubState;
+        switchView("sim");
+    }
+
+    function selectSimStep(index) {
+        currentSimIndex = index;
+        currentSubState = stepsData[index].defaultSubState;
+        renderSimCurrentStep();
+        const scrollArea = document.getElementById("main-scroll-area");
+        if (scrollArea) scrollArea.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function changeSimStep(delta) {
+        if (currentSimIndex === stepsData.length - 1 && delta > 0) {
+            currentSimIndex = 0;
+        } else {
+            currentSimIndex = Math.max(0, Math.min(stepsData.length - 1, currentSimIndex + delta));
+        }
+        currentSubState = stepsData[currentSimIndex].defaultSubState;
+        renderSimCurrentStep();
+        const scrollArea = document.getElementById("main-scroll-area");
+        if (scrollArea) scrollArea.scrollTo({ top: 0, behavior: "smooth" });
+    }
+
+    function setSimSubState(subKey) {
+        currentSubState = subKey;
+        renderSimCurrentStep();
+    }
+
+    function toggleMudguard(val) {
+        panelState.mudguard = val;
+        speakText(val === 'yes' ? "已选择：有挡泥板" : "已选择：无挡泥板");
+        if (!document.getElementById("view-sim").classList.contains("hidden")) {
             renderSimCurrentStep();
+        } else {
+            renderFlowchartView();
         }
+    }
 
-        function setSimSubState(subKey) {
-            currentSubState = subKey;
+    function triggerUnloadStart() {
+        panelState.started = true;
+        panelState.vibrating = false;
+        speakText("卸车启动！请全程停留在操作室内！");
+        if (!document.getElementById("view-sim").classList.contains("hidden")) {
             renderSimCurrentStep();
+        } else {
+            renderFlowchartView();
         }
+    }
 
-        // 第5步模拟操作台交互
-        function toggleMudguard(val) {
-            panelState.mudguard = val;
-            speakText(val === 'yes' ? "已选择：有挡泥板" : "已选择：无挡泥板");
-            if (!document.getElementById("view-sim").classList.contains("hidden")) {
-                renderSimCurrentStep();
-            } else {
-                renderFlowchartView();
-            }
+    function triggerVibrator() {
+        panelState.started = true;
+        panelState.vibrating = !panelState.vibrating;
+        speakText(panelState.vibrating ? "已再次开启震动器！" : "震动器已暂停");
+        if (!document.getElementById("view-sim").classList.contains("hidden")) {
+            renderSimCurrentStep();
+        } else {
+            renderFlowchartView();
         }
+    }
 
-        function triggerUnloadStart() {
-            panelState.started = true;
-            panelState.vibrating = false;
-            speakText("卸车启动！大板正在升起，请全程留在操作室屋里，不要出去！");
-            if (!document.getElementById("view-sim").classList.contains("hidden")) {
-                renderSimCurrentStep();
-            } else {
-                renderFlowchartView();
-            }
-        }
+    // ==================== 8. 语音播报与导出工具 ====================
+    function speakText(text) {
+        if (!('speechSynthesis' in window)) return;
+        window.speechSynthesis.cancel();
+        const utter = new SpeechSynthesisUtterance(text);
+        utter.lang = 'zh-CN';
+        utter.rate = 0.95;
 
-        function triggerVibrator() {
-            panelState.started = true;
-            panelState.vibrating = !panelState.vibrating;
-            speakText(panelState.vibrating ? "震动器已开启，正在震动清料！" : "震动器已暂停");
-            if (!document.getElementById("view-sim").classList.contains("hidden")) {
-                renderSimCurrentStep();
-            } else {
-                renderFlowchartView();
-            }
-        }
+        const toast = document.getElementById("voice-toast");
+        toast.classList.remove("hidden");
+        toast.classList.add("flex");
 
-        // ==================== 语音播报功能（专为司机设计） ====================
-        function speakText(text) {
-            if (!('speechSynthesis' in window)) return;
-            window.speechSynthesis.cancel();
-            const utter = new SpeechSynthesisUtterance(text);
-            utter.lang = 'zh-CN';
-            utter.rate = 0.95; // 语速稍慢，清晰易听
-
-            const toast = document.getElementById("voice-toast");
-            toast.classList.remove("hidden");
-            toast.classList.add("flex");
-
-            utter.onend = () => {
-                toast.classList.add("hidden");
-                toast.classList.remove("flex");
-            };
-            utter.onerror = () => {
-                toast.classList.add("hidden");
-                toast.classList.remove("flex");
-            };
-
-            window.speechSynthesis.speak(utter);
-        }
-
-        function stopSpeech() {
-            if ('speechSynthesis' in window) {
-                window.speechSynthesis.cancel();
-            }
-            const toast = document.getElementById("voice-toast");
+        utter.onend = () => {
             toast.classList.add("hidden");
             toast.classList.remove("flex");
-        }
+        };
+        utter.onerror = () => {
+            toast.classList.add("hidden");
+            toast.classList.remove("flex");
+        };
 
-        function speakRhyme() {
-            const rhyme = "卸车七步顺口溜：一、空房落杆慢进场；二、绿灯前进黄灯倒；三、左屏后挡升到底；四、舌在轮中开后门；五、选板启动人别走；六、盖板关严再关门；七、往前慢开看左屏，后挡趴平安全走！";
-            speakText(rhyme);
-        }
+        window.speechSynthesis.speak(utter);
+    }
 
-        function speakCurrentSimStep() {
-            speakText(stepsData[currentSimIndex].voiceText);
+    function stopSpeech() {
+        if ('speechSynthesis' in window) {
+            window.speechSynthesis.cancel();
         }
+        const toast = document.getElementById("voice-toast");
+        toast.classList.add("hidden");
+        toast.classList.remove("flex");
+    }
 
-        // ==================== 导出 index.html 单文件 & 二维码生成逻辑 ====================
-        function showActionToast(msg) {
-            const toast = document.getElementById("action-toast");
-            document.getElementById("action-toast-text").textContent = msg;
-            toast.classList.remove("hidden");
-            toast.classList.add("flex");
-            setTimeout(() => {
-                toast.classList.add("hidden");
-                toast.classList.remove("flex");
-            }, 3000);
-        }
+    function speakRhyme() {
+        const rhyme = "卸车七步顺口溜：一、空房落杆慢进场；二、绿灯前进黄灯倒；三、左屏后挡升到底；四、舌在轮中开后门；五、选板启动人别走；六、盖板关严再关门；七、往前慢开看左屏，后挡趴平安全走！";
+        speakText(rhyme);
+    }
 
-        function getCleanHtmlSource() {
-            // 克隆当前文档节点，确保导出的 index.html 初始处于干净的默认状态
-            const clone = document.documentElement.cloneNode(true);
-            const lightbox = clone.querySelector("#photo-lightbox");
-            if (lightbox) lightbox.classList.add("hidden");
-            const toast1 = clone.querySelector("#voice-toast");
-            if (toast1) toast1.classList.add("hidden");
-            const toast2 = clone.querySelector("#action-toast");
-            if (toast2) toast2.classList.add("hidden");
-            return "<!DOCTYPE html>\n" + clone.outerHTML;
-        }
+    function speakCurrentSimStep() {
+        speakText(stepsData[currentSimIndex].voiceText);
+    }
 
-        function downloadIndexHtml() {
-            try {
-                const htmlContent = getCleanHtmlSource();
-                const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
-                const url = URL.createObjectURL(blob);
-                const a = document.createElement("a");
-                a.href = url;
-                a.download = "index.html";
-                document.body.appendChild(a);
-                a.click();
-                document.body.removeChild(a);
-                URL.revokeObjectURL(url);
-                showActionToast("✅ 已开始下载 index.html 文件！");
-            } catch (e) {
-                copyFullHtmlCode();
-            }
-        }
+    function showActionToast(msg) {
+        const toast = document.getElementById("action-toast");
+        document.getElementById("action-toast-text").textContent = msg;
+        toast.classList.remove("hidden");
+        toast.classList.add("flex");
+        setTimeout(() => {
+            toast.classList.add("hidden");
+            toast.classList.remove("flex");
+        }, 3000);
+    }
 
-        function copyFullHtmlCode() {
+    function getCleanHtmlSource() {
+        const clone = document.documentElement.cloneNode(true);
+        const lightbox = clone.querySelector("#photo-lightbox");
+        if (lightbox) lightbox.classList.add("hidden");
+        const toast1 = clone.querySelector("#voice-toast");
+        if (toast1) toast1.classList.add("hidden");
+        const toast2 = clone.querySelector("#action-toast");
+        if (toast2) toast2.classList.add("hidden");
+        return "<!DOCTYPE html>\n" + clone.outerHTML;
+    }
+
+    function downloadIndexHtml() {
+        try {
+            const htmlContent = getCleanHtmlSource();
+            const blob = new Blob([htmlContent], { type: "text/html;charset=utf-8" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            a.download = "index.html";
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            showActionToast("✅ 已开始下载 index.html 文件！");
+        } catch (e) {
             const htmlContent = getCleanHtmlSource();
             const textarea = document.createElement("textarea");
             textarea.value = htmlContent;
@@ -1479,41 +1615,60 @@
             textarea.select();
             document.execCommand("copy");
             document.body.removeChild(textarea);
-            showActionToast("✅ 完整 HTML 代码已复制！新建 index.html 粘贴即可");
+            showActionToast("✅ 完整代码已复制！");
         }
+    }
 
-        // 将当前完整图文流程页导出为 PDF 文件
-        function exportPageToPdf() {
-            // 确保切换到“一张图看懂（含实景图）”全流程视图以导出完整内容
-            switchView('flow');
-            showActionToast("⏳ 正在生成彩色图文 PDF 文档，请稍候...");
+    function exportPageToPdf() {
+        switchView('flow');
+        setHeaderCollapsed(false);
+        showActionToast("⏳ 正在生成彩色图文 PDF 文档...");
 
-            const targetEl = document.body;
-            if (typeof html2pdf !== "undefined") {
-                const opt = {
-                    margin: [5, 5, 5, 5],
-                    filename: "自动化汽车卸车机操作流程-河南容实重型装备有限公司.pdf",
-                    image: { type: "jpeg", quality: 0.98 },
-                    html2canvas: { scale: 2, useCORS: true, backgroundColor: "#0f172a" },
-                    jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
-                    pagebreak: { mode: ["avoid-all", "css", "legacy"] }
-                };
-                html2pdf().set(opt).from(targetEl).save().then(() => {
-                    showActionToast("✅ PDF 文档已成功生成并开始下载！");
-                }).catch(() => {
-                    window.print();
-                });
-            } else {
+        const scrollArea = document.getElementById("main-scroll-area");
+        const appRoot = document.getElementById("app-root");
+
+        if (typeof html2pdf !== "undefined") {
+            // 临时解除高度裁剪以便完整导出全页
+            const origRootClass = appRoot.className;
+            const origScrollClass = scrollArea.className;
+            appRoot.className = "w-full bg-slate-950";
+            scrollArea.className = "w-full px-4 py-4";
+
+            const opt = {
+                margin: [5, 5, 5, 5],
+                filename: "自动化汽车卸车机操作流程-河南容实重型装备有限公司.pdf",
+                image: { type: "jpeg", quality: 0.98 },
+                html2canvas: { scale: 2, useCORS: true, backgroundColor: "#0f172a" },
+                jsPDF: { unit: "mm", format: "a4", orientation: "portrait" },
+                pagebreak: { mode: ["avoid-all", "css", "legacy"] }
+            };
+            html2pdf().set(opt).from(appRoot).save().then(() => {
+                appRoot.className = origRootClass;
+                scrollArea.className = origScrollClass;
+                showActionToast("✅ PDF 文档已成功生成并开始下载！");
+            }).catch(() => {
+                appRoot.className = origRootClass;
+                scrollArea.className = origScrollClass;
                 window.print();
-            }
+            });
+        } else {
+            window.print();
         }
+    }
 
-        // 页面初始化
-        window.onload = function () {
-            renderTopPhotoGallery();
-            renderFlowchartView();
-            renderSimCurrentStep();
-        };
-    </script>
+    // 页面加载与窗口自适应监听
+    window.onload = function () {
+        adjustViewportLayout();
+        renderTopPhotoGallery();
+        renderFlowchartView();
+        renderSimCurrentStep();
+        initScrollListener();
+
+        window.addEventListener('resize', adjustViewportLayout);
+        if (window.visualViewport) {
+            window.visualViewport.addEventListener('resize', adjustViewportLayout);
+        }
+    };
+</script>
 </body>
 </html>
